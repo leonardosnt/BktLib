@@ -1,17 +1,18 @@
 package io.github.bktlib.item.builders.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
-import io.github.bktlib.item.builders.BookBuilder;
 import io.github.bktlib.item.builders.ItemBuilder;
 
 public class ItemBuilderImpl implements ItemBuilder
@@ -61,7 +62,19 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder lore( String... lines )
 	{
-		modifyMeta( meta -> meta.setLore( Arrays.asList( lines ) ) );
+		modifyMeta( meta -> 
+		{
+			ArrayList<String> lore = Lists.newArrayList();
+			List<String> currentLore = meta.getLore();
+			
+			if ( currentLore != null && !currentLore.isEmpty() )
+				lore.addAll( currentLore );
+			
+			lore.addAll( Arrays.asList( lines ) );
+
+			meta.setLore( lore );
+		});
+		
 		return this;
 	}
 
