@@ -10,7 +10,9 @@ public interface ItemBuilder
 {
 	ItemBuilder type( Material mat );
 	
-	ItemBuilder durability( int durability );
+	ItemBuilder durability( short durability );
+	
+	ItemBuilder maxDurability();
 	
 	ItemBuilder amount( int amount );
 	

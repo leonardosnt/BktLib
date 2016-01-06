@@ -6,7 +6,6 @@ import io.github.bktlib.item.builders.impl.BookBuilderImpl;
 
 public interface BookBuilder extends ItemBuilder
 {
-
 	BookBuilder author( String author );
 	
 	BookBuilder title( String title );

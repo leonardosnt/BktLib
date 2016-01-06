@@ -31,13 +31,17 @@ public class ItemBuilderImpl implements ItemBuilder
 	}
 
 	@Override
-	public ItemBuilder durability( int durability )
+	public ItemBuilder durability( short durability )
 	{
-		Preconditions.checkArgument( durability > Short.MAX_VALUE, 
-				"durability must be less than %s", Short.MAX_VALUE );
-		
-		item.setDurability( (short) durability );
+		item.setDurability( (short) 
+				(item.getType().getMaxDurability() - durability) );
 		return this;
+	}
+
+	@Override
+	public ItemBuilder maxDurability() 
+	{
+		return durability( item.getType().getMaxDurability() );
 	}
 
 	@Override
