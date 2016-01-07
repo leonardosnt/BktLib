@@ -13,7 +13,6 @@ import io.github.bktlib.item.builders.impl.ItemBuilderImpl;
  */
 public interface ItemBuilder 
 {
-	
 	/**
 	 * Define o tipo do item.
 	 * 
