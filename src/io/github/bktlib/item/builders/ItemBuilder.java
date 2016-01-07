@@ -79,6 +79,13 @@ public interface ItemBuilder
 	 */
 	ItemBuilder enchant( Enchantment ench, int level );
 	
+	
+	/**
+	 * @param data
+	 * @return
+	 */
+	ItemBuilder data( byte data );
+	
 	/**
 	 * @return O ItemStack "construido"
 	 */

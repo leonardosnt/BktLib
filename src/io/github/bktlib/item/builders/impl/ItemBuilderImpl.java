@@ -28,11 +28,15 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffectType;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import io.github.bktlib.item.builders.ItemBuilder;
+import io.github.bktlib.item.builders.PotionBuilder;
 
 public class ItemBuilderImpl implements ItemBuilder
 {
@@ -47,6 +51,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	public ItemBuilder type( Material mat )
 	{
 		item.setType( mat );
+		
 		return this;
 	}
 
@@ -57,6 +62,7 @@ public class ItemBuilderImpl implements ItemBuilder
 				"durability must less or equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE );
 		
 		item.setDurability( (short) (item.getType().getMaxDurability() - durability) );
+		
 		return this;
 	}
 
@@ -72,6 +78,7 @@ public class ItemBuilderImpl implements ItemBuilder
 		Preconditions.checkArgument( amount > 0, "amount must be positive");
 		
 		item.setAmount( amount );
+		
 		return this;
 	}
 
@@ -116,6 +123,13 @@ public class ItemBuilderImpl implements ItemBuilder
 		
 		item.addUnsafeEnchantment( ench, level );
 		
+		return this;
+	}
+	
+	@Override
+	public ItemBuilder data( byte data )
+	{
+		//TODO: implementar
 		return this;
 	}
 
