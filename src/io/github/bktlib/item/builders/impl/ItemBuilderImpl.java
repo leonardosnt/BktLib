@@ -23,20 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.MaterialData;
-import org.bukkit.potion.PotionEffectType;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import io.github.bktlib.item.builders.ItemBuilder;
-import io.github.bktlib.item.builders.PotionBuilder;
 
 public class ItemBuilderImpl implements ItemBuilder
 {
