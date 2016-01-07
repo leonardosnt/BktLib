@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import io.github.bktlib.item.builders.impl.ItemBuilderImpl;
 
 /**
+ * Classe utilitaria para "construir" items.
  * 
  * @author Leonardosc
  */
@@ -28,6 +29,7 @@ public interface ItemBuilder
 	ItemBuilder durability( int durability );
 	
 	/**
+	 * Define a durabilidade maxima para o item.
 	 */
 	ItemBuilder maxDurability();
 	
@@ -66,6 +68,7 @@ public interface ItemBuilder
 	ItemStack build();
 	
 	/**
+	 * @return Uma nova instancia da implementacao dessa classe.
 	 */
 	static ItemBuilder newBuilder()
 	{
