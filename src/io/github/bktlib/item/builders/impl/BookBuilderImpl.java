@@ -26,8 +26,7 @@ import io.github.bktlib.item.builders.BookBuilder;
 
 public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 {
-
-	public BookMeta bookMeta;
+	protected BookMeta bookMeta;
 
 	public BookBuilderImpl()
 	{
