@@ -18,48 +18,87 @@
 
 package io.github.bktlib.item.builders.impl;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+
 import io.github.bktlib.item.builders.BookBuilder;
 
 public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 {
 
-	@Override
-	public BookBuilder author(String author) 
+	public BookMeta bookMeta;
+
+	public BookBuilderImpl()
 	{
-		return null;
+		super();
+		super.type( Material.WRITTEN_BOOK ).build();
+		bookMeta = (BookMeta) item.getItemMeta();
 	}
 
 	@Override
-	public BookBuilder title(String title) 
+	public BookBuilder author( String author )
 	{
-		return null;
+		bookMeta.setAuthor( author );
+		
+		return this;
 	}
 
 	@Override
-	public PageBuilder newPage() 
+	public BookBuilder title( String title )
 	{
-		return null;
+		bookMeta.setTitle( title );
+		
+		return this;
+	}
+
+	@Override
+	public PageBuilder newPage()
+	{
+		return new PageBuilderImpl();
+	}
+
+	@Override
+	public ItemStack build()
+	{
+		item.setItemMeta( bookMeta );
+		
+		return super.build();
 	}
 	
 	public class PageBuilderImpl implements PageBuilder
 	{
-
-		@Override
-		public PageBuilder line(String line)
+		protected StringBuilder pageBuilder;
+		
+		public PageBuilderImpl()
 		{
-			return null;
+			pageBuilder = new StringBuilder();
+		}
+		
+		@Override
+		public PageBuilder line( String line )
+		{	
+			pageBuilder.append( line ).append( "\n" );
+			
+			return this;
 		}
 
 		@Override
-		public PageBuilder lines(String... lines)
+		public PageBuilder lines( String... lines )
 		{
-			return null;
+			for ( String line : lines ) 
+				line( line );
+			
+			return this;
 		}
 
 		@Override
-		public BookBuilder endPage() 
+		public BookBuilder endPage()
 		{
-			return null;
+			if ( pageBuilder.length() != 0 )
+				bookMeta.addPage( pageBuilder.toString() );
+			
+			return BookBuilderImpl.this;
 		}
 	}
 }
