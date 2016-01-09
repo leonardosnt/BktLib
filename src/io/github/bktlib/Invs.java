@@ -1,5 +1,7 @@
 package io.github.bktlib;
 
+import java.util.stream.Stream;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -70,5 +72,16 @@ public class Invs
     public static void clear( Inventory inv )
     {
         fill( inv, (ItemStack) null );
+    }
+    
+    /**
+     * @param inv
+     * @return
+     */
+    public static Stream<ItemStack> stream( Inventory inv )
+    {
+    	Preconditions.checkNotNull( inv, "inv cannot be null" );
+    	
+    	return Stream.of( inv.getContents() );
     }
 }
