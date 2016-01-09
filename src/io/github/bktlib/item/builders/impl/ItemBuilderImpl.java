@@ -22,12 +22,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -88,7 +90,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	}
 
 	@Override
-	public ItemBuilder lore( String... lines )
+	public ItemBuilder lore( String ... lines )
 	{
 		Preconditions.checkNotNull( lines, "lines cannot be null");
 		
@@ -131,6 +133,25 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemStack build()
 	{
+		final UnaryOperator<String> translateColorChars = text -> 
+		{
+			if ( text == null ) return text;
+			
+			return CharMatcher.anyOf( "&" ).collapseFrom( text, '§' );
+		};
+		
+		modifyMeta( meta -> 
+		{
+			String name = translateColorChars.apply( meta.getDisplayName() );
+			List<String> lore = meta.getLore();
+			
+			if ( lore != null )
+				lore.forEach( translateColorChars::apply );
+			
+			meta.setDisplayName( name );
+			meta.setLore( lore );
+		});
+		
 		return item;
 	}
 
