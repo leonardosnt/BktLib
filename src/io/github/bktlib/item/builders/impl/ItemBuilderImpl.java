@@ -39,6 +39,13 @@ public class ItemBuilderImpl implements ItemBuilder
 {
 	protected ItemStack item;
 	
+	protected static final UnaryOperator<String> TRANSLATE_COLOR_CHARS = text -> 
+	{
+		if ( text == null ) return text;
+		
+		return CharMatcher.anyOf( "&" ).collapseFrom( text, '§' );
+	};
+	
 	public ItemBuilderImpl()
 	{
 		item = new ItemStack( Material.AIR );
@@ -132,21 +139,14 @@ public class ItemBuilderImpl implements ItemBuilder
 
 	@Override
 	public ItemStack build()
-	{
-		final UnaryOperator<String> translateColorChars = text -> 
-		{
-			if ( text == null ) return text;
-			
-			return CharMatcher.anyOf( "&" ).collapseFrom( text, '§' );
-		};
-		
+	{	
 		modifyMeta( meta -> 
 		{
-			String name = translateColorChars.apply( meta.getDisplayName() );
+			String name = TRANSLATE_COLOR_CHARS.apply( meta.getDisplayName() );
 			List<String> lore = meta.getLore();
 			
 			if ( lore != null )
-				lore.forEach( translateColorChars::apply );
+				lore.forEach( TRANSLATE_COLOR_CHARS::apply );
 			
 			meta.setDisplayName( name );
 			meta.setLore( lore );

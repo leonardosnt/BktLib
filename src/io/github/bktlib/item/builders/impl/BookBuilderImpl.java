@@ -22,9 +22,11 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 
 import io.github.bktlib.item.builders.BookBuilder;
+import io.github.bktlib.item.builders.ItemBuilder;
 
 public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 {
@@ -40,9 +42,15 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	}
 
 	@Override
+	public ItemBuilder type( Material mat )
+	{
+		throw new UnsupportedOperationException( "Cannot change type of Book" );
+	}
+	
+	@Override
 	public BookBuilder author( String author )
 	{
-		bookMeta.setAuthor( author );
+		bookMeta.setAuthor( TRANSLATE_COLOR_CHARS.apply( author ) );
 		
 		return this;
 	}
@@ -50,7 +58,7 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	@Override
 	public BookBuilder title( String title )
 	{
-		bookMeta.setTitle( title );
+		bookMeta.setTitle( TRANSLATE_COLOR_CHARS.apply( title ) );
 		
 		return this;
 	}
@@ -78,9 +86,11 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	@Override
 	public BookBuilder line( String line )
 	{
-		Preconditions.checkState( pageBuilder != null, "You must create new page before write an line" );
+		Preconditions.checkState( pageBuilder != null, 
+				"You must create new page before write an line" );
 		
-		pageBuilder.append( line ).append( "\n" );
+		pageBuilder.append( TRANSLATE_COLOR_CHARS.apply( line ) )
+		.append( "\n" );
 		
 		return this;
 	}
@@ -105,6 +115,7 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	
 	private void writePage()
 	{
-		bookMeta.addPage( pageBuilder.toString() );
+		if ( pageBuilder != null )
+			bookMeta.addPage( pageBuilder.toString() );
 	}
 }
