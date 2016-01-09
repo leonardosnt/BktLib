@@ -114,7 +114,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder enchant( Enchantment ench, int level )
 	{
-		Preconditions.checkArgument( level < 0, "level must be positive");
+		Preconditions.checkArgument( level > 0, "level must be positive");
 		
 		item.addUnsafeEnchantment( ench, level );
 		
