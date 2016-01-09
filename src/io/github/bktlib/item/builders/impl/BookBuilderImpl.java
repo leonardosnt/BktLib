@@ -22,16 +22,20 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import com.google.common.base.Preconditions;
+
 import io.github.bktlib.item.builders.BookBuilder;
 
 public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 {
 	protected BookMeta bookMeta;
+	protected StringBuilder pageBuilder;
 
 	public BookBuilderImpl()
 	{
 		super();
-		super.type( Material.WRITTEN_BOOK ).build();
+		
+		item = new ItemStack( Material.WRITTEN_BOOK );
 		bookMeta = (BookMeta) item.getItemMeta();
 	}
 
@@ -52,52 +56,55 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	}
 
 	@Override
-	public PageBuilder newPage()
+	public BookBuilder newPage()
 	{
-		return new PageBuilderImpl();
+		if ( pageBuilder == null )
+		{
+			pageBuilder = new StringBuilder();
+		}
+		else
+		{
+			writePage();
+			pageBuilder.setLength( 0 );	
+		}
+		
+		return this;
+	}
+	
+	/*
+	 *  Eu quero que seja necessario criar uma nova pagina 
+	 *  antes de escrever uma ou mais linhas, questao de boa pratica :D
+	 */
+	@Override
+	public BookBuilder line( String line )
+	{
+		Preconditions.checkState( pageBuilder != null, "You must create new page before write an line" );
+		
+		pageBuilder.append( line ).append( "\n" );
+		
+		return this;
+	}
+
+	@Override
+	public BookBuilder lines( String... lines )
+	{
+		for ( String line : lines )
+			line( line );
+		
+		return this;
 	}
 
 	@Override
 	public ItemStack build()
 	{
+		writePage();
 		item.setItemMeta( bookMeta );
 		
 		return super.build();
 	}
 	
-	public class PageBuilderImpl implements PageBuilder
+	private void writePage()
 	{
-		protected StringBuilder pageBuilder;
-		
-		public PageBuilderImpl()
-		{
-			pageBuilder = new StringBuilder();
-		}
-		
-		@Override
-		public PageBuilder line( String line )
-		{	
-			pageBuilder.append( line ).append( "\n" );
-			
-			return this;
-		}
-
-		@Override
-		public PageBuilder lines( String... lines )
-		{
-			for ( String line : lines ) 
-				line( line );
-			
-			return this;
-		}
-
-		@Override
-		public BookBuilder endPage()
-		{
-			if ( pageBuilder.length() != 0 )
-				bookMeta.addPage( pageBuilder.toString() );
-			
-			return BookBuilderImpl.this;
-		}
+		bookMeta.addPage( pageBuilder.toString() );
 	}
 }

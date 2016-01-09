@@ -22,25 +22,47 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.bktlib.item.builders.impl.BookBuilderImpl;
 
+/**
+ * @author leonardosc
+ *
+ */
 public interface BookBuilder extends ItemBuilder
 {
+	/**
+	 * @param author
+	 * @return
+	 */
 	BookBuilder author( String author );
 	
+	/**
+	 * @param title
+	 * @return
+	 */
 	BookBuilder title( String title );
 	
-	PageBuilder newPage();
+	/**
+	 * @return
+	 */
+	BookBuilder newPage();
 	
+	/**
+	 * @param line
+	 * @return
+	 */
+	BookBuilder line( String line );
+	
+	/**
+	 * @param lines
+	 * @return
+	 */
+	BookBuilder lines( String ... lines );
+	
+	/**
+	 * @return
+	 */
 	static BookBuilder newBuilder()
 	{
 		return new BookBuilderImpl();
 	}
 	
-	public interface PageBuilder
-	{
-		PageBuilder line( String line );
-		
-		PageBuilder lines( String ... lines );
-		
-		BookBuilder endPage();
-	}
 }
