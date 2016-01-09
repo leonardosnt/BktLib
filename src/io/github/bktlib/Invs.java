@@ -1,5 +1,7 @@
 package io.github.bktlib;
 
+import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.bukkit.Material;
@@ -34,6 +36,15 @@ public class Invs
 	}
 
 	/**
+	 * @param supplier
+	 * @param item
+	 */
+	public static void fill( Supplier<? extends Inventory> supplier, ItemStack item )
+	{
+		fill( supplier.get(), item );
+	}
+	
+	/**
 	 * @param inv
 	 * @param material
 	 */
@@ -48,6 +59,15 @@ public class Invs
 	}
 
 	/**
+	 * @param supplier
+	 * @param mat
+	 */
+	public static void fill( Supplier<? extends Inventory> supplier, Material mat )
+	{
+		fill( supplier.get(), mat );
+	}
+	
+	/**
 	 * @param inv
 	 * @return
 	 */
@@ -55,15 +75,19 @@ public class Invs
 	{
 		Preconditions.checkNotNull( inv, "inv cannot be null" );
 		
-		ItemStack[] contents = inv.getContents();
-		
-		for ( int i = 0; i < contents.length; i++ )
-		{
-			if ( contents[i] != null )
-				return false;
-		}
-		
-		return true;
+		return !stream( inv )
+				.filter( Objects::nonNull )
+				.findAny()
+				.isPresent();
+	}
+	
+	/**
+	 * @param supplier
+	 * @return
+	 */
+	public static boolean isEmpty( Supplier<? extends Inventory> supplier )
+	{
+		return isEmpty( supplier.get() );
 	}
     
     /**
@@ -75,6 +99,14 @@ public class Invs
     }
     
     /**
+     * @param supplier
+     */
+    public static void clear( Supplier<? extends Inventory> supplier )
+    {
+    	clear( supplier.get() );
+    }
+    
+    /**
      * @param inv
      * @return
      */
@@ -83,5 +115,14 @@ public class Invs
     	Preconditions.checkNotNull( inv, "inv cannot be null" );
     	
     	return Stream.of( inv.getContents() );
+    }
+    
+    /**
+     * @param supplier
+     * @return
+     */
+    public static Stream<ItemStack> stream( Supplier<? extends Inventory> supplier )
+    {
+    	return stream( supplier.get() );
     }
 }
