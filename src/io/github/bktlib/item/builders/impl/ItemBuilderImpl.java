@@ -115,10 +115,6 @@ public class ItemBuilderImpl implements ItemBuilder
 			if ( currentLore != null && !currentLore.isEmpty() )
 				lore.addAll( currentLore );
 			
-			Stream.of( lines )
-				  .map( TRANSLATE_COLOR_CHARS )
-				  .forEach( lore::add );
-			
 			meta.setLore( lore );
 		});
 		
@@ -147,14 +143,20 @@ public class ItemBuilderImpl implements ItemBuilder
 	{	
 		modifyMeta( meta -> 
 		{
-			String name = TRANSLATE_COLOR_CHARS.apply( meta.getDisplayName() );
+			String name = meta.getDisplayName();
 			List<String> lore = meta.getLore();
 			
 			if ( lore != null )
-				lore.forEach( TRANSLATE_COLOR_CHARS::apply );
+			{
+				meta.setLore( lore.stream()
+								  .map( TRANSLATE_COLOR_CHARS::apply )
+								  .collect( Collectors.toList() ) );
+			}
 			
-			meta.setDisplayName( name );
-			meta.setLore( lore );
+			if ( name != null )
+			{
+				meta.setDisplayName( TRANSLATE_COLOR_CHARS.apply( name ) );
+			}
 		});
 		
 		return item;
