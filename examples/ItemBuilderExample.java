@@ -23,6 +23,6 @@ public class ItemBuilderExample
             				 .durability( 123 )
             				 .build();
 		
-		anPlayer.getInventory().addItem( coolSword )
+		anPlayer.getInventory().addItem( coolSword );
 	}
 }

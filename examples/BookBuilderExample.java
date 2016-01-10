@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import io.github.bktlib.item.builders.BookBuilder;
 import io.github.bktlib.item.builders.ItemBuilder;
 
-public class ItemBuilderExample
+public class BookBuilderExample
 {
 	public void example()
 	{
@@ -22,6 +22,6 @@ public class ItemBuilderExample
         				.line( "&bE varias paginas" )
         				.build();
 		
-		anPlayer.getInventory().addItem( coolSword )
+		anPlayer.getInventory().addItem( book );
 	}
 }
