@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -39,7 +42,7 @@ public class ItemBuilderImpl implements ItemBuilder
 {
 	protected ItemStack item;
 	
-	protected static final UnaryOperator<String> TRANSLATE_COLOR_CHARS = text -> 
+	protected static final Function<String, String> TRANSLATE_COLOR_CHARS = text -> 
 	{
 		if ( text == null ) return text;
 		
@@ -112,8 +115,10 @@ public class ItemBuilderImpl implements ItemBuilder
 			if ( currentLore != null && !currentLore.isEmpty() )
 				lore.addAll( currentLore );
 			
-			lore.addAll( Arrays.asList( lines ) );
-
+			Stream.of( lines )
+				  .map( TRANSLATE_COLOR_CHARS )
+				  .forEach( lore::add );
+			
 			meta.setLore( lore );
 		});
 		
