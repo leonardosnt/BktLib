@@ -28,7 +28,7 @@ import com.google.common.base.Preconditions;
 import io.github.bktlib.item.builders.BookBuilder;
 import io.github.bktlib.item.builders.ItemBuilder;
 
-public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
+class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 {
 	protected BookMeta bookMeta;
 	protected StringBuilder pageBuilder;
