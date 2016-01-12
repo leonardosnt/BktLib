@@ -38,7 +38,7 @@ import com.google.common.collect.Lists;
 
 import io.github.bktlib.item.builders.ItemBuilder;
 
-public class ItemBuilderImpl implements ItemBuilder
+class ItemBuilderImpl implements ItemBuilder
 {
 	protected ItemStack item;
 	
@@ -46,7 +46,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	{
 		if ( text == null ) return text;
 		
-		return CharMatcher.anyOf( "&" ).collapseFrom( text, 'ง' );
+		return CharMatcher.anyOf( "&" ).collapseFrom( text, 'ยง' );
 	};
 	
 	public ItemBuilderImpl()
