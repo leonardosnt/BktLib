@@ -21,25 +21,25 @@ public class Menu
 {
 	private MenuItem[] items;
 	private Inventory inventory;
-	
+
 	/**
 	 * @param title
 	 * @param rows
 	 */
 	public Menu( final String title, final int rows )
 	{
-		Preconditions.checkArgument( rows > 0, "rows must be positive!"  );
+		Preconditions.checkArgument( rows > 0, "rows must be positive!" );
 		Preconditions.checkNotNull( title, "title cannot be null" );
-		
+
 		Arrays.fill( items = new MenuItem[rows * 9], null );
 
-		inventory = Bukkit.createInventory(
-                new MenuHolder( this ),
-                rows * 9,
-                title
-        );
+		inventory = Bukkit.createInventory( 
+				new MenuHolder( this ), 
+				rows * 9, 
+				title 
+		);
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -47,7 +47,7 @@ public class Menu
 	{
 		return inventory.getTitle();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -55,17 +55,17 @@ public class Menu
 	{
 		return inventory;
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public List<MenuItem> getItems()
 	{
 		return Collections.unmodifiableList(
-                Lists.newArrayList( items )
-        );
-    }
-	
+				Lists.newArrayList( items ) 
+		);
+	}
+
 	/**
 	 * @return
 	 */
@@ -73,7 +73,7 @@ public class Menu
 	{
 		return inventory.getSize();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -81,7 +81,7 @@ public class Menu
 	{
 		return 9;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -89,20 +89,20 @@ public class Menu
 	{
 		return getSize() / 9;
 	}
-	
+
 	/**
 	 * @param slot
 	 * @return
 	 */
 	public Optional<MenuItem> getItemAt( int slot )
-	{        
-        Preconditions.checkArgument( slot >= 0, "slot must be positive" );
-        Preconditions.checkArgument( slot < items.length, 
-        "invalid slot %s, must be less than %s", slot, items.length );
-        
+	{
+		Preconditions.checkArgument( slot >= 0, "slot must be positive" );
+		Preconditions.checkArgument( slot < items.length, 
+				"invalid slot %s, must be less than %s", slot, items.length );
+
 		return Optional.ofNullable( items[slot] );
 	}
-	
+
 	/**
 	 * @param x
 	 * @param y
@@ -112,32 +112,33 @@ public class Menu
 	{
 		return getItemAt( (y * 9) + x );
 	}
-	
+
 	/**
 	 * @param slot
 	 * @param newItem
 	 */
 	public void setItem( int slot, MenuItem newItem )
 	{
-        Preconditions.checkNotNull( newItem, "newItem cannot be null" );
-        
-		if ( items[slot] == newItem ) return;
-		
+		Preconditions.checkNotNull( newItem, "newItem cannot be null" );
+
+		if ( items[slot] == newItem )
+			return;
+
 		items[slot] = newItem;
 	}
-	
+
 	/**
 	 * @param slot
 	 * @param item
 	 */
 	public void addItem( int slot, MenuItem item )
 	{
-        Preconditions.checkNotNull( item, "item cannot be null" );
-        
+		Preconditions.checkNotNull( item, "item cannot be null" );
+
 		items[slot] = item;
 		inventory.setItem( slot, item.getItemStack() );
 	}
-	
+
 	/**
 	 * @param x
 	 * @param y
@@ -145,9 +146,9 @@ public class Menu
 	 */
 	public void addItem( int x, int y, MenuItem item )
 	{
-        addItem( (y * 9) + x, item );
+		addItem( (y * 9) + x, item );
 	}
-	
+
 	/**
 	 * @param player
 	 */

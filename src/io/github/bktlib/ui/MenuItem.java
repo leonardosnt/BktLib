@@ -17,23 +17,23 @@ public class MenuItem
 {
 	public ItemStack itemStack;
 	public Consumer<ItemClickedEvent> onClicked;
-	
+
 	/**
-	 * @param is
+	 * @param itemStack
 	 */
-	public MenuItem( ItemStack is )
+	public MenuItem( final ItemStack itemStack )
 	{
-		itemStack = is;
+		this.itemStack = itemStack;
 	}
-	
+
 	/**
 	 * @param mat
 	 */
-	public MenuItem( Material mat )
+	public MenuItem( final Material material )
 	{
-		itemStack = new ItemStack( mat );
+		itemStack = new ItemStack( material );
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -41,7 +41,7 @@ public class MenuItem
 	{
 		return itemStack;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -49,27 +49,29 @@ public class MenuItem
 	{
 		return Optional.ofNullable( onClicked );
 	}
-	
+
 	/**
 	 * @param consumer
 	 */
 	public void setOnClicked( Consumer<ItemClickedEvent> consumer )
 	{
-		consumer = Preconditions.checkNotNull( consumer, 
+		consumer = Preconditions.checkNotNull( consumer,
 				"consumer cannot be null" );
-		
+
 		onClicked = consumer;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(
-				itemStack,
-				onClicked
+		return Objects.hashCode( 
+				itemStack, 
+				onClicked 
 		);
 	}
 }

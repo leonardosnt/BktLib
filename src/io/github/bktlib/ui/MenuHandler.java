@@ -8,14 +8,14 @@ import org.bukkit.plugin.Plugin;
  */
 public class MenuHandler
 {
-    MenuHandler() {}
+	MenuHandler() {}
 
-    /**
-     * @param plugin
-     */
-    public static void register( final Plugin plugin )
-    {
-        Bukkit.getServer().getPluginManager()
-                .registerEvents( new MenuListener(), plugin );
-    }
+	/**
+	 * @param plugin
+	 */
+	public static void register( final Plugin plugin )
+	{
+		Bukkit.getServer().getPluginManager()
+		.registerEvents( new MenuListener(), plugin );
+	}
 }
