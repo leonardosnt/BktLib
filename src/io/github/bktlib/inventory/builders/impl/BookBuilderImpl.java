@@ -16,7 +16,7 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package io.github.bktlib.item.builders.impl;
+package io.github.bktlib.inventory.builders.impl;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -25,8 +25,8 @@ import org.bukkit.inventory.meta.BookMeta;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 
-import io.github.bktlib.item.builders.BookBuilder;
-import io.github.bktlib.item.builders.ItemBuilder;
+import io.github.bktlib.inventory.builders.BookBuilder;
+import io.github.bktlib.inventory.builders.ItemBuilder;
 
 public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 {
@@ -35,8 +35,6 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 
 	public BookBuilderImpl()
 	{
-		super();
-		
 		item = new ItemStack( Material.WRITTEN_BOOK );
 		bookMeta = (BookMeta) item.getItemMeta();
 	}

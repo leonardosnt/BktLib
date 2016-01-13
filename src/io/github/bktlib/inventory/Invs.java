@@ -1,4 +1,4 @@
-package io.github.bktlib;
+package io.github.bktlib.inventory;
 
 import java.util.Objects;
 import java.util.function.Supplier;

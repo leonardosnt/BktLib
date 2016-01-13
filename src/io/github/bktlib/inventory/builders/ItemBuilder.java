@@ -16,13 +16,13 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package io.github.bktlib.item.builders;
+package io.github.bktlib.inventory.builders;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bktlib.item.builders.impl.ItemBuilderImpl;
+import io.github.bktlib.inventory.builders.impl.ItemBuilderImpl;
 
 /**
  * Classe utilitaria para "construir" items.

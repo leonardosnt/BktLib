@@ -16,7 +16,7 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package io.github.bktlib.item.builders.impl;
+package io.github.bktlib.inventory.builders.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +36,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-import io.github.bktlib.item.builders.ItemBuilder;
+import io.github.bktlib.inventory.builders.ItemBuilder;
 
 public class ItemBuilderImpl implements ItemBuilder
 {

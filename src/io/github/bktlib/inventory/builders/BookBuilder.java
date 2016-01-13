@@ -16,11 +16,11 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package io.github.bktlib.item.builders;
+package io.github.bktlib.inventory.builders;
 
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bktlib.item.builders.impl.BookBuilderImpl;
+import io.github.bktlib.inventory.builders.impl.BookBuilderImpl;
 
 /**
  * @author leonardosc
