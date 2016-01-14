@@ -10,10 +10,9 @@ import org.bukkit.inventory.ItemStack;
 
 import com.google.common.base.Preconditions;
 
-
 /**
- * Classe utilitaria para com metodos frequentemente 
- * usados para  manipulacao de inventarios
+ * Classe utilitaria para com metodos frequentemente usados para manipulacao de
+ * inventarios
  * 
  * @author leonardosc
  */
@@ -28,10 +27,10 @@ public class Invs
 	public static void fill( Inventory inv, ItemStack item )
 	{
 		Preconditions.checkNotNull( inv, "inv cannot be null" );
-		
+
 		for ( int i = 0; i < inv.getSize(); i++ )
 		{
-		 	inv.setItem( i, item );
+			inv.setItem( i, item );
 		}
 	}
 
@@ -43,16 +42,16 @@ public class Invs
 	{
 		fill( supplier.get(), item );
 	}
-	
+
 	/**
 	 * @param inv
 	 * @param materialSupplier
 	 */
 	public static void fill( Inventory inv, Supplier<? extends ItemStack> materialSupplier )
 	{
-		fill( inv, materialSupplier.get() ); 
+		fill( inv, materialSupplier.get() );
 	}
-	
+
 	/**
 	 * @param inv
 	 * @param material
@@ -60,13 +59,13 @@ public class Invs
 	public static void fill( Inventory inv, Material material )
 	{
 		Preconditions.checkNotNull( inv, "inv cannot be null" );
-		
+
 		if ( material == Material.AIR )
 			return;
-		
+
 		fill( inv, new ItemStack( material ) );
 	}
-	
+
 	/**
 	 * @param supplier
 	 * @param mat
@@ -75,7 +74,7 @@ public class Invs
 	{
 		fill( supplier.get(), mat );
 	}
-	
+
 	/**
 	 * @param inv
 	 * @return
@@ -83,13 +82,10 @@ public class Invs
 	public static boolean isEmpty( Inventory inv )
 	{
 		Preconditions.checkNotNull( inv, "inv cannot be null" );
-		
-		return !stream( inv )
-				.filter( Objects::nonNull )
-				.findAny()
-				.isPresent();
+
+		return !stream( inv ).filter( Objects::nonNull ).findAny().isPresent();
 	}
-	
+
 	/**
 	 * @param supplier
 	 * @return
@@ -98,79 +94,78 @@ public class Invs
 	{
 		return isEmpty( supplier.get() );
 	}
-    
-    /**
-     * @param inv
-     */
-    public static void clear( Inventory inv )
-    {
-        fill( inv, (ItemStack) null );
-    }
-    
-    /**
-     * @param supplier
-     */
-    public static void clear( Supplier<? extends Inventory> supplier )
-    {
-    	clear( supplier.get() );
-    }
-    
-    /**
-     * @param inv
-     * @return
-     */
-    public static Stream<ItemStack> stream( Inventory inv )
-    {
-    	Preconditions.checkNotNull( inv, "inv cannot be null" );
-    	
-    	return Stream.of( inv.getContents() );
-    }
-    
-    /**
-     * @param supplier
-     * @return
-     */
-    public static Stream<ItemStack> stream( 
-    		Supplier<? extends Inventory> supplier )
-    {
-    	return stream( supplier.get() );
-    }
-    
+
 	/**
-	 * Verifica se todos os slots est„o com
-	 * pelo menos 1 item.
+	 * @param inv
+	 */
+	public static void clear( Inventory inv )
+	{
+		fill( inv, (ItemStack) null );
+	}
+
+	/**
+	 * @param supplier
+	 */
+	public static void clear( Supplier<? extends Inventory> supplier )
+	{
+		clear( supplier.get() );
+	}
+
+	/**
+	 * @param inv
+	 * @return
+	 */
+	public static Stream<ItemStack> stream( Inventory inv )
+	{
+		Preconditions.checkNotNull( inv, "inv cannot be null" );
+
+		return Stream.of( inv.getContents() );
+	}
+
+	/**
+	 * @param supplier
+	 * @return
+	 */
+	public static Stream<ItemStack> stream( Supplier<? extends Inventory> supplier )
+	{
+		return stream( supplier.get() );
+	}
+
+	/**
+	 * Verifica se todos os slots est√£o com pelo menos 1 item.
 	 * 
 	 * @param inv
-	 * @return Se o inventario est· cheio
+	 * @return Se o inventario est√° cheio
 	 */
 	public boolean isFull( Inventory inv )
 	{
 		return inv.firstEmpty() == -1;
 	}
-	
+
 	/**
-	 * Verifica se TODOS os slots do inventario
-	 * est„o com stacks cheias.
+	 * Verifica se TODOS os slots do inventario est√£o com stacks cheias.
 	 * 
-	 * @param inv Inventario que sera checado
-	 * @return Se o inventario est· completamente cheio
+	 * @param inv
+	 *            Inventario que sera checado
+	 * @return Se o inventario est√° completamente cheio
 	 */
 	public boolean isCompletelyFull( Inventory inv )
 	{
-		if ( !isFull( inv ) ) return false;
-		
+		if ( !isFull( inv ) )
+			return false;
+
 		ItemStack[] contents = inv.getContents();
-		
-		for ( int i = 0 ; i < inv.getSize() ; i++ )
+
+		for ( int i = 0; i < inv.getSize(); i++ )
 		{
 			ItemStack item = contents[i];
-			
+
 			if ( item == null || item.getAmount() != item.getMaxStackSize() )
 			{
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 }
