@@ -15,8 +15,8 @@ import com.google.common.base.Preconditions;
  */
 public class MenuItem
 {
-	public ItemStack itemStack;
-	public Consumer<ItemClickedEvent> onClicked;
+	private ItemStack itemStack;
+	private Consumer<ItemClickedEvent> onClicked;
 
 	/**
 	 * @param itemStack
