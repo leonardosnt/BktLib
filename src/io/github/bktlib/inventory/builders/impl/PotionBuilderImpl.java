@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import io.github.bktlib.inventory.builders.PotionBuilder;
 
+// !!!!!! AINDA NÃO FUNCIONAL !!!!!!
 public class PotionBuilderImpl extends ItemBuilderImpl implements PotionBuilder
 {
 	public PotionMeta potionMeta;
@@ -23,19 +24,6 @@ public class PotionBuilderImpl extends ItemBuilderImpl implements PotionBuilder
 	@Override
 	public PotionBuilder effect( PotionEffectType eff )
 	{
-		if ( effType != null && effDuration > 0 && effLevel > 0 )
-		{
-			PotionEffect newEffect = new PotionEffect( effType, 
-													   effDuration, 
-													   effLevel );
-			
-			potionMeta.addCustomEffect( newEffect, true );
-		}
-		else
-		{
-			effType = eff;
-		}
-		
 		return this;
 	}
 
