@@ -15,6 +15,7 @@ public class ItemClickedEvent
 	private Menu menu;
 	private MenuItem item;
 	private Player player;
+	private int slot;
 
 	/**
 	 * @param button Botão que foi clicado
@@ -25,12 +26,14 @@ public class ItemClickedEvent
 	public ItemClickedEvent( MouseButton button, 
 							 Player player, 
 							 Menu menu, 
-							 MenuItem item )
+							 MenuItem item,
+							 int slot )
 	{
 		this.button = button;
 		this.player = player;
 		this.menu = menu;
 		this.item = item;
+		this.slot = slot;
 	}
 
 	/**
@@ -50,6 +53,14 @@ public class ItemClickedEvent
 		return menu;
 	}
 
+	/**
+	 * @return
+	 */
+	public int getSlot()
+	{
+		return slot;
+	}
+	
 	/**
 	 * @return Item que foi clicado.
 	 * @see {@link MenuItem}

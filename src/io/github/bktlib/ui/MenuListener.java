@@ -33,11 +33,9 @@ class MenuListener implements Listener
         int clickedSlot = e.getSlot();
         int action = e.getAction().ordinal();
 
-        boolean invalid = clickedSlot < 0;
-        invalid |= clickedSlot > items.size();
-        invalid |= items.get(clickedSlot) == null;
-
-        if ( invalid ) return;
+        if ( clickedSlot < 0 || 
+        	 clickedSlot > items.size() || 
+        	 items.get(clickedSlot) == null ) return;
 
         e.setCancelled( true );
 
@@ -55,7 +53,8 @@ class MenuListener implements Listener
             		button,
             		(Player) e.getWhoClicked(),
             		menu,
-            		item
+            		item,
+            		clickedSlot
             );
             
             consumer.accept( event );

@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -36,7 +38,7 @@ public class Menu
 		inventory = Bukkit.createInventory( 
 				new MenuHolder( this ), 
 				rows * 9, 
-				title 
+				ChatColor.translateAlternateColorCodes( '&', title ) 
 		);
 	}
 
@@ -120,11 +122,9 @@ public class Menu
 	public void setItem( int slot, MenuItem newItem )
 	{
 		Preconditions.checkNotNull( newItem, "newItem cannot be null" );
-
-		if ( items[slot] == newItem )
-			return;
-
+		
 		items[slot] = newItem;
+		inventory.setItem( slot, newItem.getItemStack() );
 	}
 
 	/**
@@ -157,5 +157,19 @@ public class Menu
 		Preconditions.checkNotNull( player, "player cannot be null" );
 
 		player.openInventory( inventory );
+	}
+	
+	/**
+	 *  Atualiza todos os items do Menu
+	 */
+	public void update()
+	{
+		final AtomicInteger index = new AtomicInteger( 0 );
+		
+		Arrays.stream( items ).forEach( item -> 
+			inventory.setItem( 
+					index.getAndIncrement(), 
+					item == null ? null : item.getItemStack() 
+		) );
 	}
 }

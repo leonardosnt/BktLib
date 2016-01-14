@@ -60,6 +60,14 @@ public class MenuItem
 
 		onClicked = consumer;
 	}
+	
+	/**
+	 * @param itemStack
+	 */
+	public void setItemStack( ItemStack itemStack )
+	{
+		this.itemStack = itemStack;
+	}
 
 	/*
 	 * (non-Javadoc)
