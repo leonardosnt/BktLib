@@ -6,9 +6,9 @@ import org.bukkit.plugin.Plugin;
 /**
  * @author Leonardosc
  */
-public class MenuHandler
+public class MenuRegistry
 {
-	MenuHandler() {}
+	MenuRegistry() {}
 
 	/**
 	 * @param plugin

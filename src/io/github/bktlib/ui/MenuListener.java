@@ -1,12 +1,14 @@
 package io.github.bktlib.ui;
 
-import io.github.bktlib.ui.events.ItemClickedEvent;
+import java.util.List;
+
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-import java.util.List;
+import io.github.bktlib.ui.events.ItemClickedEvent;
 
 /**
  * Classe interna para o gerenciamento
@@ -21,7 +23,8 @@ class MenuListener implements Listener
     {
         Inventory inv = e.getInventory();
 
-        if ( !(inv.getHolder() instanceof MenuHolder) ) return;
+        if ( !( inv.getHolder() instanceof MenuHolder ) || 
+        	 !( e.getWhoClicked() instanceof Player ) ) return;
 
         MenuHolder holder = (MenuHolder) inv.getHolder();
         Menu menu = holder.getMenu();
@@ -39,14 +42,23 @@ class MenuListener implements Listener
         e.setCancelled( true );
 
         if ( action != 1 && action != 3 ) return;
-
-        items.get( e.getSlot() ).getOnClicked().ifPresent( consumer ->
+        
+        MenuItem item = items.get( e.getSlot() );
+        
+        item.getOnClicked().ifPresent( consumer ->
         {
             ItemClickedEvent.MouseButton button = action == 1
                     ? ItemClickedEvent.MouseButton.LEFT
                     : ItemClickedEvent.MouseButton.RIGHT;
 
-            consumer.accept( new ItemClickedEvent( button ) );
+            ItemClickedEvent event = new ItemClickedEvent( 
+            		button,
+            		(Player) e.getWhoClicked(),
+            		menu,
+            		item
+            );
+            
+            consumer.accept( event );
         });
     }
 }
