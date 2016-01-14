@@ -46,9 +46,18 @@ public class Invs
 	
 	/**
 	 * @param inv
+	 * @param materialSupplier
+	 */
+	public static void fill( Inventory inv, Supplier<? extends ItemStack> materialSupplier )
+	{
+		fill( inv, materialSupplier.get() ); 
+	}
+	
+	/**
+	 * @param inv
 	 * @param material
 	 */
-	public static  void fill( Inventory inv, Material material )
+	public static void fill( Inventory inv, Material material )
 	{
 		Preconditions.checkNotNull( inv, "inv cannot be null" );
 		
@@ -57,7 +66,7 @@ public class Invs
 		
 		fill( inv, new ItemStack( material ) );
 	}
-
+	
 	/**
 	 * @param supplier
 	 * @param mat
@@ -121,8 +130,47 @@ public class Invs
      * @param supplier
      * @return
      */
-    public static Stream<ItemStack> stream( Supplier<? extends Inventory> supplier )
+    public static Stream<ItemStack> stream( 
+    		Supplier<? extends Inventory> supplier )
     {
     	return stream( supplier.get() );
     }
+    
+	/**
+	 * Verifica se todos os slots estão com
+	 * pelo menos 1 item.
+	 * 
+	 * @param inv
+	 * @return Se o inventario está cheio
+	 */
+	public boolean isFull( Inventory inv )
+	{
+		return inv.firstEmpty() == -1;
+	}
+	
+	/**
+	 * Verifica se TODOS os slots do inventario
+	 * estão com stacks cheias.
+	 * 
+	 * @param inv Inventario que sera checado
+	 * @return Se o inventario está completamente cheio
+	 */
+	public boolean isCompletelyFull( Inventory inv )
+	{
+		if ( !isFull( inv ) ) return false;
+		
+		ItemStack[] contents = inv.getContents();
+		
+		for ( int i = 0 ; i < inv.getSize() ; i++ )
+		{
+			ItemStack item = contents[i];
+			
+			if ( item == null || item.getAmount() != item.getMaxStackSize() )
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }
