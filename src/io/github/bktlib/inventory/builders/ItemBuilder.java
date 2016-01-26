@@ -22,6 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.bktlib.common.Builder;
 import io.github.bktlib.inventory.builders.impl.ItemBuilderImpl;
 
 /**
@@ -29,7 +30,7 @@ import io.github.bktlib.inventory.builders.impl.ItemBuilderImpl;
  * 
  * @author Leonardosc
  */
-public interface ItemBuilder 
+public interface ItemBuilder extends Builder<ItemStack>
 {
 	/**
 	 * Define o tipo do item.
