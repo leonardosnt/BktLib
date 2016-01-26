@@ -22,47 +22,46 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.bktlib.inventory.builders.impl.BookBuilderImpl;
 
-/**
- * @author leonardosc
- *
- */
 public interface BookBuilder extends ItemBuilder
 {
 	/**
-	 * @param author
-	 * @return
+	 * Define o nome do autor do livro.
+	 * 
+	 * @param author O nome do autor desejado
 	 */
 	BookBuilder author( String author );
 	
 	/**
-	 * @param title
-	 * @return
+	 * Define o titulo do livro.
+	 * 
+	 * @param title Titulo desejado
 	 */
 	BookBuilder title( String title );
 	
 	/**
-	 * @return
+	 * Cria uma nova página.
 	 */
 	BookBuilder newPage();
 	
 	/**
-	 * @param line
-	 * @return
+	 * Adiciona uma linha a pagina atual.
+	 * 
+	 * @param line Linha a ser adicionada.
 	 */
 	BookBuilder line( String line );
 	
 	/**
-	 * @param lines
-	 * @return
+	 * Adiciona N linhas a pagina atual.
+	 * 
+	 * @param lines Lista de linhas a ser adicionada.
 	 */
 	BookBuilder lines( String ... lines );
 	
 	/**
-	 * @return
+	 * Retorna uma nova instancia da implementação dessa classe.
 	 */
 	static BookBuilder newBuilder()
 	{
 		return new BookBuilderImpl();
 	}
-	
 }
