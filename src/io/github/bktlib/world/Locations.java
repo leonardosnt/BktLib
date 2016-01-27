@@ -65,6 +65,9 @@ public final class Locations
 	 */
 	public static Location max( final Location l1, final Location l2 )
 	{
+		Preconditions.checkNotNull( l1, "l1 cannot be null" );
+		Preconditions.checkNotNull( l2, "l2 cannot be null" );
+		
 		return new Location( 
 				l1.getWorld(), 
 				Math.max( l1.getX(), l2.getX() ),
@@ -85,6 +88,9 @@ public final class Locations
 	 */
 	public static Location min( final Location l1, final Location l2 )
 	{
+		Preconditions.checkNotNull( l1, "l1 cannot be null" );
+		Preconditions.checkNotNull( l2, "l2 cannot be null" );
+		
 		return new Location( 
 				l1.getWorld(), 
 				Math.min( l1.getX(), l2.getX() ),
