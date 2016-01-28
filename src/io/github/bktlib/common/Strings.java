@@ -42,7 +42,7 @@ public final class Strings
     
     public static String emptyToNull( final String str )
     {
-    	return str == null || str.length() == 0 ? null : str;
+    	return isNullOrEmpty( str ) ? null : str;
     }
     
     public static String nullToEmpty( final String str )
