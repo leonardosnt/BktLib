@@ -30,7 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import com.google.common.base.Preconditions;
 
 /**
- * Classe utilitaria para com metodos frequentemente usados para manipulacao de
+ * Classe utilitaria com metodos frequentemente usados para manipulacao de
  * inventarios
  * 
  * @author leonardosc
@@ -40,8 +40,10 @@ public class Invs
 	private Invs() {}
 
 	/**
-	 * @param inv
-	 * @param item
+	 * Preenche o inventario com o {@code item}
+	 * 
+	 * @param inv Inventario a ser preenchido.
+	 * @param item Item com que deseja preencher o {@code inv}
 	 */
 	public static void fill( final Inventory inv, final ItemStack item )
 	{
