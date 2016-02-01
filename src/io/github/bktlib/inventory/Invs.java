@@ -42,7 +42,8 @@ public class Invs
 	/**
 	 * Preenche o inventario com o {@code item}
 	 * 
-	 * @param inv Inventario a ser preenchido.
+	 * @param inv 
+	 *            Inventario a ser preenchido.
 	 * @param item Item com que deseja preencher o {@code inv}
 	 */
 	public static void fill( final Inventory inv, final ItemStack item )
@@ -55,8 +56,7 @@ public class Invs
 	}
 
 	/**
-	 * @param supplier
-	 * @param item
+	 * @see #fill(Inventory, ItemStack)
 	 */
 	public static void fill( final Supplier<? extends Inventory> supplier, final ItemStack item )
 	{
@@ -64,22 +64,23 @@ public class Invs
 	}
 
 	/**
-	 * @param inv
-	 * @param material
+	 * Preenche o inventario com o {@code material}
+	 * 
+	 * @param inv 
+	 *            Inventario a ser preenchido.
+	 * @param material Material com que deseja preencher o {@code inv}
 	 */
 	public static void fill( final Inventory inv, final Material material )
 	{
 		Preconditions.checkNotNull( inv, "inv cannot be null" );
 
-		if ( material == Material.AIR )
-			return;
+		if ( material == Material.AIR ) return;
 
 		fill( inv, new ItemStack( material ) );
 	}
 
 	/**
-	 * @param supplier
-	 * @param mat
+	 * @see #fill(Inventory, Material)
 	 */
 	public static void fill( final Supplier<? extends Inventory> supplier, Material mat )
 	{
@@ -87,8 +88,11 @@ public class Invs
 	}
 
 	/**
-	 * @param inv
-	 * @return
+	 * Verifica se o {@code inv} está vazio.
+	 * 
+	 * @param inv 
+	 *            Invetario a ser verificado.
+	 * @return se o {@code inv} está vazio.
 	 */
 	public static boolean isEmpty( final Inventory inv )
 	{
@@ -98,8 +102,7 @@ public class Invs
 	}
 
 	/**
-	 * @param supplier
-	 * @return
+	 * @see #isEmpty(Inventory)
 	 */
 	public static boolean isEmpty( final Supplier<? extends Inventory> supplier )
 	{
@@ -107,8 +110,11 @@ public class Invs
 	}
 
 	/**
-	 * @param inv
-	 * @return
+	 * Cria uma nova {@link Stream} dos items do {@code inv}
+	 * 
+	 * @param inv 
+	 *             Inventario Inventario em sí
+	 * @return Uma nova {@link Stream} dos items do {@code inv}
 	 */
 	public static Stream<ItemStack> stream( final Inventory inv )
 	{
@@ -118,8 +124,7 @@ public class Invs
 	}
 
 	/**
-	 * @param supplier
-	 * @return
+	 * @see #stream(Invantory)
 	 */
 	public static Stream<ItemStack> stream( final Supplier<? extends Inventory> supplier )
 	{
