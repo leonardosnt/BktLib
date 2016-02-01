@@ -6,13 +6,13 @@ import io.github.bktlib.command.annotation.SubCommand;
 import io.github.bktlib.command.args.CommandArgs;
 
 @Command(
-        name = "ez",
-        usageTarget = UsageTarget.BOTH, 
-        usage = "...",
-        subCommands = { // ou " this::* " ou " this::[cmd,potion,kit,party,potions] "
-                "this::[cmd, kit, points]"
-        },
-        description = "..."
+    name = "ez",
+    usageTarget = UsageTarget.BOTH, 
+    usage = "...",
+    subCommands = { // ou " this::* " ou " this::[cmd,potion,kit,party,potions] "
+            "this::[cmd, kit, points]"
+    },
+    description = "..."
 )
 public class EZCommands extends CommandBase
 {

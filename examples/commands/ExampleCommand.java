@@ -10,13 +10,13 @@ import io.github.bktlib.command.args.CommandArgs;
 import io.github.bktlib.common.Strings;
 
 @Command(
-	name = "monei",
-	usageTarget = UsageTarget.BOTH,
+    name = "monei",
+    usageTarget = UsageTarget.BOTH,
     usage = "",
-	subCommands = {
+    subCommands = {
             "this::*"
     },
-	description = "Uma descricao bem legal"
+    description = "Uma descricao bem legal"
 )
 public class ExampleCommand extends CommandBase
 {
