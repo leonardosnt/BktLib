@@ -42,9 +42,10 @@ public class Invs
 	/**
 	 * Preenche o inventario com o {@code item}
 	 * 
-	 * @param inv 
+	 * @param inv
 	 *            Inventario a ser preenchido.
-	 * @param item Item com que deseja preencher o {@code inv}
+	 * @param item
+	 *            Item com que deseja preencher o {@code inv}
 	 */
 	public static void fill( final Inventory inv, final ItemStack item )
 	{
@@ -66,9 +67,10 @@ public class Invs
 	/**
 	 * Preenche o inventario com o {@code material}
 	 * 
-	 * @param inv 
+	 * @param inv
 	 *            Inventario a ser preenchido.
-	 * @param material Material com que deseja preencher o {@code inv}
+	 * @param material
+	 *            Material com que deseja preencher o {@code inv}
 	 */
 	public static void fill( final Inventory inv, final Material material )
 	{
@@ -90,7 +92,7 @@ public class Invs
 	/**
 	 * Verifica se o {@code inv} está vazio.
 	 * 
-	 * @param inv 
+	 * @param inv
 	 *            Invetario a ser verificado.
 	 * @return se o {@code inv} está vazio.
 	 */
@@ -112,8 +114,8 @@ public class Invs
 	/**
 	 * Cria uma nova {@link Stream} dos items do {@code inv}
 	 * 
-	 * @param inv 
-	 *             Inventario Inventario em sí
+	 * @param inv
+	 *            Inventario Inventario em sí
 	 * @return Uma nova {@link Stream} dos items do {@code inv}
 	 */
 	public static Stream<ItemStack> stream( final Inventory inv )
@@ -124,7 +126,7 @@ public class Invs
 	}
 
 	/**
-	 * @see #stream(Invantory)
+	 * @see #stream(Inventory)
 	 */
 	public static Stream<ItemStack> stream( final Supplier<? extends Inventory> supplier )
 	{
@@ -146,7 +148,7 @@ public class Invs
 	}
 
 	/**
-	 * @see {@link #isFull(Inventory) isFull(Inventory)}
+	 * @see #isFull(Inventory)
 	 */
 	public static boolean isFull( final Supplier<? extends Inventory> inv )
 	{
@@ -171,7 +173,7 @@ public class Invs
 	}
 
 	/**
-	 * @see {@link #isCompletelyFull(Inventory) isCompletelyFull(Inventory)}
+	 * @see #isCompletelyFull(Inventory)
 	 */
 	public static boolean isCompletelyFull( final Supplier<? extends Inventory> inv )
 	{
