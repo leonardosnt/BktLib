@@ -41,12 +41,12 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Splitter;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -70,17 +70,17 @@ class CommandManagerImpl implements CommandManager
 	private File cachedRegisterAllFile;
 	private Cache<String, Optional<CommandBase>> byNameCache;
 	private Cache<Class<?>, Optional<CommandBase>> byClassCache;
-	
+
 	private final SimpleCommandMap commandMap;
 	private final Logger logger;
 	private final Plugin owner;
 
-	CommandManagerImpl( final Plugin plugin )
+	CommandManagerImpl(final Plugin plugin)
 	{
-		logger 				= plugin.getLogger();
-		owner 				= plugin;
-		commandMap 			= getCommandMap();
-		
+		logger 		= plugin.getLogger();
+		owner 		= plugin;
+		commandMap 	= getCommandMap();
+
 		initCaches();
 	}
 
@@ -88,26 +88,25 @@ class CommandManagerImpl implements CommandManager
 	public void register( CommandBase command )
 	{
 		checkNotNull( command, "command cannot be null" );
-		
-		commandMap.register( 
-				owner.getName(), 
-				new CommandAdapter( command ) 
-		);
-		
+
+		commandMap.register(
+				owner.getName(),
+				new CommandAdapter( command ) );
+
 		command.subCommands = parseSubCommands( command );
 	}
 
 	@Override
 	public void registerMethod( Class<?> methodClass, String methodName )
-	{		
+	{
 		checkNotNull( methodClass, "methodClass cannot be null " );
-		
-		checkArgument( hasPublicConstructor( methodClass ), 
+
+		checkArgument( hasPublicConstructor( methodClass ),
 				"methodClass must have at least one public constructor." );
-		
-		checkArgument( (methodClass.getModifiers() & Modifier.ABSTRACT) == 0, 
+
+		checkArgument( (methodClass.getModifiers() & Modifier.ABSTRACT) == 0,
 				"methodClass cannot be abstract." );
-		
+
 		try
 		{
 			registerMethod( methodClass.newInstance(), methodName );
@@ -125,18 +124,17 @@ class CommandManagerImpl implements CommandManager
 		checkArgument( !Strings.isNullOrEmpty( methodName ), "methodName cannot be null or empty" );
 
 		Class<?> instClass = instance.getClass();
-		
+
 		try
 		{
-			Method method = instClass.getDeclaredMethod( 
+			Method method = instClass.getDeclaredMethod(
 					methodName,
 					CommandSource.class,
-					CommandArgs.class
-			);
-			
+					CommandArgs.class );
+
 			if ( !method.isAnnotationPresent( Command.class ) )
 			{
-				logger.log( Level.SEVERE, format( "Method '%s.%s(CommandSource, CommandArgs)' must have '%s' annotation.", 
+				logger.log( Level.SEVERE, format( "Method '%s.%s(CommandSource, CommandArgs)' must have '%s' annotation.",
 						instClass.getName(), methodName, Command.class.getName() ) );
 			}
 			else
@@ -146,8 +144,8 @@ class CommandManagerImpl implements CommandManager
 		}
 		catch ( NoSuchMethodException e )
 		{
-			logger.log( Level.SEVERE, format( "Could not find method '%s.%s(CommandSource, CommandArgs)'.", 
-					instClass.getName(), methodName ) ); 
+			logger.log( Level.SEVERE, format( "Could not find method '%s.%s(CommandSource, CommandArgs)'.",
+					instClass.getName(), methodName ) );
 			logger.log( Level.SEVERE, "Be sure that's signature is correct, signature must be like that "
 					+ "'CommandResult methodName(CommandSource, CommandArgs)'." );
 		}
@@ -157,31 +155,31 @@ class CommandManagerImpl implements CommandManager
 	public void register( Class<? extends CommandBase> commandClass )
 	{
 		checkNotNull( commandClass, "commandClass cannot be null " );
-				
+
 		if ( !canInstantiate( commandClass ) )
 			return;
-		
+
 		{ // new scope
-			
+
 			/*
 			 * Registra a classe interna, que n�o seja n�o estatic (caso
 			 * commnadClass seja interna)
 			 */
-			
+
 			final Class<?> enclosingClass = commandClass.getEnclosingClass();
-			
+
 			if ( enclosingClass != null && canInstantiate( enclosingClass ) &&
 					!Modifier.isStatic( commandClass.getModifiers() ) )
 			{
 				try
 				{
 					Object enclosingInst = enclosingClass.newInstance();
-					
+
 					Object nestedClassInst = commandClass.getConstructor( enclosingClass )
 							.newInstance( enclosingInst );
-					
+
 					register( (CommandBase) nestedClassInst );
-					
+
 					return;
 				}
 				catch ( Exception e )
@@ -189,9 +187,9 @@ class CommandManagerImpl implements CommandManager
 					e.printStackTrace();
 				}
 			}
-			
+
 		} // end of new scope
-		
+
 		try
 		{
 			register( commandClass.newInstance() );
@@ -211,37 +209,37 @@ class CommandManagerImpl implements CommandManager
 			{
 				MethodAccessor<File> getFileAccessor = MethodAccessor.access( owner, "getFile" );
 				Optional<File> jarFile = getFileAccessor.invoke();
-				
+
 				if ( !jarFile.isPresent() )
 					logger.log( Level.SEVERE, "Something went wrong, plugin file is null." );
 				else
 					cachedRegisterAllFile = jarFile.get();
 			}
-			
+
 			final JarInputStream is = new JarInputStream( new FileInputStream( cachedRegisterAllFile ) );
 
-			for ( JarEntry entry; (entry = is.getNextJarEntry()) != null;)
+			for ( JarEntry entry; (entry = is.getNextJarEntry()) != null; )
 			{
 				final String entryName = entry.getName();
-				
-				if ( !entryName.endsWith( ".class" ) ) continue;
-				
-				Class<?> klass = Class.forName( 
-						entry.getName().replace( '/', '.' ).substring( 0, entry.getName().length() - 6 )
-				);
-				
-				if ( klass != MethodCommand.class && klass != CommandBase.class && 
+
+				if ( !entryName.endsWith( ".class" ) )
+					continue;
+
+				Class<?> klass = Class.forName(
+						entry.getName().replace( '/', '.' ).substring( 0, entry.getName().length() - 6 ) );
+
+				if ( klass != MethodCommand.class && klass != CommandBase.class &&
 						CommandBase.class.isAssignableFrom( klass ) )
 				{
 					register( (Class<CommandBase>) klass );
 				}
-				
+
 				if ( ReflectUtil.isConcreteClass( klass ) )
 				{
 					registerAll( klass );
 				}
 			}
-			
+
 			is.close();
 
 		}
@@ -257,8 +255,8 @@ class CommandManagerImpl implements CommandManager
 		checkNotNull( klass, "klass cannot be null" );
 		
 		Stream.of( klass.getDeclaredMethods() )
-    		.filter( method -> method.isAnnotationPresent( Command.class ) &&
-    							!method.isAnnotationPresent( SubCommand.class ) )
+    		.filter( method -> method.isAnnotationPresent( Command.class ) )
+    		.filter( method -> !method.isAnnotationPresent( SubCommand.class ) )
     		.forEach( method -> registerMethod( klass, method.getName() ) );
 	}
 
@@ -266,7 +264,7 @@ class CommandManagerImpl implements CommandManager
 	public <T extends CommandBase> Optional<T> getCommandByClass( Class<T> klass )
 	{
 		checkNotNull( klass, "klass cannot be null" );
-		
+
 		try
 		{
 			return (Optional<T>) byClassCache.get( klass );
@@ -275,7 +273,7 @@ class CommandManagerImpl implements CommandManager
 		{
 			e.printStackTrace();
 		}
-		
+
 		return Optional.empty();
 	}
 
@@ -308,8 +306,8 @@ class CommandManagerImpl implements CommandManager
 	{
 		if ( !hasPublicConstructor( klass ) )
 		{
-			logger.log( Level.SEVERE, format( "Could not register %s command " + 
-									"because it has no public constructors.", klass ) );
+			logger.log( Level.SEVERE, format( "Could not register %s command " +
+					"because it has no public constructors.", klass ) );
 
 			return false;
 		}
@@ -320,22 +318,19 @@ class CommandManagerImpl implements CommandManager
 	private SimpleCommandMap getCommandMap()
 	{
 		final PluginManager pluginManager = getOwner().getServer().getPluginManager();
-		
-		FieldAccessor<SimpleCommandMap> cmdMapField = FieldAccessor.access( 
-				pluginManager,
-				"commandMap"
-		);
-		
+
+		FieldAccessor<SimpleCommandMap> cmdMapField = FieldAccessor.access(
+				pluginManager, "commandMap" );
+
 		Optional<SimpleCommandMap> optCmdMap = cmdMapField.getValue();
-		
+
 		if ( optCmdMap.isPresent() )
 			return optCmdMap.get();
-		
-		final String message = String.format( "Cound not get commandMap, CraftBukkit Version: %s, PluginManager: %s", 
+
+		final String message = String.format( "Cound not get commandMap, CraftBukkit Version: %s, PluginManager: %s",
 				MCReflectUtil.getCBVersion(),
-				pluginManager
-		);
-		
+				pluginManager );
+
 		throw new IllegalStateException( message );
 	}
 	
@@ -354,7 +349,7 @@ class CommandManagerImpl implements CommandManager
 				return Optional.of( ((CommandAdapter) bukkitCommand).getCommandBase() );
 			}
 		};
-		
+
 		final CacheLoader<Class<?>, Optional<CommandBase>> byClassLoader = new CacheLoader<Class<?>, Optional<CommandBase>>()
 		{
 			@Override
@@ -364,9 +359,9 @@ class CommandManagerImpl implements CommandManager
 						.parallelStream()
 						.filter( cmd -> cmd.getClass().equals( key ) )
 						.filter( cmd -> cmd instanceof CommandAdapter )
-						.map( cmd -> ((CommandAdapter) cmd).getCommandBase())
+						.map( cmd -> ((CommandAdapter) cmd).getCommandBase() )
 						.findAny();
-				
+
 				return Optional.ofNullable( optCommand.orElse( null ) );
 			}
 		};
@@ -376,38 +371,37 @@ class CommandManagerImpl implements CommandManager
 				.weakKeys()
 				.maximumSize( 1000 )
 				.expireAfterAccess( 5, TimeUnit.MINUTES );
-		
-		byNameCache 	= cacheBuilder.build( byNameLoader );
-		byClassCache 	= cacheBuilder.build( byClassLoader );
+
+		byNameCache = cacheBuilder.build( byNameLoader );
+		byClassCache = cacheBuilder.build( byClassLoader );
 	}
 
-    /**
-        Converte a {@link Command#subCommands() lista de sub comandos}
-        em um {@code Map<String, CommandBase>}, tendo como chave o {@link Command#name() nome} do sub comando,
-        e como valor, a instancia do sub comando em sí.
-     */
+	/**
+	 * Converte a {@link Command#subCommands() lista de sub comandos} em um
+	 * {@code Map<String, CommandBase>}, tendo como chave o
+	 * {@link Command#name() nome} do sub comando, e como valor, a instancia do
+	 * sub comando em sí.
+	 */
 	Map<String, CommandBase> parseSubCommands( CommandBase command )
-    {
-        final Map<String, CommandBase> subCommands = Maps.newHashMap();
-        
-    	Stream.of( command.commandAnnotation.subCommands() )
+	{
+		final Map<String, CommandBase> subCommands = Maps.newHashMap();
+
+		Stream.of( command.commandAnnotation.subCommands() )
 			.peek( raw -> {
-				if ( !raw.contains("::") || Strings.isNullOrEmpty( raw.split( "::" )[0] ) )
+				if ( !raw.contains( "::" ) || Strings.isNullOrEmpty( raw.split( "::" )[0] ) )
 				{
-					invalidSubCmd(
-                            "Expected 'package.ClassName::methodName'",
-                            raw, command
-                    );
+					invalidSubCmd( "Expected 'package.ClassName::methodName'",
+							raw, command );
 				}
-			})
+			} )
 			.map( raw -> raw.split( "::" ) )
 			.forEach( parsed -> {
-                final String rawSubCommand  = Strings.of( parsed[0], "::", parsed[1] );
-                final String methodName	    = parsed[1];
-				String className	        = parsed[0];
-				
+				final String rawSubCommand = Strings.of( parsed[0], "::", parsed[1] );
+				final String methodName = parsed[1];
+				String className = parsed[0];
+
 				Class<?> klass = null;
-				
+
 				if ( className.equalsIgnoreCase( "this" ) )
 				{
 					if ( command instanceof MethodCommand )
@@ -419,169 +413,174 @@ class CommandManagerImpl implements CommandManager
 				{
 					if ( !className.contains( "." ) )
 					{
-						className = Strings.of(
-								command.getClass().getPackage().getName(),
-								".",
-								className
-						);
+						className = Strings.of( command.getClass().getPackage().getName(),
+								".", className );
 					}
-					
+
 					try
 					{
 						klass = Class.forName( className );
 					}
 					catch ( ClassNotFoundException e )
 					{
-                        invalidSubCmd(
-                                "Class %s not found.",
-                                rawSubCommand, command, e.getMessage()
-                        );
+						invalidSubCmd( "Class %s not found.", rawSubCommand, 
+								command, e.getMessage() );
 					}
 				}
-				
+
 				if ( !ReflectUtil.isConcreteClass( klass ) )
 				{
-                    invalidSubCmd(
-                            "Class '%s' isn't a concrete class.",
-                            rawSubCommand, command, klass.getName()
-                    );
+					invalidSubCmd( "Class '%s' isn't a concrete class.", rawSubCommand, 
+							command, klass.getName() );
 				}
 
-                Object klassInstance = null;
+				Object klassInstance = null;
 
-                try
-                {
-                    klassInstance = klass.newInstance();
-                }
-                catch ( Exception e )
-                {
-                    /**
-                        Isso é pra nunca acontecer pois as verificaçoes ja foram feitas
-                        a cima, o que pode acontecer é um erro de segurança por exemplo.
-                     */
-                    e.printStackTrace();
-                }
+				try
+				{
+					klassInstance = klass.newInstance();
+				}
+				catch ( Exception e )
+				{
+					/**
+					 * Isso é pra nunca acontecer pois as verificaçoes ja
+					 * foram feitas a cima, o que pode acontecer é um erro
+					 * de segurança por exemplo.
+					 */
+					e.printStackTrace();
+				}
 
-                /**
-                    Lambda requer que as variveis sejam estaticas.
-                 */
-                final Object finalKlassInstance = klassInstance;
-                final Class<?> finalKlass = klass;
+				/**
+				 * Lambda requer que as variveis sejam estaticas.
+				 */
+				final Object finalKlassInstance = klassInstance;
+				final Class<?> finalKlass = klass;
 
-                final Consumer<String> registerSubCmd = mdName -> {
-                    Method subCmdMethod = null;
+				final Consumer<String> registerSubCmd = mdName ->
+				{
+					Method subCmdMethod = null;
 
-                    try
-                    {
-                        // TODO: parametros serao alterados para (CommandSource,CommandArgs,CommandBase)
-                        subCmdMethod = finalKlass.getDeclaredMethod(
-                                mdName,
-                                CommandSource.class,
-                                CommandArgs.class
-                        );
+					try
+					{
+						// TODO: parametros serao alterados para (CommandSource,CommandArgs,CommandBase)
+						subCmdMethod = finalKlass.getDeclaredMethod( mdName,
+								CommandSource.class, CommandArgs.class );
 
-                    }
-                    catch ( NoSuchMethodException e )
-                    {
-                        invalidSubCmd(
-                                "Method '%s' not found.", rawSubCommand, command, mdName
-                        );
-                    }
+					}
+					catch ( NoSuchMethodException e )
+					{
+						invalidSubCmd( "Method '%s' not found.", rawSubCommand, 
+								command, mdName );
+					}
 
-                    final SubCommand subCmdAnnotation = subCmdMethod.getAnnotation( SubCommand.class );
+					final SubCommand subCmdAnnotation = subCmdMethod.getAnnotation( SubCommand.class );
 
-                    if ( subCmdAnnotation == null )
-                    {
-                        invalidSubCmd(
-                                "The '%s' method does not contains 'SubCommand' annotation.",
-                                rawSubCommand,
-                                command,
-                                methodName
-                        );
-                    }
+					if ( subCmdAnnotation == null )
+					{
+						invalidSubCmd( "The '%s' method does not contains 'SubCommand' annotation.",
+								rawSubCommand, command, methodName );
+					}
 
-                    /**
-                        "Converte" a anotação SubCommand para Command para ser
-                        usada no construtor do MethodCommand, as duas anotações são
-                        exatamente iguais, porem, como o java não permite herança com
-                        anotações eu tive que fazer isso.
-                     */
-                    final Command commandAnnotation = new Command()
-                    {
-                        @Override
-                        public Class<? extends Annotation> annotationType()
-                        { return Command.class; }
+					/**
+					 * "Converte" a anotação SubCommand para Command para
+					 * ser usada no construtor do MethodCommand, as duas
+					 * anotações são exatamente iguais, porem, como o java
+					 * não permite herança com anotações eu tive que fazer
+					 * isso.
+					 */
+					final Command commandAnnotation = new Command()
+					{
+						@Override
+						public Class<? extends Annotation> annotationType()
+						{
+							return Command.class;
+						}
 
-                        @Override
-                        public String name()
-                        { return subCmdAnnotation.name(); }
+						@Override
+						public String name()
+						{
+							return subCmdAnnotation.name();
+						}
 
-                        @Override
-                        public String permission()
-                        { return subCmdAnnotation.permission(); }
+						@Override
+						public String permission()
+						{
+							return subCmdAnnotation.permission();
+						}
 
-                        @Override
-                        public String description()
-                        { return subCmdAnnotation.description(); }
+						@Override
+						public String description()
+						{
+							return subCmdAnnotation.description();
+						}
 
-                        @Override
-                        public String usage()
-                        { return subCmdAnnotation.usage(); }
+						@Override
+						public String usage()
+						{
+							return subCmdAnnotation.usage();
+						}
 
-                        @Override
-                        public String[] aliases()
-                        { return subCmdAnnotation.aliases(); }
+						@Override
+						public String[] aliases()
+						{
+							return subCmdAnnotation.aliases();
+						}
 
-                        @Override
-                        public String[] subCommands()
-                        { return subCmdAnnotation.subCommands(); }
+						@Override
+						public String[] subCommands()
+						{
+							return subCmdAnnotation.subCommands();
+						}
 
-                        @Override
-                        public UsageTarget usageTarget()
-                        { return subCmdAnnotation.usageTarget(); }
-                    };
+						@Override
+						public UsageTarget usageTarget()
+						{
+							return subCmdAnnotation.usageTarget();
+						}
+					};
 
-                    /**
-                        Por equanto os subcomandos poderão ser apenas  métodos.
+					/**
+					 * Por equanto os subcomandos poderão ser apenas
+					 * métodos.
+					 * 
+					 * Talvez eu adicione para poder colocar classes como
+					 * sub comandos, não sei...
+					 */
+					final MethodCommand subCommand = new MethodCommand(
+							MethodRef.of( finalKlassInstance, subCmdMethod ),
+							commandAnnotation );
 
-                        Talvez eu adicione para poder colocar classes como sub comandos, não sei...
-                     */
-                    final MethodCommand subCommand = new MethodCommand(
-                            MethodRef.of( finalKlassInstance, subCmdMethod ),
-                            commandAnnotation
-                    );
+					subCommands.put( subCommand.getName(), subCommand );
 
-                    subCommands.put( subCommand.getName(), subCommand );
+					if ( subCmdAnnotation.subCommands().length != 0 )
+					{
+						subCommand.subCommands = parseSubCommands( subCommand );
+					}
+				};
 
-                    if ( subCmdAnnotation.subCommands().length != 0 )
-                    {
-                        subCommand.subCommands = parseSubCommands( subCommand );
-                    }
-                };
+				if ( methodName.equals( "*" ) ) // all commands
+				{
+					Stream.of( klass.getDeclaredMethods() )
+							.filter( md -> md.isAnnotationPresent( SubCommand.class ) )
+							.map( Method::getName )
+							.forEach( registerSubCmd );
+				}
+				else if ( methodName.startsWith( "[" ) && methodName.endsWith( "]" ) )
+				{
+					Splitter.on( ',' )
+							.trimResults()
+							.omitEmptyStrings()
+							.split( CharMatcher.anyOf( "[]" ).removeFrom( methodName ) )
+							.forEach( registerSubCmd );
+				}
+				else
+				{
+					registerSubCmd.accept( methodName );
+				}
+			} );
 
-                if ( methodName.equals( "*" ) ) // all commands
-                {
-                    Stream.of( klass.getDeclaredMethods() )
-                            .filter( md -> md.isAnnotationPresent( SubCommand.class ) )
-                            .map( Method::getName )
-                            .forEach( registerSubCmd );
-                }
-                else if ( methodName.startsWith("[") && methodName.endsWith("]") ) // parse [array, of, sub, commands]
-                {
-                    Splitter.on(',')
-                            .trimResults()
-                            .omitEmptyStrings()
-                            .split( CharMatcher.anyOf("[]").removeFrom(methodName) )
-                            .forEach( registerSubCmd );
-                }
-                else
-                {
-                    registerSubCmd.accept( methodName );
-                }
-			});
-    	
-    	return subCommands;
-    }
+		return subCommands;
+	}
 
     private static void invalidSubCmd( final String reason, final Object ... args )
     {
