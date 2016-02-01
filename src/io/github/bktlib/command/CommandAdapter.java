@@ -40,41 +40,41 @@ import io.github.bktlib.reflect.MethodRef;
 import io.github.bktlib.reflect.util.ReflectUtil;
 
 /**
- * Classe usada internamente para "adaptar" a classe {@link CommandBase}
- * para {@link org.bukkit.command.Command}
+ * Classe usada internamente para "adaptar" a classe {@link CommandBase} para
+ * {@link org.bukkit.command.Command}
  */
 final class CommandAdapter extends org.bukkit.command.Command
-{	
-    private CommandBase base;
+{
+	private CommandBase base;
 
-    CommandAdapter( final CommandBase base )
-    {
-        super( base.getName() );
+	CommandAdapter(final CommandBase base)
+	{
+		super( base.getName() );
 
-        this.base 							= base;
+		this.base = base;
 
-        Optional<String>        perm        = base.getPermission();
-        Optional<String>        usage       = base.getUsage();
-        Optional<String>        desc        = base.getDescription();
-        Set<String>             aliases     = base.getAliases();
+		Optional<String> perm = base.getPermission();
+		Optional<String> usage = base.getUsage();
+		Optional<String> desc = base.getDescription();
+		Set<String> aliases = base.getAliases();
 
-        desc.ifPresent( this::setDescription );
-        perm.ifPresent( this::setPermission );
-        usage.ifPresent( this::setUsage );
+		desc.ifPresent( this::setDescription );
+		perm.ifPresent( this::setPermission );
+		usage.ifPresent( this::setUsage );
 
-        if ( aliases.size() > 0 )
-            setAliases( Lists.newArrayList( aliases ) );
-    }
-    
-    public CommandBase getCommandBase()
+		if ( aliases.size() > 0 )
+			setAliases( Lists.newArrayList( aliases ) );
+	}
+
+	public CommandBase getCommandBase()
 	{
 		return base;
 	}
 
-    @Override
-    public boolean execute( final CommandSender sender, final String s, final String[] rawArgs )
-    {
-    	base.execute( sender, rawArgs );
-        return true;
-    }
+	@Override
+	public boolean execute( final CommandSender sender, final String s, final String[] rawArgs )
+	{
+		base.execute( sender, rawArgs );
+		return true;
+	}
 }

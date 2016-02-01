@@ -25,20 +25,20 @@ import java.lang.annotation.Target;
 
 import io.github.bktlib.command.UsageTarget;
 
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD, ElementType.TYPE } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface Command
 {
-	String          name();
-	
-	String          permission() default "";
-	
-	String          description() default "";
-	
-    String          usage() default "";
+	String name();
 
-	String[]        aliases() default {};
-	
+	String permission() default "";
+
+	String description() default "";
+
+	String usage() default "";
+
+	String[]aliases() default {};
+
 	/**
 	 * <p>
 	 * Sub Comandos deve ser registrados seguindo o seguinte padrão.
@@ -65,7 +65,7 @@ public @interface Command
 	 * 
 	 * @return Lista de sub comandos.
 	 */
-	String[]        subCommands() default {};
-	
-	UsageTarget   	usageTarget() default UsageTarget.BOTH;
+	String[]subCommands() default {};
+
+	UsageTarget usageTarget() default UsageTarget.BOTH;
 }

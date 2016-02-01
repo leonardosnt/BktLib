@@ -24,15 +24,15 @@ package io.github.bktlib.command;
  */
 public final class CommandException extends RuntimeException
 {
-    private CommandResult result;
+	private CommandResult result;
 
-    public CommandException( final CommandResult result )
-    {
-        super( result.getMessage().orElse( "" ) );
-        this.result = result;
-    }
-    
-    public CommandResult getResult()
+	public CommandException(final CommandResult result)
+	{
+		super( result.getMessage().orElse( "" ) );
+		this.result = result;
+	}
+
+	public CommandResult getResult()
 	{
 		return result;
 	}

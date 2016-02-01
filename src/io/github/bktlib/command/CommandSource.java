@@ -35,115 +35,113 @@ import com.google.common.base.Preconditions;
  */
 public class CommandSource
 {
-    private static final char SECT_CH = '\u00a7';
+	private static final char SECT_CH = '\u00a7';
 
-    private CommandSender wrappedSender;
+	private CommandSender wrappedSender;
 
-    CommandSource( CommandSender wrappedSender )
-    {
-        this.wrappedSender = wrappedSender;
-    }
-    
-    public static CommandSource getConsoleSource()
-    {
-    	return LazyConsoleSourceHolder.INSTANCE;
-    }
-
-    public void sendMessages( String ... messages )
-    {
-        if ( messages == null )
-            return;
-
-        Stream.of( messages )
-                .map(msg -> CharMatcher.anyOf("&").collapseFrom(msg, SECT_CH))
-                .forEach(wrappedSender::sendMessage);
-    }
-
-	public void sendMessage( String message, Object ... args )
+	CommandSource(CommandSender wrappedSender)
 	{
-		wrappedSender.sendMessage( 
-				String.format(
-                        CharMatcher.anyOf("&").collapseFrom( message, SECT_CH),
-						args 
-				) 
-		);
+		this.wrappedSender = wrappedSender;
 	}
-	
+
+	public static CommandSource getConsoleSource()
+	{
+		return LazyConsoleSourceHolder.INSTANCE;
+	}
+
+	public void sendMessages( String... messages )
+	{
+		if ( messages == null )
+			return;
+
+		Stream.of( messages )
+				.map( msg -> CharMatcher.anyOf( "&" ).collapseFrom( msg, SECT_CH ) )
+				.forEach( wrappedSender::sendMessage );
+	}
+
+	public void sendMessage( String message, Object... args )
+	{
+		wrappedSender.sendMessage(
+				String.format(
+						CharMatcher.anyOf( "&" ).collapseFrom( message, SECT_CH ),
+						args ) );
+	}
+
 	public void sendMessage( String message )
 	{
 		sendMessage( message, new Object[0] );
 	}
-	
+
 	public void sendMessage( Object rawMessage )
 	{
 		String message;
-		
+
 		if ( rawMessage instanceof String )
 			message = (String) rawMessage;
 		else
 			message = String.valueOf( rawMessage );
-		
+
 		sendMessage( message );
 	}
 
-    public String getName()
-    {
-        return wrappedSender.getName();
-    }
-    
+	public String getName()
+	{
+		return wrappedSender.getName();
+	}
+
 	public boolean isOp()
-    {
-        return wrappedSender.isOp();
-    }
+	{
+		return wrappedSender.isOp();
+	}
 
-    public boolean isPlayer()
-    {
-        return wrappedSender instanceof Player;
-    }
+	public boolean isPlayer()
+	{
+		return wrappedSender instanceof Player;
+	}
 
-    public boolean isConsole()
-    {
-        return !isPlayer();
-    }
+	public boolean isConsole()
+	{
+		return !isPlayer();
+	}
 
-    public void setOp( boolean op )
-    {
-        wrappedSender.setOp(op);
-    }
+	public void setOp( boolean op )
+	{
+		wrappedSender.setOp( op );
+	}
 
-    public boolean hasPermission( String permission )
-    {
-        return wrappedSender.hasPermission( permission );
-    }
+	public boolean hasPermission( String permission )
+	{
+		return wrappedSender.hasPermission( permission );
+	}
 
-    public boolean canUse( CommandBase command )
-    {
-    	Optional<String> commandPermission = command.getPermission();
-    	
-    	return commandPermission.isPresent() && 
-    			hasPermission( commandPermission.get() );
-    }
+	public boolean canUse( CommandBase command )
+	{
+		Optional<String> commandPermission = command.getPermission();
 
-    public boolean canUse( Command annotation )
-    {
-        return hasPermission( annotation.permission() );
-    }
+		return commandPermission.isPresent() &&
+				hasPermission( commandPermission.get() );
+	}
 
-    public CommandSender toCommandSender()
-    {
-        return wrappedSender;
-    }
+	public boolean canUse( Command annotation )
+	{
+		return hasPermission( annotation.permission() );
+	}
 
-    public Player toPlayer()
-    {
-        Preconditions.checkState( isPlayer(), 
-        		"Cannot cast console to player!" );
+	public CommandSender toCommandSender()
+	{
+		return wrappedSender;
+	}
 
-        return (Player) wrappedSender;
-    }
+	public Player toPlayer()
+	{
+		Preconditions.checkState( isPlayer(),
+				"Cannot cast console to player!" );
 
-    private static class LazyConsoleSourceHolder
-    {
-        public static final CommandSource INSTANCE = new CommandSource(Bukkit.getConsoleSender());
-    }
+		return (Player) wrappedSender;
+	}
+
+	private static class LazyConsoleSourceHolder
+	{
+		public static final CommandSource INSTANCE = new CommandSource( Bukkit.getConsoleSender() );
+	}
 }

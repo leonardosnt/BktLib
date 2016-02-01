@@ -27,19 +27,19 @@ import java.util.Optional;
  */
 public class CommandResult
 {
-    private static final String GENERIC_ERROR_MESSAGE = "§4An internal error occurred attempting to execute this command.";
+	private static final String GENERIC_ERROR_MESSAGE = "§4An internal error occurred attempting to execute this command.";
 
-    private static final CommandResult SUCCESS = new CommandResult( null, ResultType.SUCCESS );
-    private static final CommandResult SHOW_USAGE = new CommandResult( null, ResultType.SHOW_USAGE );
+	private static final CommandResult SUCCESS = new CommandResult( null, ResultType.SUCCESS );
+	private static final CommandResult SHOW_USAGE = new CommandResult( null, ResultType.SHOW_USAGE );
 
-    private String message;
-    private ResultType type;
+	private String message;
+	private ResultType type;
 
-    private CommandResult( final String message, final ResultType type )
-    {
-        this.message = message;
-        this.type    = type;
-    }
+	private CommandResult(final String message, final ResultType type)
+	{
+		this.message = message;
+		this.type = type;
+	}
 
 	/**
 	 * Retorna a mensagem do resultado, no caso do {@link #success()} ou
@@ -48,22 +48,22 @@ public class CommandResult
 	 * @return Um {@link Optional} contendo a mensagem do resultado, ou
 	 *         {@link Optional#empty()} caso a mensagem seja {@code nula}
 	 */
-    public Optional<String> getMessage()
-    {
-        return message == null
-                ? Optional.empty()
-                : Optional.of( type.getColor() + message );
-    }
+	public Optional<String> getMessage()
+	{
+		return message == null
+				? Optional.empty()
+				: Optional.of( type.getColor() + message );
+	}
 
-    /**
-     * @return O {@link ResultType tipo} do resultado.
-     * 
-     * @see ResultType
-     */
-    public ResultType getType()
-    {
-        return type;
-    }
+	/**
+	 * @return O {@link ResultType tipo} do resultado.
+	 * 
+	 * @see ResultType
+	 */
+	public ResultType getType()
+	{
+		return type;
+	}
 
 	/**
 	 * Indica que um erro ocorreu.
@@ -73,50 +73,50 @@ public class CommandResult
 	 * @return Nova instancia dessa classe com as informações necessarias para
 	 *         serem usadas internamente.
 	 */
-    public static CommandResult fail( final String message )
-    {
-        return new CommandResult( message, ResultType.FAIL );
-    }
+	public static CommandResult fail( final String message )
+	{
+		return new CommandResult( message, ResultType.FAIL );
+	}
 
-    /**
-     * @see #fail(String)
-     */
-    public static CommandResult fail( final String message, final Object ... formatArgs )
-    {
-        return new CommandResult( String.format( message, formatArgs ), ResultType.FAIL );
-    }
+	/**
+	 * @see #fail(String)
+	 */
+	public static CommandResult fail( final String message, final Object... formatArgs )
+	{
+		return new CommandResult( String.format( message, formatArgs ), ResultType.FAIL );
+	}
 
-    /**
-     * Indica que ocorreu alguma coisa inesperada..
-     *
-     * @param message
-     *            Mensagem do ocorrido
-     * @return Nova instancia dessa classe com as informações necessarias para
-     *         serem usadas internamente.
-     */
-    public static CommandResult warning( final String message )
-    {
-        return new CommandResult( message, ResultType.WARNING);
-    }
-
-    /**
-     * @see #warning(String)
-     */
-    public static CommandResult warning( final String message, final Object ... formatArgs )
-    {
-        return new CommandResult( String.format( message, formatArgs ),  ResultType.WARNING);
-    }
-
-    /**
-     * Indica que a execução foi um sucesso.
-     * 
+	/**
+	 * Indica que ocorreu alguma coisa inesperada..
+	 *
+	 * @param message
+	 *            Mensagem do ocorrido
 	 * @return Nova instancia dessa classe com as informações necessarias para
 	 *         serem usadas internamente.
-     */
-    public static CommandResult success()
-    {
-        return SUCCESS;
-    }
+	 */
+	public static CommandResult warning( final String message )
+	{
+		return new CommandResult( message, ResultType.WARNING );
+	}
+
+	/**
+	 * @see #warning(String)
+	 */
+	public static CommandResult warning( final String message, final Object... formatArgs )
+	{
+		return new CommandResult( String.format( message, formatArgs ), ResultType.WARNING );
+	}
+
+	/**
+	 * Indica que a execução foi um sucesso.
+	 * 
+	 * @return Nova instancia dessa classe com as informações necessarias para
+	 *         serem usadas internamente.
+	 */
+	public static CommandResult success()
+	{
+		return SUCCESS;
+	}
 
 	/**
 	 * Indica ao sistema que ele deve enviar a {@link CommandBase#getUsage()}
@@ -125,11 +125,11 @@ public class CommandResult
 	 * 
 	 * @return Nova instancia dessa classe com as informações necessarias para
 	 *         serem usadas internamente.
-     */
-    public static CommandResult showUsage()
-    {
-        return SHOW_USAGE;
-    }
+	 */
+	public static CommandResult showUsage()
+	{
+		return SHOW_USAGE;
+	}
 
 	/**
 	 * Indica que ocorreu um erro generico.
@@ -141,53 +141,52 @@ public class CommandResult
 	 * 
 	 * @return Nova instancia dessa classe com as informações necessarias para
 	 *         serem usadas internamente.
-     */
-    public static CommandResult genericError()
-    {
-        return new CommandResult( GENERIC_ERROR_MESSAGE, ResultType.GENERIC_ERROR );
-    }
-    
-    
-    /**
-     * Tipos de resultado. Usado internamente.
-     */
-    public enum ResultType
-    {
-        /**
-         * @see {@link CommandResult#success()}
-         */
-        SUCCESS( ChatColor.GREEN ),
-        
-        /**
-         * @see {@link CommandResult#fail(String)}
-         */
-        FAIL( ChatColor.RED ),
-        
-        /**
-         * @see {@link CommandResult#genericError()}
-         */
-        GENERIC_ERROR( FAIL.getColor() ),
-        
-        /**
-         * @see {@link CommandResult#warning(String)}
-         */
-        WARNING( ChatColor.YELLOW ),
-        
-        /**
-         * @see {@link CommandResult#showUsage()}
-         */
-        SHOW_USAGE( ChatColor.GRAY );
+	 */
+	public static CommandResult genericError()
+	{
+		return new CommandResult( GENERIC_ERROR_MESSAGE, ResultType.GENERIC_ERROR );
+	}
 
-        ChatColor color;
+	/**
+	 * Tipos de resultado. Usado internamente.
+	 */
+	public enum ResultType
+	{
+		/**
+		 * @see {@link CommandResult#success()}
+		 */
+		SUCCESS(ChatColor.GREEN),
 
-        ResultType( ChatColor color )
-        {
-            this.color = color;
-        }
+		/**
+		 * @see {@link CommandResult#fail(String)}
+		 */
+		FAIL(ChatColor.RED),
 
-        public ChatColor getColor()
-        {
-            return color;
-        }
-    }
+		/**
+		 * @see {@link CommandResult#genericError()}
+		 */
+		GENERIC_ERROR(FAIL.getColor()),
+
+		/**
+		 * @see {@link CommandResult#warning(String)}
+		 */
+		WARNING(ChatColor.YELLOW),
+
+		/**
+		 * @see {@link CommandResult#showUsage()}
+		 */
+		SHOW_USAGE(ChatColor.GRAY);
+
+		ChatColor color;
+
+		ResultType(ChatColor color)
+		{
+			this.color = color;
+		}
+
+		public ChatColor getColor()
+		{
+			return color;
+		}
+	}
 }
