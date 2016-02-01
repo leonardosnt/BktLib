@@ -54,7 +54,7 @@ public interface FieldAccessor<T>
 	 * @param fieldName
 	 * @return
 	 */
-	public static <T> FieldAccessor<T> access( final Object obj, final String fieldName )
+	static <T> FieldAccessor<T> access( final Object obj, final String fieldName )
 	{
 		Preconditions.checkNotNull( obj, "obj cannot be null" );
 		Preconditions.checkArgument( !Strings.isNullOrEmpty( fieldName ), 

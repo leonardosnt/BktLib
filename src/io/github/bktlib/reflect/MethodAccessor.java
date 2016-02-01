@@ -48,7 +48,7 @@ public interface MethodAccessor<T>
 	 * @param params
 	 * @return
 	 */
-	public static <T> MethodAccessor<T> access( final Object obj, final String methodName, 
+	static <T> MethodAccessor<T> access( final Object obj, final String methodName, 
 												Class<?> ... params )
 	{
 		Preconditions.checkNotNull( obj, "obj cannot be null" );
