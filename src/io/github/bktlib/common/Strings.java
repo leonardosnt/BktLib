@@ -26,11 +26,14 @@ public final class Strings
 
     public static String of( final Object ... parts )
     {
+    	if ( parts == null ) return "null";
     	if ( parts.length == 0 ) return "";
     	
         final StringBuilder sb = new StringBuilder();
 
-        Stream.of( parts ).forEach( sb::append );
+        Stream.of( parts )
+        	.map( str -> str == null ? "null" : str )
+        	.forEach( sb::append );
 
         return sb.toString();
     }
