@@ -31,9 +31,7 @@ public final class Strings
     	
         final StringBuilder sb = new StringBuilder();
 
-        Stream.of( parts )
-        	.map( str -> str == null ? "null" : str )
-        	.forEach( sb::append );
+        Stream.of( parts ).forEach( sb::append );
 
         return sb.toString();
     }
