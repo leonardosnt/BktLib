@@ -39,6 +39,32 @@ public @interface Command
 
 	String[]        aliases() default {};
 	
+	/**
+	 * <p>
+	 * Sub Comandos deve ser registrados seguindo o seguinte padrão.
+	 * </p>
+	 * 
+	 * <p>
+	 * {@code NomeDaClasse::nomeDoMetodo}
+	 * </p>
+	 * <p>
+	 * O {@code NomeDaClasse} pode ser composto pelo nome da classe, sem o
+	 * pacote, caso a classe esteja no mesmo pacote do comando, {@code this}
+	 * caso o sub comando esteja na mesma classe do comando, ou o nome da classe
+	 * completa(com o pacote), por exemplo
+	 * {@code pacote.com.a.Classe::nomeDoMetodo}
+	 * </p>
+	 * 
+	 * <p>
+	 * O {@code nomeDoMetodo} pode ser composto simplesmente pelo nome do método
+	 * do sub comando, por uma lista de nomes, por exemplo
+	 * {@code this::[subComando1, subComando2, SubComando3]} ou pelo caractere
+	 * {@code *} caso queira que todos os métodos que possuem a anotação
+	 * {@link SubCommand} sejam incluidos.
+	 * </p>
+	 * 
+	 * @return Lista de sub comandos.
+	 */
 	String[]        subCommands() default {};
 	
 	UsageTarget   	usageTarget() default UsageTarget.BOTH;
