@@ -84,7 +84,7 @@ public final class Locations
 	 * 
 	 * @return uma nova {@link Location} com o ponto mínimo entre as duas.
 	 * 
-	 * @see #max(Location, Location);
+	 * @see #max(Location, Location)
 	 */
 	public static Location min( final Location l1, final Location l2 )
 	{
