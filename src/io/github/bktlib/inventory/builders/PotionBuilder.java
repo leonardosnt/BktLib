@@ -1,7 +1,5 @@
 package io.github.bktlib.inventory.builders;
 
-import org.bukkit.Effect;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import io.github.bktlib.inventory.builders.impl.PotionBuilderImpl;

@@ -164,11 +164,6 @@ class CommandManagerImpl implements CommandManager
 
 		{ // new scope
 
-			/*
-			 * Registra a classe interna, que n�o seja n�o estatic (caso
-			 * commnadClass seja interna)
-			 */
-
 			final Class<?> enclosingClass = commandClass.getEnclosingClass();
 
 			if ( enclosingClass != null && canInstantiate( enclosingClass ) &&
@@ -203,6 +198,7 @@ class CommandManagerImpl implements CommandManager
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void registerAll()
 	{
@@ -234,8 +230,7 @@ class CommandManagerImpl implements CommandManager
 				if ( klass != MethodCommand.class && klass != CommandBase.class &&
 						CommandBase.class.isAssignableFrom( klass ) )
 				{
-					//noinspection unchecked
-					register( (Class<CommandBase>) klass );
+					register( (Class<? extends CommandBase>) klass );
 				}
 
 				if ( ReflectUtil.isConcreteClass( klass ) )
@@ -264,6 +259,7 @@ class CommandManagerImpl implements CommandManager
     		.forEach( method -> registerMethod( klass, method.getName() ) );
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends CommandBase> Optional<T> getCommandByClass( Class<T> klass )
 	{
@@ -271,7 +267,6 @@ class CommandManagerImpl implements CommandManager
 
 		try
 		{
-			//noinspection unchecked
 			return (Optional<T>) byClassCache.get( klass );
 		}
 		catch ( ExecutionException e )

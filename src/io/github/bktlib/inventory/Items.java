@@ -26,8 +26,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.common.base.Strings;
-
 public final class Items
 {
 	private Items() {}

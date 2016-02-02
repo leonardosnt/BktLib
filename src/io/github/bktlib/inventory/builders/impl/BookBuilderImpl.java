@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 
 import io.github.bktlib.inventory.builders.BookBuilder;

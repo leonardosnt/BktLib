@@ -19,7 +19,6 @@
 package io.github.bktlib.reflect;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Optional;
 
 class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
@@ -30,7 +29,7 @@ class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
 	{
 		super( obj );
 
-		Class<?> klass = obj instanceof Class ? (Class<? extends Object>) obj : obj.getClass();
+		Class<?> klass = obj instanceof Class ? (Class<?>) obj : obj.getClass();
 
 		Field ret = findFieldRecursive( klass, fieldName );
 
@@ -40,6 +39,8 @@ class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
 		this.field = ret;
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
 	public Optional<T> getValue()
 	{
 		if ( !field.isAccessible() )
@@ -59,6 +60,7 @@ class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
 		}
 	}
 	
+	@Override
 	public void setValue( T newValue )
 	{
 		if ( !field.isAccessible() )
@@ -76,6 +78,7 @@ class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
 		}
 	}
 	
+	@Override
 	public Field getField()
 	{
 		return field;

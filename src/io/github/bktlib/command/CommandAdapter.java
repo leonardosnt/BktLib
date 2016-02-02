@@ -18,26 +18,12 @@
 
 package io.github.bktlib.command;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import io.github.bktlib.command.CommandResult.ResultType;
-import io.github.bktlib.command.args.CommandArgs;
-import io.github.bktlib.common.Lambdas;
-import io.github.bktlib.common.Strings;
-import io.github.bktlib.reflect.MethodRef;
-import io.github.bktlib.reflect.util.ReflectUtil;
 
 /**
  * Classe usada internamente para "adaptar" a classe {@link CommandBase} para

@@ -30,7 +30,7 @@ class MethodAccessorImpl<T> extends AbstractAccessor implements MethodAccessor<T
 	{
 		super( owner );
 
-		Class<?> klass = owner instanceof Class ? (Class<? extends Object>) owner : owner.getClass();
+		Class<?> klass = owner instanceof Class ? (Class<?>) owner : owner.getClass();
 
 		final Method ret = findMethodRecursive( klass, methodName, params );
 
@@ -42,6 +42,7 @@ class MethodAccessorImpl<T> extends AbstractAccessor implements MethodAccessor<T
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Optional<T> invoke( Object... params )
 	{
 		if ( !method.isAccessible() )

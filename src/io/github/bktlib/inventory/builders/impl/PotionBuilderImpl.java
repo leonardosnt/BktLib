@@ -3,7 +3,6 @@ package io.github.bktlib.inventory.builders.impl;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import io.github.bktlib.inventory.builders.PotionBuilder;

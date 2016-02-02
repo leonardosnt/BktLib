@@ -21,14 +21,14 @@ package io.github.bktlib.command;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.google.common.base.CharMatcher;
-import io.github.bktlib.command.annotation.Command;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
+
+import io.github.bktlib.command.annotation.Command;
 
 /**
  * Essa classe é meio que uma wrapper de {@link CommandSender}

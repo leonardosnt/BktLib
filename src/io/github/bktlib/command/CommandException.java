@@ -24,6 +24,8 @@ package io.github.bktlib.command;
  */
 public final class CommandException extends RuntimeException
 {
+	private static final long serialVersionUID = -4371399001333476892L;
+	
 	private CommandResult result;
 
 	public CommandException(final CommandResult result)

@@ -18,8 +18,6 @@
 
 package io.github.bktlib.inventory.builders;
 
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bktlib.inventory.builders.impl.BookBuilderImpl;
 
 public interface BookBuilder extends ItemBuilder

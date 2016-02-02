@@ -18,10 +18,6 @@
 
 package io.github.bktlib.reflect.util;
 
-import java.io.File;
-
-import com.google.common.collect.ImmutableSet;
-
 public final class ReflectUtil
 {
 	private ReflectUtil() {}

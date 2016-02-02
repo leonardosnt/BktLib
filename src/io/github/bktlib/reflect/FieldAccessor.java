@@ -19,10 +19,8 @@
 package io.github.bktlib.reflect;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Optional;
 
-import com.avaje.ebeaninternal.server.lucene.LIndex;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 

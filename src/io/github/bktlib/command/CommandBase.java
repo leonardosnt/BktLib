@@ -18,27 +18,26 @@
 
 package io.github.bktlib.command;
 
+import static io.github.bktlib.command.UsageTarget.IN_GAME;
+import static io.github.bktlib.command.UsageTarget.NOT_IN_GAME;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
-import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import io.github.bktlib.command.annotation.Command;
 import io.github.bktlib.command.args.CommandArgs;
 import io.github.bktlib.common.Strings;
-
-import static io.github.bktlib.command.UsageTarget.IN_GAME;
-import static io.github.bktlib.command.UsageTarget.NOT_IN_GAME;
 
 public abstract class CommandBase
 {
