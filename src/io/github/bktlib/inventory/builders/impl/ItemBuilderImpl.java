@@ -46,7 +46,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	{
 		if ( text == null ) return text;
 		
-		return CharMatcher.anyOf( "&" ).collapseFrom( text, '§' );
+		return CharMatcher.anyOf( "&" ).collapseFrom( text, '\u00a7' );
 	};
 	
 	public ItemBuilderImpl()

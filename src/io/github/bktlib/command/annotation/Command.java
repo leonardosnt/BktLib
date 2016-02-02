@@ -37,7 +37,7 @@ public @interface Command
 
 	String usage() default "";
 
-	String[]aliases() default {};
+	String[] aliases() default {};
 
 	/**
 	 * <p>
@@ -65,7 +65,7 @@ public @interface Command
 	 * 
 	 * @return Lista de sub comandos.
 	 */
-	String[]subCommands() default {};
+	String[] subCommands() default {};
 
 	UsageTarget usageTarget() default UsageTarget.BOTH;
 }

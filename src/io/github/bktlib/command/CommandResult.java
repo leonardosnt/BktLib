@@ -25,7 +25,7 @@ import java.util.Optional;
 /**
  * Essa classe representa o resultado da execução do um comando.
  */
-public class CommandResult
+public final class CommandResult
 {
 	private static final String GENERIC_ERROR_MESSAGE = "§4An internal error occurred attempting to execute this command.";
 
@@ -42,11 +42,11 @@ public class CommandResult
 	}
 
 	/**
-	 * Retorna a mensagem do resultado, no caso do {@link #success()} ou
-	 * {@link #showUsage()} ela é {@code nula}
+	 * Retorna a mensagem do resultado, no caso do #success() ou
+	 * #showUsage() ela é {@code nula}
 	 * 
-	 * @return Um {@link Optional} contendo a mensagem do resultado, ou
-	 *         {@link Optional#empty()} caso a mensagem seja {@code nula}
+	 * @return Um Optional} contendo a mensagem do resultado, ou
+	 *         Optional#empty() caso a mensagem seja {@code nula}
 	 */
 	public Optional<String> getMessage()
 	{
@@ -56,7 +56,7 @@ public class CommandResult
 	}
 
 	/**
-	 * @return O {@link ResultType tipo} do resultado.
+	 * @return O ResultType tipo} do resultado.
 	 * 
 	 * @see ResultType
 	 */
@@ -119,7 +119,7 @@ public class CommandResult
 	}
 
 	/**
-	 * Indica ao sistema que ele deve enviar a {@link CommandBase#getUsage()}
+	 * Indica ao sistema que ele deve enviar a CommandBase#getUsage()
 	 * para o jogador. Geralmente usado quando o jogador digita o comando com os
 	 * argumentos incorretos.
 	 * 
@@ -153,27 +153,27 @@ public class CommandResult
 	public enum ResultType
 	{
 		/**
-		 * @see {@link CommandResult#success()}
+		 * @see CommandResult#success()
 		 */
 		SUCCESS(ChatColor.GREEN),
 
 		/**
-		 * @see {@link CommandResult#fail(String)}
+		 * @see CommandResult#fail(String)
 		 */
 		FAIL(ChatColor.RED),
 
 		/**
-		 * @see {@link CommandResult#genericError()}
+		 * @see CommandResult#genericError()
 		 */
 		GENERIC_ERROR(FAIL.getColor()),
 
 		/**
-		 * @see {@link CommandResult#warning(String)}
+		 * @see CommandResult#warning(String)
 		 */
 		WARNING(ChatColor.YELLOW),
 
 		/**
-		 * @see {@link CommandResult#showUsage()}
+		 * @see CommandResult#showUsage()
 		 */
 		SHOW_USAGE(ChatColor.GRAY);
 
