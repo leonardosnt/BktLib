@@ -62,9 +62,7 @@ public class CommandSource
 	public void sendMessage( String message, Object... args )
 	{
 		wrappedSender.sendMessage(
-				String.format(
-						CharMatcher.anyOf( "&" ).collapseFrom( message, SECT_CH ),
-						args ) );
+				String.format( CharMatcher.anyOf( "&" ).collapseFrom( message, SECT_CH ), args ) );
 	}
 
 	public void sendMessage( String message )
