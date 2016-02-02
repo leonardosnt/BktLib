@@ -123,14 +123,17 @@ class CommandManagerImpl implements CommandManager
 		checkNotNull( instance, "instance cannot be null" );
 		checkArgument( !Strings.isNullOrEmpty( methodName ), "methodName cannot be null or empty" );
 
-		Class<?> instClass = instance.getClass();
+		final Class<?> instClass = instance.getClass();
 
 		try
 		{
-			Method method = instClass.getDeclaredMethod(
-					methodName,
-					CommandSource.class,
-					CommandArgs.class );
+			final Method method = instClass.getDeclaredMethod(
+                                    methodName,
+                                    CommandSource.class,
+                                    CommandArgs.class );
+
+            if ( method.getReturnType() != CommandResult.class )
+                throw new NoSuchMethodException();
 
 			if ( !method.isAnnotationPresent( Command.class ) )
 			{
@@ -144,7 +147,7 @@ class CommandManagerImpl implements CommandManager
 		}
 		catch ( NoSuchMethodException e )
 		{
-			logger.log( Level.SEVERE, format( "Could not find method '%s.%s(CommandSource, CommandArgs)'.",
+			logger.log( Level.SEVERE, format( "Could not find method 'CommandResult %s.%s(CommandSource, CommandArgs)'.",
 					instClass.getName(), methodName ) );
 			logger.log( Level.SEVERE, "Be sure that's signature is correct, signature must be like that "
 					+ "'CommandResult methodName(CommandSource, CommandArgs)'." );
@@ -231,6 +234,7 @@ class CommandManagerImpl implements CommandManager
 				if ( klass != MethodCommand.class && klass != CommandBase.class &&
 						CommandBase.class.isAssignableFrom( klass ) )
 				{
+					//noinspection unchecked
 					register( (Class<CommandBase>) klass );
 				}
 
@@ -267,6 +271,7 @@ class CommandManagerImpl implements CommandManager
 
 		try
 		{
+			//noinspection unchecked
 			return (Optional<T>) byClassCache.get( klass );
 		}
 		catch ( ExecutionException e )
