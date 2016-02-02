@@ -29,15 +29,17 @@ import com.google.common.base.Strings;
 public interface FieldAccessor<T>
 {
 	/**
-	 * Retorna o valor do campo.
-	 * 
-	 * @return O valor do campo.
+	 * @return O valor do {@link Field}.
 	 */
 	Optional<T> getValue();
 
 	/**
+	 * Define o valor do {@link Field} para {@code newValue}
+	 * 
 	 * @param newValue
-	 * @throws IllegalAccessException
+	 *            Valor a ser definido
+	 *
+	 * @throws IllegalStateException
 	 *             Se o {@code field} for estatico e o objeto passado no
 	 *             {@link #access(Object, String)} nao é uma instancia de um
 	 *             objeto.
@@ -45,49 +47,29 @@ public interface FieldAccessor<T>
 	void setValue( T newValue );
 
 	/**
-	 * @return
+	 * @return Retorna o {@link Field} que está sendo acessado.
 	 */
 	Field getField();
 
 	/**
+	 * Acessa um determinado {@link Field}.
+	 * 
 	 * @param obj
+	 *            Objeto que contem o {@link Field}, ou a classe caso o
+	 *            {@link Field} seja estatico.
 	 * @param fieldName
-	 * @return
+	 *            Nome do {@link Field} a ser acessado.
+	 * @param <T>
+	 *            Tipo do campo.
+	 * 
+	 * @return Nova instancia de {@link FieldAccessor}
 	 */
 	static <T> FieldAccessor<T> access( final Object obj, final String fieldName )
 	{
 		Preconditions.checkNotNull( obj, "obj cannot be null" );
-		Preconditions.checkArgument( !Strings.isNullOrEmpty( fieldName ), 
+		Preconditions.checkArgument( !Strings.isNullOrEmpty( fieldName ),
 				"fieldName cannot be null or empty" );
 
-		Class<?> klass = obj instanceof Class ? (Class<? extends Object>) obj : obj.getClass();
-
-		Field ret = findFieldRecursive( klass, fieldName );
-
-		if ( ret == null )
-			throw new RuntimeException( String.format( "could not find field %s.%s", klass, fieldName ) );
-
-		return new FieldAccessorImpl<>( obj, ret );
-	}
-
-	static Field findFieldRecursive( final Class<?> klass, final String fieldName )
-	{
-		if ( klass == null )
-			return null;
-
-		try
-		{
-			return klass.getDeclaredField( fieldName );
-		}
-		catch ( NoSuchFieldException e )
-		{
-			return findFieldRecursive( klass.getSuperclass(), fieldName );
-		}
-		catch ( SecurityException e )
-		{
-			e.printStackTrace();
-		}
-
-		return null;
+		return new FieldAccessorImpl<>( obj, fieldName );
 	}
 }

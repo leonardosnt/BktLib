@@ -26,11 +26,18 @@ class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
 {
 	private Field field;
 	
-	FieldAccessorImpl( final Object obj, Field field )
+	FieldAccessorImpl( final Object obj, String fieldName )
 	{
 		super( obj );
-		
-		this.field = field;
+
+		Class<?> klass = obj instanceof Class ? (Class<? extends Object>) obj : obj.getClass();
+
+		Field ret = findFieldRecursive( klass, fieldName );
+
+		if ( ret == null )
+			throw new RuntimeException( String.format( "could not find field %s.%s", klass, fieldName ) );
+
+		this.field = ret;
 	}
 
 	public Optional<T> getValue()
@@ -76,9 +83,30 @@ class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
 	
 	private void checkStatic()
 	{
-		if ( owner instanceof Class && ( field.getModifiers() & Modifier.STATIC ) == 0 )
+		if ( owner instanceof Class && ( field.getModifiers() & 0x8 ) == 0 )
 		{
 			throw new IllegalStateException( "non-static field requires an instance." );
 		}
+	}
+	
+	private static Field findFieldRecursive( final Class<?> klass, final String fieldName )
+	{
+		if ( klass == null )
+			return null;
+
+		try
+		{
+			return klass.getDeclaredField( fieldName );
+		}
+		catch ( NoSuchFieldException e )
+		{
+			return findFieldRecursive( klass.getSuperclass(), fieldName );
+		}
+		catch ( SecurityException e )
+		{
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

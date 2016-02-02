@@ -35,57 +35,35 @@ public interface MethodAccessor<T>
 	 * @return Um {@link Optional} contendo o retorno do método, caso ele tenha
 	 *         um.
 	 */
-	Optional<T> invoke( Object ... params );
+	Optional<T> invoke( Object... params );
 
 	/**
-	 * @return
+	 * @return O {@link Method método} que está sendo acessado.
 	 */
 	Method getMethod();
-	
+
 	/**
+	 * Acessa um determinado método.
+	 * 
 	 * @param obj
+	 *            Objeto que contem o método, ou a classe caso o método seja
+	 *            estatico.
 	 * @param methodName
+	 *            Nome do método a ser acessado.
 	 * @param params
-	 * @return
+	 *            Lista de parametros que o método recebe.
+	 * @param <T>
+	 *            O tipo de retorno do método.
+	 *
+	 * @return Nova instancia de {@link MethodAccessor}
 	 */
-	static <T> MethodAccessor<T> access( final Object obj, final String methodName, 
-												Class<?> ... params )
+	static <T> MethodAccessor<T> access( final Object obj, final String methodName,
+			Class<?>... params )
 	{
 		Preconditions.checkNotNull( obj, "obj cannot be null" );
-		Preconditions.checkArgument( !Strings.isNullOrEmpty( methodName ), 
+		Preconditions.checkArgument( !Strings.isNullOrEmpty( methodName ),
 				"methodName cannot be null or empty" );
 
-		Class<?> klass = obj instanceof Class ? (Class<? extends Object>) obj : obj.getClass();
-
-		Method ret = findMethodRecursive( klass, methodName, params);
-		
-		if ( ret == null )
-			throw new RuntimeException( 
-					String.format( "could not find method %s.%s", klass, methodName ) 
-			);
-		
-		return new MethodAccessorImpl<>( obj, ret );
-	}
-
-	static Method findMethodRecursive( final Class<?> klass, final String methodName, 
-										  final Class<?> ... params )
-	{
-		if ( klass == null )
-			return null;
-		
-		try
-		{
-			return klass.getDeclaredMethod( methodName, params );
-		}
-		catch ( NoSuchMethodException e )
-		{
-			return findMethodRecursive( klass.getSuperclass(), methodName, params );
-		}
-		catch ( SecurityException e )
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
+		return new MethodAccessorImpl<>( obj, methodName );
 	}
 }

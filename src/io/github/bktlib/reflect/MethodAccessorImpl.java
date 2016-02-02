@@ -25,12 +25,20 @@ import java.util.Optional;
 class MethodAccessorImpl<T> extends AbstractAccessor implements MethodAccessor<T>
 {
 	private Method method;
-	
-	MethodAccessorImpl( final Object owner, final Method method )
+
+	MethodAccessorImpl(final Object owner, final String methodName, final Class<?> ... params)
 	{
 		super( owner );
-		
-		this.method = method;
+
+		Class<?> klass = owner instanceof Class ? (Class<? extends Object>) owner : owner.getClass();
+
+		final Method ret = findMethodRecursive( klass, methodName, params );
+
+		if ( ret == null )
+			throw new RuntimeException(
+					String.format( "could not find method %s.%s", klass, methodName ) );
+
+		this.method = ret;
 	}
 
 	@Override
@@ -38,7 +46,7 @@ class MethodAccessorImpl<T> extends AbstractAccessor implements MethodAccessor<T
 	{
 		if ( !method.isAccessible() )
 			method.setAccessible( true );
-		
+
 		try
 		{
 			return (Optional<T>) Optional.ofNullable( method.invoke( owner, params ) );
@@ -54,5 +62,27 @@ class MethodAccessorImpl<T> extends AbstractAccessor implements MethodAccessor<T
 	public Method getMethod()
 	{
 		return method;
+	}
+	
+	private static Method findMethodRecursive( final Class<?> klass, final String methodName,
+			final Class<?>... params )
+	{
+		if ( klass == null )
+			return null;
+
+		try
+		{
+			return klass.getDeclaredMethod( methodName, params );
+		}
+		catch ( NoSuchMethodException e )
+		{
+			return findMethodRecursive( klass.getSuperclass(), methodName, params );
+		}
+		catch ( SecurityException e )
+		{
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }
