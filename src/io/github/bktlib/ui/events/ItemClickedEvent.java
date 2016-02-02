@@ -18,9 +18,9 @@ public class ItemClickedEvent
 	private int slot;
 
 	/**
-	 * @param button Bot„o que foi clicado
+	 * @param button Bot√£o que foi clicado
 	 * @param player Jogador que clicou.
-	 * @param menu Menu que est· o item que foi clicado.
+	 * @param menu Menu que est√° o item que foi clicado.
 	 * @param item Item que foi clicado.
 	 */
 	public ItemClickedEvent( MouseButton button, 
@@ -37,7 +37,7 @@ public class ItemClickedEvent
 	}
 
 	/**
-	 * @return O bot„o que foi clicado.
+	 * @return O bot√£o que foi clicado.
 	 */
 	public MouseButton getButton()
 	{
@@ -45,8 +45,8 @@ public class ItemClickedEvent
 	}
 
 	/**
-	 * @return O menu que o item clicado est·.
-	 * @see {@link MenuItem}
+	 * @return O menu que o item clicado est√°.
+	 * @see MenuItem
 	 */
 	public Menu getMenu()
 	{
@@ -63,7 +63,7 @@ public class ItemClickedEvent
 	
 	/**
 	 * @return Item que foi clicado.
-	 * @see {@link MenuItem}
+	 * @see MenuItem
 	 */
 	public MenuItem getItem()
 	{
@@ -81,12 +81,12 @@ public class ItemClickedEvent
 	public enum MouseButton
 	{
 		/**
-		 * Representa o bot„o esquerdo do mouse
+		 * Representa o bot√£o esquerdo do mouse
 		 */
 		LEFT,
 
 		/**
-		 * Representa o bot„o direito do mouse
+		 * Representa o bot√£o direito do mouse
 		 */
 		RIGHT
 	}

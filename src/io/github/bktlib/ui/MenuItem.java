@@ -27,7 +27,7 @@ public class MenuItem
 	}
 
 	/**
-	 * @param mat
+	 * @param material
 	 */
 	public MenuItem( final Material material )
 	{
