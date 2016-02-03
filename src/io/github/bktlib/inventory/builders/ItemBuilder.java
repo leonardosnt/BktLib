@@ -99,4 +99,9 @@ public interface ItemBuilder extends Builder<ItemStack>
 	{
 		return new ItemBuilderImpl();
 	}
+
+	static ItemBuilder of( Material type )
+	{
+		return newBuilder().type( type );
+	}
 }
