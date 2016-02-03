@@ -21,7 +21,6 @@ package io.github.bktlib.reflect;
 import java.lang.reflect.Method;
 
 import io.github.bktlib.common.Strings;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class MethodRef
 {
