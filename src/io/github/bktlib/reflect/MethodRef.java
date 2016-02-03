@@ -21,6 +21,7 @@ package io.github.bktlib.reflect;
 import java.lang.reflect.Method;
 
 import io.github.bktlib.common.Strings;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class MethodRef
 {
@@ -51,6 +52,6 @@ public class MethodRef
 	@Override
 	public String toString()
 	{
-		return Strings.of( owner, "#", method == null ? "null" : method.getName() );
+		return Strings.of( owner.getClass(), "#", method == null ? "null" : method.getName() );
 	}
 }
