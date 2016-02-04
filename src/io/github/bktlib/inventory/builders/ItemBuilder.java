@@ -18,7 +18,7 @@
 
 package io.github.bktlib.inventory.builders;
 
-import java.util.function.UnaryOperator;
+import java.util.function.Consumer;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -90,12 +90,13 @@ public interface ItemBuilder extends Builder<ItemStack>
 	 */
 	ItemBuilder enchant( Enchantment ench, int level );
 
-	
 	/**
-	 * @param metaMapper
+	 * Modifica o {@link ItemMeta} do item.
+	 * 
+	 * @param metaConsumer Funcão de modifica o {@link ItemMeta}
 	 * @return
 	 */
-	<T extends ItemMeta> ItemBuilder meta( UnaryOperator<T> metaMapper );
+	<T extends ItemMeta> ItemBuilder meta( Consumer<T> metaConsumer );
 
 	/**
 	 * @return O ItemStack "construido"

@@ -134,9 +134,11 @@ public class ItemBuilderImpl implements ItemBuilder
 	}
 	
 	@Override
-	public <T extends ItemMeta> ItemBuilder meta( UnaryOperator<T> metaMapper )
+	public <T extends ItemMeta> ItemBuilder meta( Consumer<T> metaMapper )
 	{
-		item.setItemMeta( metaMapper.apply( (T) item.getItemMeta() ) );
+		final ItemMeta meta = item.getItemMeta();
+		metaMapper.accept( (T) meta );
+		item.setItemMeta( meta );
 		
 		return this;
 	}
@@ -167,7 +169,7 @@ public class ItemBuilderImpl implements ItemBuilder
 
 	private void consumeMeta( Consumer<ItemMeta> consumer )
 	{
-		ItemMeta meta = item.getItemMeta();
+		final ItemMeta meta = item.getItemMeta();
 		consumer.accept( meta );
 		item.setItemMeta( meta );
 	}
