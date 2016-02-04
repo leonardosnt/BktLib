@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -35,8 +36,7 @@ import io.github.bktlib.command.annotation.Command;
  */
 public class CommandSource
 {
-	private static final char SECT_CH = '\u00a7';
-
+	private static CommandSource consoleSource;
 	private CommandSender wrappedSender;
 
 	CommandSource(CommandSender wrappedSender)
@@ -46,7 +46,12 @@ public class CommandSource
 
 	public static CommandSource getConsoleSource()
 	{
-		return LazyConsoleSourceHolder.INSTANCE;
+		if ( consoleSource == null ) 
+		{
+			consoleSource = new CommandSource( Bukkit.getConsoleSender() );
+		}
+		
+		return consoleSource;
 	}
 
 	public void sendMessages( String... messages )
@@ -55,14 +60,14 @@ public class CommandSource
 			return;
 
 		Stream.of( messages )
-				.map( msg -> CharMatcher.anyOf( "&" ).collapseFrom( msg, SECT_CH ) )
+				.map( msg -> ChatColor.translateAlternateColorCodes( '&', msg ) )
 				.forEach( wrappedSender::sendMessage );
 	}
 
 	public void sendMessage( String message, Object... args )
 	{
 		wrappedSender.sendMessage(
-				String.format( CharMatcher.anyOf( "&" ).collapseFrom( message, SECT_CH ), args ) );
+				String.format( ChatColor.translateAlternateColorCodes( '&', message ), args ) );
 	}
 
 	public void sendMessage( String message )
@@ -132,14 +137,11 @@ public class CommandSource
 
 	public Player toPlayer()
 	{
-		Preconditions.checkState( isPlayer(),
-				"Cannot cast console to player!" );
+		if ( !isPlayer() )
+		{
+			throw new UnsupportedOperationException( "Cannot cast console to player!" );
+		}
 
 		return (Player) wrappedSender;
-	}
-
-	private static class LazyConsoleSourceHolder
-	{
-		public static final CommandSource INSTANCE = new CommandSource( Bukkit.getConsoleSender() );
 	}
 }
