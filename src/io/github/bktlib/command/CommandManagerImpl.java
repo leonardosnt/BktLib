@@ -355,14 +355,12 @@ class CommandManagerImpl implements CommandManager
 			@Override
 			public Optional<CommandBase> load( @Nonnull Class<?> key )
 			{
-				Optional<CommandBase> optCommand = commandMap.getCommands()
-						.parallelStream()
-						.filter( cmd -> cmd.getClass().equals( key ) )
-						.filter( cmd -> cmd instanceof CommandAdapter )
-						.map( cmd -> ((CommandAdapter) cmd).getCommandBase() )
-						.findAny();
-
-				return Optional.ofNullable( optCommand.orElse( null ) );
+				return commandMap.getCommands()
+                        .parallelStream()
+                        .filter( cmd -> cmd.getClass().equals( key ) )
+                        .filter( cmd -> cmd instanceof CommandAdapter )
+                        .map( cmd -> ((CommandAdapter) cmd).getCommandBase() )
+                        .findAny();
 			}
 		};
 
