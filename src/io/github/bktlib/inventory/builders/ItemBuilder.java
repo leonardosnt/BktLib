@@ -91,10 +91,10 @@ public interface ItemBuilder extends Builder<ItemStack>
 	ItemBuilder enchant( Enchantment ench, int level );
 
 	/**
-	 * Modifica o {@link ItemMeta} do item.
+	 * Modifica o {@link ItemMeta} do item. O ItemMeta pode ser {@code null}.
 	 * 
-	 * @param metaConsumer Funcão de modifica o {@link ItemMeta}
-	 * @return
+	 * @param metaConsumer
+	 *            Função de modifica o {@link ItemMeta}
 	 */
 	<T extends ItemMeta> ItemBuilder meta( Consumer<T> metaConsumer );
 
