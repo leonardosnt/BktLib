@@ -353,7 +353,7 @@ class CommandManagerImpl implements CommandManager
 				if ( !(bukkitCommand instanceof CommandAdapter) )
 					return Optional.empty();
 
-				return Optional.of( ((CommandAdapter) bukkitCommand).getCommandBase() );
+				return Optional.of( ((CommandAdapter) bukkitCommand).base );
 			}
 		};
 
@@ -366,7 +366,7 @@ class CommandManagerImpl implements CommandManager
 						.parallelStream()
 						.filter( cmd -> cmd.getClass().equals( key ) )
 						.filter( cmd -> cmd instanceof CommandAdapter )
-						.map( cmd -> ((CommandAdapter) cmd).getCommandBase() )
+						.map( cmd -> ((CommandAdapter) cmd).base )
 						.findAny();
 			}
 		};
