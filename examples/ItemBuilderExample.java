@@ -15,13 +15,18 @@ public class ItemBuilderExample
             				 .type( Material.STONE_SWORD )
             				 .name( "&3Xablau's sword!" )
             				 .lore( "&AUm lore legal" )
-            				 .lore( "§6Que da pra colocar" )
-            				 .lore( "§6Varias linhas" )
+            				 .lore( "&6Que da pra colocar" )
+            				 .lore( "&6Varias linhas" )
             				 .enchant( Enchantment.DAMAGE_ALL, 10 )
             				 .enchant( Enchantment.FIRE_ASPECT, 10 )
             				 .amount( 24 )
             				 .durability( 123 )
             				 .build();
+		
+		ItemStack is = ItemBuilder.of( Material.LEATHER_CHESTPLATE )
+        				.meta((LeatherArmorMeta meta) -> {
+        					meta.setColor( Color.AQUA );
+        				}).build();
 		
 		anPlayer.getInventory().addItem( coolSword );
 	}

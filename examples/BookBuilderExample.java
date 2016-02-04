@@ -17,7 +17,7 @@ public class BookBuilderExample
         				.title( "&3xablaus book" )
         				.newPage()
         				.line( "&bpagina xablaustica" )
-        				.lines( "&3com varias linhas", "§6coloridas" )
+        				.lines( "&3com varias linhas", "&6coloridas" )
         				.newPage()
         				.line( "&bE varias paginas" )
         				.build();
