@@ -22,14 +22,13 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import static org.bukkit.ChatColor.*;
+
 public final class Items
 {
-	private Items() {}
-	
 	/**
 	 * Define o nome de exibição do item.
 	 * 
@@ -39,7 +38,7 @@ public final class Items
 	public static void setDisplayName( final ItemStack item, final String name )
 	{
 		consumeMeta( item, meta -> meta.setDisplayName( 
-				ChatColor.translateAlternateColorCodes( '&', name)
+				translateAlternateColorCodes( '&', name)
 		) );
 	}
 	
@@ -53,10 +52,32 @@ public final class Items
 	{
 		consumeMeta( item, meta -> meta.setLore( 
 				Stream.of( lore )
-    				.map( line -> ChatColor.translateAlternateColorCodes( '&', line ) )
+    				.map( line -> translateAlternateColorCodes( '&', line ) )
     				.collect( Collectors.toList() ) 
 		));
 	}
+
+    /**
+     * Verifica se o item tem um displayName definido.
+     *
+     * @param item Item a ser verificado.
+     * @return se o item tem um displayName definido.
+     */
+	public static boolean hasDisplayName( final ItemStack item )
+    {
+        return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName();
+    }
+
+    /**
+     * Verifica se o item tem um lore definido.
+     *
+     * @param item Item a ser verificado.
+     * @return se o item tem um lore definido.
+     */
+    public static boolean hasLore( final ItemStack item )
+    {
+        return item != null && item.hasItemMeta() && item.getItemMeta().hasLore();
+    }
 	
 	private static void consumeMeta( final ItemStack item, final Consumer<ItemMeta> metaConsumer )
 	{
@@ -64,4 +85,9 @@ public final class Items
 		metaConsumer.accept( meta );
 		item.setItemMeta( meta );
 	}
+
+    private Items()
+    {
+        throw new UnsupportedOperationException();
+    }
 }
