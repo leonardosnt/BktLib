@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
@@ -131,11 +132,12 @@ public class ItemBuilderImpl implements ItemBuilder
 
 		return this;
 	}
-
+	
 	@Override
-	public ItemBuilder data( byte data )
+	public <T extends ItemMeta> ItemBuilder meta( UnaryOperator<T> metaMapper )
 	{
-		// TODO: implementar
+		item.setItemMeta( metaMapper.apply( (T) item.getItemMeta() ) );
+		
 		return this;
 	}
 

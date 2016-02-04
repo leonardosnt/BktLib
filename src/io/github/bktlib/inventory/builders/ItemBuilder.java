@@ -18,9 +18,12 @@
 
 package io.github.bktlib.inventory.builders;
 
+import java.util.function.UnaryOperator;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.bktlib.common.Builder;
 import io.github.bktlib.inventory.builders.impl.ItemBuilderImpl;
@@ -87,11 +90,12 @@ public interface ItemBuilder extends Builder<ItemStack>
 	 */
 	ItemBuilder enchant( Enchantment ench, int level );
 
+	
 	/**
-	 * @param data
+	 * @param metaMapper
 	 * @return
 	 */
-	ItemBuilder data( byte data );
+	<T extends ItemMeta> ItemBuilder meta( UnaryOperator<T> metaMapper );
 
 	/**
 	 * @return O ItemStack "construido"
