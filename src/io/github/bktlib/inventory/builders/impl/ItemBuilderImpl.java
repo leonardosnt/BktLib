@@ -38,14 +38,18 @@ import io.github.bktlib.inventory.builders.ItemBuilder;
 public class ItemBuilderImpl implements ItemBuilder
 {
 	protected ItemStack item;
-	
-	protected static final Function<String, String> TRANSLATE_COLOR_CHARS = text -> 
+
+	/*
+	 * Eu usei Function ao invés de UnaryOperator para poder usar no Stream.map
+	 */
+	protected static final Function<String, String> TRANSLATE_COLOR_CHARS = text ->
 	{
-		if ( text == null ) return text;
-		
+		if ( text == null )
+			return text;
+
 		return CharMatcher.anyOf( "&" ).collapseFrom( text, '\u00a7' );
 	};
-	
+
 	public ItemBuilderImpl()
 	{
 		item = new ItemStack( Material.AIR );
@@ -55,7 +59,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	public ItemBuilder type( Material mat )
 	{
 		item.setType( mat );
-		
+
 		return this;
 	}
 
@@ -64,14 +68,14 @@ public class ItemBuilderImpl implements ItemBuilder
 	{
 		Preconditions.checkArgument( durability <= Short.MAX_VALUE,
 				"durability must less or equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE );
-		
+
 		item.setDurability( (short) (item.getType().getMaxDurability() - durability) );
-		
+
 		return this;
 	}
 
 	@Override
-	public ItemBuilder maxDurability() 
+	public ItemBuilder maxDurability()
 	{
 		return durability( item.getType().getMaxDurability() );
 	}
@@ -79,87 +83,87 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder amount( int amount )
 	{
-		Preconditions.checkArgument( amount > 0, "amount must be positive");
-		
+		Preconditions.checkArgument( amount > 0, "amount must be positive" );
+
 		item.setAmount( amount );
-		
+
 		return this;
 	}
 
 	@Override
 	public ItemBuilder name( String displayName )
 	{
-		Preconditions.checkNotNull( displayName, "displayName cannot be null");
-		
-		modifyMeta( meta -> meta.setDisplayName( displayName ) );
-		
+		Preconditions.checkNotNull( displayName, "displayName cannot be null" );
+
+		consumeMeta( meta -> meta.setDisplayName( displayName ) );
+
 		return this;
 	}
 
 	@Override
-	public ItemBuilder lore( String ... lines )
+	public ItemBuilder lore( String... lines )
 	{
-		Preconditions.checkNotNull( lines, "lines cannot be null");
-		
-		if ( lines.length == 0 ) 
+		Preconditions.checkNotNull( lines, "lines cannot be null" );
+
+		if ( lines.length == 0 )
 			return this;
-		
-		modifyMeta( meta -> 
+
+		consumeMeta( meta ->
 		{
 			ArrayList<String> lore = Lists.newArrayList();
 			List<String> currentLore = meta.getLore();
-			
+
 			if ( currentLore != null && !currentLore.isEmpty() )
 				lore.addAll( currentLore );
-			
+
 			meta.setLore( lore );
-		});
-		
+		} );
+
 		return this;
 	}
 
 	@Override
 	public ItemBuilder enchant( Enchantment ench, int level )
 	{
-		Preconditions.checkArgument( level > 0, "level must be positive");
-		
+		Preconditions.checkArgument( level > 0, "level must be positive" );
+
 		item.addUnsafeEnchantment( ench, level );
-		
+
 		return this;
 	}
-	
+
 	@Override
 	public ItemBuilder data( byte data )
 	{
-		//TODO: implementar
+		// TODO: implementar
 		return this;
 	}
 
 	@Override
 	public ItemStack build()
-	{	
-		modifyMeta( meta -> 
+	{
+		consumeMeta( meta ->
 		{
 			String name = meta.getDisplayName();
 			List<String> lore = meta.getLore();
-			
+
 			if ( lore != null )
 			{
 				meta.setLore( lore.stream()
-								  .map( TRANSLATE_COLOR_CHARS::apply )
-								  .collect( Collectors.toList() ) );
+						.map( TRANSLATE_COLOR_CHARS::apply )
+						.collect( Collectors.toList() ) );
 			}
-			
+
 			if ( name != null )
 			{
 				meta.setDisplayName( TRANSLATE_COLOR_CHARS.apply( name ) );
 			}
-		});
-		
+		} );
+
 		return item;
 	}
 
-	private void modifyMeta( Consumer<ItemMeta> consumer )
+	private void consumeMeta( Consumer<ItemMeta> consumer )
 	{
 		ItemMeta meta = item.getItemMeta();
 		consumer.accept( meta );

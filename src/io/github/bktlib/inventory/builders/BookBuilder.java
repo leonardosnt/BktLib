@@ -25,36 +25,40 @@ public interface BookBuilder extends ItemBuilder
 	/**
 	 * Define o nome do autor do livro.
 	 * 
-	 * @param author O nome do autor desejado
+	 * @param author
+	 *            O nome do autor desejado
 	 */
 	BookBuilder author( String author );
-	
+
 	/**
 	 * Define o titulo do livro.
 	 * 
-	 * @param title Titulo desejado
+	 * @param title
+	 *            Titulo desejado
 	 */
 	BookBuilder title( String title );
-	
+
 	/**
 	 * Cria uma nova página.
 	 */
 	BookBuilder newPage();
-	
+
 	/**
 	 * Adiciona uma linha a pagina atual.
 	 * 
-	 * @param line Linha a ser adicionada.
+	 * @param line
+	 *            Linha a ser adicionada.
 	 */
 	BookBuilder line( String line );
-	
+
 	/**
 	 * Adiciona N linhas a pagina atual.
 	 * 
-	 * @param lines Lista de linhas a ser adicionada.
+	 * @param lines
+	 *            Lista de linhas a ser adicionada.
 	 */
-	BookBuilder lines( String ... lines );
-	
+	BookBuilder lines( String... lines );
+
 	/**
 	 * Retorna uma nova instancia da implementação dessa classe.
 	 */

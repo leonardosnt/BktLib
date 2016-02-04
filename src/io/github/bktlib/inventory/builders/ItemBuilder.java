@@ -35,63 +35,69 @@ public interface ItemBuilder extends Builder<ItemStack>
 	/**
 	 * Define o tipo do item.
 	 * 
-	 * @param mat Material desejado
+	 * @param mat
+	 *            Material desejado
 	 */
 	ItemBuilder type( Material mat );
-	
+
 	/**
 	 * Define a durabilidade do item
 	 * 
-	 * @param durability Durabilidade desejada
+	 * @param durability
+	 *            Durabilidade desejada
 	 */
 	ItemBuilder durability( int durability );
-	
+
 	/**
 	 * Define a durabilidade maxima para o item.
 	 */
 	ItemBuilder maxDurability();
-	
+
 	/**
 	 * Define a quantidade do item
 	 * 
-	 * @param amount Quantidade desejada
+	 * @param amount
+	 *            Quantidade desejada
 	 */
 	ItemBuilder amount( int amount );
-	
+
 	/**
 	 * Define o nome do item.
 	 * 
-	 * @param displayName Nome desejado
+	 * @param displayName
+	 *            Nome desejado
 	 */
 	ItemBuilder name( String displayName );
-	
+
 	/**
 	 * Adiciona linhas ao lore do item
 	 * 
-	 * @param lines Linhas para adicionar
+	 * @param lines
+	 *            Linhas para adicionar
 	 */
-	ItemBuilder lore( String ... lines );
-	
+	ItemBuilder lore( String... lines );
+
 	/**
 	 * Adiciona um encantamento ao item.
 	 * 
-	 * @param ench Tipo do encantamento
-	 * @param level Level do encantamento
+	 * @param ench
+	 *            Tipo do encantamento
+	 * @param level
+	 *            Level do encantamento
 	 */
 	ItemBuilder enchant( Enchantment ench, int level );
-	
-	
+
 	/**
 	 * @param data
 	 * @return
 	 */
 	ItemBuilder data( byte data );
-	
+
 	/**
 	 * @return O ItemStack "construido"
 	 */
 	ItemStack build();
-	
+
 	/**
 	 * @return Uma nova instancia da implementacao dessa classe.
 	 */

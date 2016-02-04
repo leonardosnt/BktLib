@@ -37,8 +37,6 @@ import com.google.common.base.Preconditions;
  */
 public class Invs
 {
-	private Invs() {}
-
 	/**
 	 * Preenche o inventario com o {@code item}
 	 * 
@@ -178,5 +176,10 @@ public class Invs
 	public static boolean isCompletelyFull( final Supplier<? extends Inventory> inv )
 	{
 		return isCompletelyFull( inv.get() );
+	}
+	
+	private Invs() 
+	{
+        throw new UnsupportedOperationException();
 	}
 }

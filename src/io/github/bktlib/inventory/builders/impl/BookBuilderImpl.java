@@ -43,12 +43,12 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	{
 		throw new UnsupportedOperationException( "Cannot change type of Book" );
 	}
-	
+
 	@Override
 	public BookBuilder author( String author )
 	{
 		bookMeta.setAuthor( TRANSLATE_COLOR_CHARS.apply( author ) );
-		
+
 		return this;
 	}
 
@@ -56,7 +56,7 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	public BookBuilder title( String title )
 	{
 		bookMeta.setTitle( TRANSLATE_COLOR_CHARS.apply( title ) );
-		
+
 		return this;
 	}
 
@@ -70,25 +70,24 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 		else
 		{
 			writePage();
-			pageBuilder.setLength( 0 );	
+			pageBuilder.setLength( 0 );
 		}
-		
+
 		return this;
 	}
-	
+
 	/*
-	 *  Eu quero que seja necessario criar uma nova pagina 
-	 *  antes de escrever uma ou mais linhas, questao de boa pratica :D
+	 * Eu quero que seja necessario criar uma nova pagina antes de escrever uma
+	 * ou mais linhas, questao de boa pratica :D
 	 */
 	@Override
 	public BookBuilder line( String line )
 	{
-		Preconditions.checkState( pageBuilder != null, 
+		Preconditions.checkState( pageBuilder != null,
 				"You must create new page before write an line" );
-		
-		pageBuilder.append( TRANSLATE_COLOR_CHARS.apply( line ) )
-		.append( "\n" );
-		
+
+		pageBuilder.append( TRANSLATE_COLOR_CHARS.apply( line ) ).append( "\n" );
+
 		return this;
 	}
 
@@ -97,7 +96,7 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	{
 		for ( String line : lines )
 			line( line );
-		
+
 		return this;
 	}
 
@@ -106,10 +105,10 @@ public class BookBuilderImpl extends ItemBuilderImpl implements BookBuilder
 	{
 		writePage();
 		item.setItemMeta( bookMeta );
-		
+
 		return super.build();
 	}
-	
+
 	private void writePage()
 	{
 		if ( pageBuilder != null )

@@ -13,13 +13,13 @@ public class PotionBuilderImpl extends ItemBuilderImpl implements PotionBuilder
 	public PotionMeta potionMeta;
 	public int effDuration, effLevel;
 	public PotionEffectType effType;
-	
+
 	public PotionBuilderImpl()
 	{
 		item = new ItemStack( Material.POTION );
 		potionMeta = (PotionMeta) item.getItemMeta();
 	}
-	
+
 	@Override
 	public PotionBuilder effect( PotionEffectType eff )
 	{
@@ -39,7 +39,7 @@ public class PotionBuilderImpl extends ItemBuilderImpl implements PotionBuilder
 		effLevel = lvl;
 		return this;
 	}
-	
+
 	@Override
 	public ItemStack build()
 	{
