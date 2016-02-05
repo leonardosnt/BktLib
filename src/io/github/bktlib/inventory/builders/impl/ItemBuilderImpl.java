@@ -18,11 +18,12 @@
 
 package io.github.bktlib.inventory.builders.impl;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
@@ -31,7 +32,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import io.github.bktlib.inventory.builders.ItemBuilder;
@@ -67,7 +67,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder durability( int durability )
 	{
-		Preconditions.checkArgument( durability <= Short.MAX_VALUE,
+		checkArgument( durability <= Short.MAX_VALUE,
 				"durability must less or equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE );
 
 		item.setDurability( (short) (item.getType().getMaxDurability() - durability) );
@@ -84,7 +84,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder amount( int amount )
 	{
-		Preconditions.checkArgument( amount > 0, "amount must be positive" );
+		checkArgument( amount > 0, "amount must be positive" );
 
 		item.setAmount( amount );
 
@@ -94,7 +94,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder name( String displayName )
 	{
-		Preconditions.checkNotNull( displayName, "displayName cannot be null" );
+		checkNotNull( displayName, "displayName cannot be null" );
 
 		consumeMeta( meta -> meta.setDisplayName( displayName ) );
 
@@ -104,7 +104,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder lore( String... lines )
 	{
-		Preconditions.checkNotNull( lines, "lines cannot be null" );
+		checkNotNull( lines, "lines cannot be null" );
 
 		if ( lines.length == 0 )
 			return this;
@@ -126,7 +126,7 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder enchant( Enchantment ench, int level )
 	{
-		Preconditions.checkArgument( level > 0, "level must be positive" );
+		checkArgument( level > 0, "level must be positive" );
 
 		item.addUnsafeEnchantment( ench, level );
 
@@ -134,8 +134,11 @@ public class ItemBuilderImpl implements ItemBuilder
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T extends ItemMeta> ItemBuilder meta( Consumer<T> metaMapper )
 	{
+		checkNotNull( metaMapper, "metaMapper cannot be null." );		
+		
 		final ItemMeta meta = item.getItemMeta();
 		metaMapper.accept( (T) meta );
 		item.setItemMeta( meta );

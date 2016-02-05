@@ -27,7 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Classe utilitaria com metodos frequentemente usados para manipulacao de
@@ -47,7 +47,7 @@ public class Invs
 	 */
 	public static void fill( final Inventory inv, final ItemStack item )
 	{
-		Preconditions.checkNotNull( inv, "inv cannot be null" );
+		checkNotNull( inv, "inv cannot be null" );
 
 		IntStream.rangeClosed( 
 				0, inv.getSize() - 1 
@@ -72,7 +72,7 @@ public class Invs
 	 */
 	public static void fill( final Inventory inv, final Material material )
 	{
-		Preconditions.checkNotNull( inv, "inv cannot be null" );
+		checkNotNull( inv, "inv cannot be null" );
 
 		if ( material == Material.AIR ) return;
 
@@ -96,7 +96,7 @@ public class Invs
 	 */
 	public static boolean isEmpty( final Inventory inv )
 	{
-		Preconditions.checkNotNull( inv, "inv cannot be null" );
+		checkNotNull( inv, "inv cannot be null" );
 
 		return stream( inv ).allMatch( Objects::isNull );
 	}
@@ -118,7 +118,7 @@ public class Invs
 	 */
 	public static Stream<ItemStack> stream( final Inventory inv )
 	{
-		Preconditions.checkNotNull( inv, "inv cannot be null" );
+		checkNotNull( inv, "inv cannot be null" );
 
 		return Stream.of( inv.getContents() );
 	}
@@ -140,7 +140,7 @@ public class Invs
 	 */
 	public static boolean isFull( final Inventory inv )
 	{
-		Preconditions.checkNotNull( inv, "inv cannot be null" );
+		checkNotNull( inv, "inv cannot be null" );
 
 		return inv.firstEmpty() == -1;
 	}

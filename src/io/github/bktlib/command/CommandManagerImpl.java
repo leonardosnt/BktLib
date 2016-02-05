@@ -18,9 +18,8 @@
 
 package io.github.bktlib.command;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.github.bktlib.reflect.util.ReflectUtil.hasPublicConstructor;
+import static com.google.common.base.Preconditions.*;
+import static io.github.bktlib.reflect.util.ReflectUtil.*;
 import static java.lang.String.format;
 
 import java.io.File;

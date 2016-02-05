@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import static org.bukkit.ChatColor.*;
+import static com.google.common.base.Preconditions.*;
 
 public final class Items
 {
@@ -37,6 +38,9 @@ public final class Items
 	 */
 	public static void setDisplayName( final ItemStack item, final String name )
 	{
+		checkNotNull( item, "item cannot be null" );
+		checkNotNull( name, "name cannot be null" );
+		
 		consumeMeta( item, meta -> meta.setDisplayName( 
 				translateAlternateColorCodes( '&', name)
 		) );
@@ -50,6 +54,9 @@ public final class Items
 	 */
 	public static void setLore( final ItemStack item, final String ... lore )
 	{
+		checkNotNull( item, "item cannot be null" );
+		checkNotNull( lore, "lore cannot be null" );
+		
 		consumeMeta( item, meta -> meta.setLore( 
 				Stream.of( lore )
     				.map( line -> translateAlternateColorCodes( '&', line ) )

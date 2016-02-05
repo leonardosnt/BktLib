@@ -22,7 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.*;
 
 public final class Locations
 {
@@ -31,7 +31,7 @@ public final class Locations
 	public static Location of( final String world, final double x, final double y, 
 								final double z )
 	{
-		Preconditions.checkNotNull( world, "world cannot be null" );
+		checkNotNull( world, "world cannot be null" );
 		
 		return new Location( Bukkit.getWorld( world ), x, y, z );
 	}
@@ -43,7 +43,7 @@ public final class Locations
 	
 	public static Location of( final String world, final Vector vec )
 	{
-		Preconditions.checkNotNull( world, "world cannot be null" );
+		checkNotNull( world, "world cannot be null" );
 		
 		return new Location( 
 				Bukkit.getWorld( world ), 
@@ -65,8 +65,8 @@ public final class Locations
 	 */
 	public static Location max( final Location l1, final Location l2 )
 	{
-		Preconditions.checkNotNull( l1, "l1 cannot be null" );
-		Preconditions.checkNotNull( l2, "l2 cannot be null" );
+		checkNotNull( l1, "l1 cannot be null" );
+		checkNotNull( l2, "l2 cannot be null" );
 		
 		return new Location( 
 				l1.getWorld(), 
@@ -88,8 +88,8 @@ public final class Locations
 	 */
 	public static Location min( final Location l1, final Location l2 )
 	{
-		Preconditions.checkNotNull( l1, "l1 cannot be null" );
-		Preconditions.checkNotNull( l2, "l2 cannot be null" );
+		checkNotNull( l1, "l1 cannot be null" );
+		checkNotNull( l2, "l2 cannot be null" );
 		
 		return new Location( 
 				l1.getWorld(), 
