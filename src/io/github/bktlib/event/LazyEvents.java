@@ -50,11 +50,11 @@ public class LazyEvents
 		owner = plugin;
 	}
 
-	public static <T extends Event> LazyEvent<T> on( @Nonnull Class<T> eventObserver )
+	public static <T extends Event> LazyEvent<T> on( @Nonnull Class<T> eventClass )
 	{
-		checkNotNull( eventObserver, "eventObserver cannot be null" );
+		checkNotNull( eventClass, "eventClass cannot be null" );
 		
-		return new LazyEvent<T>( eventObserver );
+		return new LazyEvent<T>( eventClass );
 	}
 	
 	public static class LazyEvent<T extends Event>
