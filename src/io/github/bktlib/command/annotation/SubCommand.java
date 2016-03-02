@@ -52,12 +52,12 @@ public @interface SubCommand
 	/**
 	 * @see Command#aliases()
 	 */
-	String[]aliases() default {};
+	String[] aliases() default {};
 
 	/**
 	 * @see Command#subCommands()
 	 */
-	String[]subCommands() default {};
+	String[] subCommands() default {};
 
 	/**
 	 * @see Command#usageTarget()
