@@ -94,8 +94,9 @@ public class ItemBuilderImpl implements ItemBuilder
 	@Override
 	public ItemBuilder name( String displayName )
 	{
-		checkNotNull( displayName, "displayName cannot be null" );
-
+		if ( displayName == null )
+			return this;
+		
 		consumeMeta( meta -> meta.setDisplayName( displayName ) );
 
 		return this;
