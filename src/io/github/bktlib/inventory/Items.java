@@ -18,6 +18,8 @@
 
 package io.github.bktlib.inventory;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -86,6 +88,20 @@ public final class Items
         return item != null && item.hasItemMeta() && item.getItemMeta().hasLore();
     }
 	
+    public static Optional<String> getDisplayName( final ItemStack item )
+    {
+    	return hasDisplayName( item ) 
+    			? Optional.of( item.getItemMeta().getDisplayName() )
+    			: Optional.empty();
+    }
+    
+    public static Optional<List<String>> getLore( final ItemStack item )
+    {
+    	return hasLore( item ) 
+    			? Optional.of( item.getItemMeta().getLore() )
+    			: Optional.empty();
+    }
+    
 	private static void consumeMeta( final ItemStack item, final Consumer<ItemMeta> metaConsumer )
 	{
 		ItemMeta meta = item.getItemMeta();
