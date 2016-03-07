@@ -21,6 +21,7 @@ package io.github.bktlib.inventory.builders.impl;
 import static com.google.common.base.Preconditions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -118,6 +119,8 @@ public class ItemBuilderImpl implements ItemBuilder
 			if ( currentLore != null && !currentLore.isEmpty() )
 				lore.addAll( currentLore );
 
+			lore.addAll( Arrays.asList( lines ) );
+			
 			meta.setLore( lore );
 		} );
 
