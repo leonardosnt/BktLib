@@ -162,12 +162,9 @@ public class Invs
 	 */
 	public static boolean isCompletelyFull( final Inventory inv )
 	{
-		if ( !isFull( inv ) )
-			return false;
-
-		return stream( inv )
-				.filter( Objects::nonNull )
-				.allMatch( item -> item.getAmount() == item.getMaxStackSize() );
+		return !isFull( inv ) && stream( inv )
+                                 .filter( Objects::nonNull )
+                                 .allMatch( item -> item.getAmount() == item.getMaxStackSize() );
 	}
 
 	/**

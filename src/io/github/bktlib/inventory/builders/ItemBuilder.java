@@ -18,101 +18,192 @@
 
 package io.github.bktlib.inventory.builders;
 
+import static com.google.common.base.Preconditions.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import io.github.bktlib.common.Builder;
-import io.github.bktlib.inventory.builders.impl.ItemBuilderImpl;
+import com.google.common.base.CharMatcher;
+import com.google.common.collect.Lists;
 
-/**
- * Classe utilitaria para "construir" items.
- * 
- * @author Leonardosc
- */
-public interface ItemBuilder extends Builder<ItemStack>
+public class ItemBuilder
 {
+    protected static final Function<String, String> TRANSLATE_COLOR_CHARS = text ->
+            text == null ? null : CharMatcher.anyOf( "&" ).collapseFrom( text, '\u00a7' );
+
+    protected ItemStack item = new ItemStack( Material.AIR );
+
 	/**
 	 * Define o tipo do item.
-	 * 
+	 *
 	 * @param mat
 	 *            Material desejado
 	 */
-	ItemBuilder type( Material mat );
+	public ItemBuilder type(Material mat )
+	{
+		item.setType( mat );
+		return this;
+	}
 
 	/**
 	 * Define a durabilidade do item
-	 * 
+	 *
 	 * @param durability
 	 *            Durabilidade desejada
 	 */
-	ItemBuilder durability( int durability );
+	public ItemBuilder durability(int durability )
+	{
+		checkArgument( durability <= Short.MAX_VALUE, "withDurability must less or " +
+                                                      "equals than %s (Short.MAX_VALUE)",
+                                                       Short.MAX_VALUE );
+
+		item.setDurability( (short) (item.getType().getMaxDurability() - durability) );
+		return this;
+	}
 
 	/**
 	 * Define a durabilidade maxima para o item.
 	 */
-	ItemBuilder maxDurability();
+	public ItemBuilder maxDurability()
+    {
+		return durability( item.getType().getMaxDurability() );
+	}
 
 	/**
 	 * Define a quantidade do item
-	 * 
+	 *
 	 * @param amount
 	 *            Quantidade desejada
 	 */
-	ItemBuilder amount( int amount );
+	public ItemBuilder amount( int amount )
+    {
+		checkArgument( amount > 0, "withAmount must be positive" );
+		item.setAmount( amount );
+		return this;
+	}
+
+    /**
+     * Define a quantidade maxima para o item.
+     */
+    public ItemBuilder maxAmount()
+    {
+        return amount( item.getMaxStackSize() );
+    }
 
 	/**
 	 * Define o nome do item.
-	 * 
+	 *
 	 * @param displayName
 	 *            Nome desejado
 	 */
-	ItemBuilder name( String displayName );
+	public ItemBuilder displayName( String displayName )
+    {
+		if ( displayName == null ) return this;
+		consumeMeta( meta -> {
+            meta.setDisplayName( TRANSLATE_COLOR_CHARS.apply(displayName) );
+        });
+		return this;
+	}
 
 	/**
 	 * Adiciona linhas ao lore do item
-	 * 
+	 *
 	 * @param lines
 	 *            Linhas para adicionar
 	 */
-	ItemBuilder lore( String... lines );
+	public ItemBuilder lore( String... lines )
+    {
+		if ( lines == null || lines.length == 0 )
+			return this;
+
+		consumeMeta( meta -> {
+			ArrayList<String> lore = Lists.newArrayList();
+			List<String> currentLore = meta.getLore();
+
+			if ( currentLore != null && !currentLore.isEmpty() )
+				lore.addAll( currentLore );
+
+			lore.addAll( Arrays.asList( lines ) );
+			meta.setLore( lore.stream()
+                              .map( TRANSLATE_COLOR_CHARS )
+                              .collect( Collectors.toList() ) );
+		} );
+
+		return this;
+	}
 
 	/**
 	 * Adiciona um encantamento ao item.
-	 * 
-	 * @param ench
+	 *
+	 * @param enchantment
 	 *            Tipo do encantamento
 	 * @param level
 	 *            Level do encantamento
 	 */
-	ItemBuilder enchant( Enchantment ench, int level );
+	public ItemBuilder enchantment( Enchantment enchantment, int level )
+    {
+		checkArgument( level > 0, "level must be positive" );
+
+		item.addUnsafeEnchantment( enchantment, level );
+		return this;
+	}
 
 	/**
-	 * Modifica o {@link ItemMeta} do item. O ItemMeta pode ser {@code null}.
-	 * 
+	 * Modifica o {@link ItemMeta} do item. O ItemMeta pode ser {@code null}, cuidado.
+	 *
 	 * @param metaConsumer
 	 *            Função de modifica o {@link ItemMeta}
 	 */
-	<T extends ItemMeta> ItemBuilder meta( Consumer<T> metaConsumer );
+	@SuppressWarnings("unchecked")
+	public <T extends ItemMeta> ItemBuilder meta( Consumer<T> metaConsumer )
+    {
+		checkNotNull( metaConsumer, "metaMapper cannot be null." );
 
-	/**
-	 * @return O ItemStack "construido"
-	 */
-	ItemStack build();
-
-	/**
-	 * @return Uma nova instancia da implementacao dessa classe.
-	 */
-	static ItemBuilder newBuilder()
-	{
-		return new ItemBuilderImpl();
+		final ItemMeta meta = item.getItemMeta();
+        metaConsumer.accept((T) meta);
+		item.setItemMeta(meta);
+		return this;
 	}
 
-	static ItemBuilder of( Material type )
-	{
-		return newBuilder().type( type );
+	/**
+     * Controi o item.
+     *
+	 * @return O ItemStack "construido"
+	 */
+	public ItemStack build()
+    {
+		return item;
+	}
+
+    /**
+     * @return Uma nova instancia de {@link ItemBuilder}
+     */
+    public static ItemBuilder newBuilder()
+    {
+        return new ItemBuilder();
+    }
+
+    /**
+     * @return Uma nova instancia de {@link ItemBuilder}
+     */
+    public static ItemBuilder of( Material material )
+    {
+        return newBuilder().type( material );
+    }
+
+	private void consumeMeta( Consumer<ItemMeta> consumer )
+    {
+		final ItemMeta meta = item.getItemMeta();
+		consumer.accept(meta );
+		item.setItemMeta( meta );
 	}
 }

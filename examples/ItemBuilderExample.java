@@ -17,8 +17,8 @@ public class ItemBuilderExample
             				 .lore( "&AUm lore legal" )
             				 .lore( "&6Que da pra colocar" )
             				 .lore( "&6Varias linhas" )
-            				 .enchant( Enchantment.DAMAGE_ALL, 10 )
-            				 .enchant( Enchantment.FIRE_ASPECT, 10 )
+            				 .enchantment( Enchantment.DAMAGE_ALL, 10 )
+            				 .enchantment( Enchantment.FIRE_ASPECT, 10 )
             				 .amount( 24 )
             				 .durability( 123 )
             				 .build();
