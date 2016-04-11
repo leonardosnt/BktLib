@@ -20,6 +20,7 @@ package io.github.bktlib.reflect.util;
 
 import java.util.Optional;
 
+import io.github.bktlib.common.Strings;
 import org.bukkit.Bukkit;
 
 public final class MCReflectUtil
@@ -28,21 +29,47 @@ public final class MCReflectUtil
 	 * Pega uma classe do CRAFTBUKKIT 
 	 * {@code org.bukkit.craftbukkit.(versao).(*)}
 	 * 
-	 * @param klass
+	 * @param className
 	 *            Nome da classe.
 	 * @return Um {@link Optional} contendo a classe caso encontre, senão
 	 *         retorna um {@link Optional#empty()}
 	 */
-	public static Optional<Class<?>> getCBClass( final String klass )
+	public static Optional<Class<?>> getCBClass( final String className )
 	{
-		final StringBuilder basePackage = new StringBuilder( "org.bukkit.craftbukkit." );
-		basePackage.append( getCBVersion() );
-		basePackage.append( '.' );
-		basePackage.append( klass );
+        try
+        {
+            Class<?> klass = Class.forName( Strings.of( "org.bukkit.craftukkit." ,
+                                                         getCBVersion()          ,
+                                                         '.'					 ,
+                                                         className 				 ));
 
+            return Optional.of(klass);
+        }
+        catch ( ClassNotFoundException e )
+        {
+            return Optional.empty();
+        }
+	}
+
+    /**
+     * Pega uma classe do MINECRAFTSERVER
+     * {@code net.minecraft.server.(versao).{@code className}}
+     *
+     * @param className
+     *            Nome da classe.
+     * @return Um {@link Optional} contendo a classe caso encontre, senão
+     *         retorna um {@link Optional#empty()}
+     */
+	public static Optional<Class<?>> getNMSClass( final String className )
+	{
 		try
 		{
-			return Optional.of( Class.forName( basePackage.toString() ) );
+			Class<?> klass = Class.forName( Strings.of( "net.minecraft.server." ,
+														getCBVersion()          ,
+														'.'						,
+														className 				));
+
+			return Optional.of(klass);
 		}
 		catch ( ClassNotFoundException e )
 		{
