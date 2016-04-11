@@ -60,39 +60,39 @@ public final class MCReflectUtil
      * @return Um {@link Optional} contendo a classe caso encontre, senão
      *         retorna um {@link Optional#empty()}
      */
-	public static Optional<Class<?>> getNMSClass( final String className )
-	{
-		try
-		{
-			Class<?> klass = Class.forName( Strings.of( "net.minecraft.server." ,
-														getCBVersion()          ,
-														'.'                     ,
-														className               ));
+    public static Optional<Class<?>> getNMSClass( final String className )
+    {
+        try
+        {
+            Class<?> klass = Class.forName( Strings.of( "net.minecraft.server." ,
+                                                        getCBVersion()          ,
+                                                        '.'                     ,
+                                                        className               ));
 
-			return Optional.of(klass);
-		}
-		catch ( ClassNotFoundException e )
-		{
-			return Optional.empty();
-		}
-	}
+            return Optional.of(klass);
+        }
+        catch ( ClassNotFoundException e )
+        {
+            return Optional.empty();
+        }
+    }
 
-	/**
-	 * Pega a versao do CRAFTBUKKIT baseado no pacote da classe CraftServer, por
-	 * exemplo, {@code org.bukkit.craftbukkit.v1_5_R3.CraftServer}, vai retornar
-	 * {@code V1_5_R3}.
-	 * 
-	 * @return versão do craftbukkit
-	 */
-	public static String getCBVersion()
-	{
-		final String craftServerPkg = Bukkit.getServer().getClass().getPackage().getName();
+    /**
+     * Pega a versao do CRAFTBUKKIT baseado no pacote da classe CraftServer, por
+     * exemplo, {@code org.bukkit.craftbukkit.v1_5_R3.CraftServer}, vai retornar
+     * {@code V1_5_R3}.
+     *
+     * @return versão do craftbukkit
+     */
+    public static String getCBVersion()
+    {
+        final String craftServerPkg = Bukkit.getServer().getClass().getPackage().getName();
 
-		return craftServerPkg.substring( craftServerPkg.lastIndexOf( '.' ) + 1 );
-	}
-	
-	private MCReflectUtil() 
-	{
-		throw new UnsupportedOperationException();
-	}
+        return craftServerPkg.substring( craftServerPkg.lastIndexOf( '.' ) + 1 );
+    }
+
+    private MCReflectUtil()
+    {
+        throw new UnsupportedOperationException();
+    }
 }
