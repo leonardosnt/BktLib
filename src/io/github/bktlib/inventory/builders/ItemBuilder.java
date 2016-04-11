@@ -42,54 +42,54 @@ public class ItemBuilder
 
     protected ItemStack item = new ItemStack( Material.AIR );
 
-	/**
-	 * Define o tipo do item.
-	 *
-	 * @param mat
-	 *            Material desejado
-	 */
-	public ItemBuilder type(Material mat )
-	{
-		item.setType( mat );
-		return this;
-	}
-
-	/**
-	 * Define a durabilidade do item
-	 *
-	 * @param durability
-	 *            Durabilidade desejada
-	 */
-	public ItemBuilder durability(int durability )
-	{
-		checkArgument( durability <= Short.MAX_VALUE, "withDurability must less or " +
-                                                      "equals than %s (Short.MAX_VALUE)",
-                                                       Short.MAX_VALUE );
-
-		item.setDurability( (short) (item.getType().getMaxDurability() - durability) );
-		return this;
-	}
-
-	/**
-	 * Define a durabilidade maxima para o item.
-	 */
-	public ItemBuilder maxDurability()
+    /**
+     * Define o tipo do item.
+     *
+     * @param mat
+     *            Material desejado
+     */
+    public ItemBuilder type(Material mat )
     {
-		return durability( item.getType().getMaxDurability() );
-	}
+        item.setType( mat );
+        return this;
+    }
 
-	/**
-	 * Define a quantidade do item
-	 *
-	 * @param amount
-	 *            Quantidade desejada
-	 */
-	public ItemBuilder amount( int amount )
+    /**
+     * Define a durabilidade do item
+     *
+     * @param durability
+     *            Durabilidade desejada
+     */
+    public ItemBuilder durability(int durability )
     {
-		checkArgument( amount > 0, "withAmount must be positive" );
-		item.setAmount( amount );
-		return this;
-	}
+        checkArgument( durability <= Short.MAX_VALUE, "withDurability must less or " +
+                        "equals than %s (Short.MAX_VALUE)",
+                Short.MAX_VALUE );
+
+        item.setDurability( (short) (item.getType().getMaxDurability() - durability) );
+        return this;
+    }
+
+    /**
+     * Define a durabilidade maxima para o item.
+     */
+    public ItemBuilder maxDurability()
+    {
+        return durability( item.getType().getMaxDurability() );
+    }
+
+    /**
+     * Define a quantidade do item
+     *
+     * @param amount
+     *            Quantidade desejada
+     */
+    public ItemBuilder amount( int amount )
+    {
+        checkArgument( amount > 0, "withAmount must be positive" );
+        item.setAmount( amount );
+        return this;
+    }
 
     /**
      * Define a quantidade maxima para o item.
@@ -99,90 +99,90 @@ public class ItemBuilder
         return amount( item.getMaxStackSize() );
     }
 
-	/**
-	 * Define o nome do item.
-	 *
-	 * @param displayName
-	 *            Nome desejado
-	 */
-	public ItemBuilder displayName( String displayName )
+    /**
+     * Define o nome do item.
+     *
+     * @param displayName
+     *            Nome desejado
+     */
+    public ItemBuilder displayName( String displayName )
     {
-		if ( displayName == null ) return this;
-		consumeMeta( meta -> {
+        if ( displayName == null ) return this;
+        consumeMeta( meta -> {
             meta.setDisplayName( TRANSLATE_COLOR_CHARS.apply(displayName) );
         });
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * Adiciona linhas ao lore do item
-	 *
-	 * @param lines
-	 *            Linhas para adicionar
-	 */
-	public ItemBuilder lore( String... lines )
+    /**
+     * Adiciona linhas ao lore do item
+     *
+     * @param lines
+     *            Linhas para adicionar
+     */
+    public ItemBuilder lore( String... lines )
     {
-		if ( lines == null || lines.length == 0 )
-			return this;
+        if ( lines == null || lines.length == 0 )
+            return this;
 
-		consumeMeta( meta -> {
-			ArrayList<String> lore = Lists.newArrayList();
-			List<String> currentLore = meta.getLore();
+        consumeMeta( meta -> {
+            ArrayList<String> lore = Lists.newArrayList();
+            List<String> currentLore = meta.getLore();
 
-			if ( currentLore != null && !currentLore.isEmpty() )
-				lore.addAll( currentLore );
+            if ( currentLore != null && !currentLore.isEmpty() )
+                lore.addAll( currentLore );
 
-			lore.addAll( Arrays.asList( lines ) );
-			meta.setLore( lore.stream()
-                              .map( TRANSLATE_COLOR_CHARS )
-                              .collect( Collectors.toList() ) );
-		} );
+            lore.addAll( Arrays.asList( lines ) );
+            meta.setLore( lore.stream()
+                    .map( TRANSLATE_COLOR_CHARS )
+                    .collect( Collectors.toList() ) );
+        } );
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * Adiciona um encantamento ao item.
-	 *
-	 * @param enchantment
-	 *            Tipo do encantamento
-	 * @param level
-	 *            Level do encantamento
-	 */
-	public ItemBuilder enchantment( Enchantment enchantment, int level )
+    /**
+     * Adiciona um encantamento ao item.
+     *
+     * @param enchantment
+     *            Tipo do encantamento
+     * @param level
+     *            Level do encantamento
+     */
+    public ItemBuilder enchantment( Enchantment enchantment, int level )
     {
-		checkArgument( level > 0, "level must be positive" );
+        checkArgument( level > 0, "level must be positive" );
 
-		item.addUnsafeEnchantment( enchantment, level );
-		return this;
-	}
+        item.addUnsafeEnchantment( enchantment, level );
+        return this;
+    }
 
-	/**
-	 * Modifica o {@link ItemMeta} do item. O ItemMeta pode ser {@code null}, cuidado.
-	 *
-	 * @param metaConsumer
-	 *            Função de modifica o {@link ItemMeta}
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends ItemMeta> ItemBuilder meta( Consumer<T> metaConsumer )
+    /**
+     * Modifica o {@link ItemMeta} do item. O ItemMeta pode ser {@code null}, cuidado.
+     *
+     * @param metaConsumer
+     *            Função de modifica o {@link ItemMeta}
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ItemMeta> ItemBuilder meta( Consumer<T> metaConsumer )
     {
-		checkNotNull( metaConsumer, "metaMapper cannot be null." );
+        checkNotNull( metaConsumer, "metaMapper cannot be null." );
 
-		final ItemMeta meta = item.getItemMeta();
+        final ItemMeta meta = item.getItemMeta();
         metaConsumer.accept((T) meta);
-		item.setItemMeta(meta);
-		return this;
-	}
+        item.setItemMeta(meta);
+        return this;
+    }
 
-	/**
+    /**
      * Controi o item.
      *
-	 * @return O ItemStack "construido"
-	 */
-	public ItemStack build()
+     * @return O ItemStack "construido"
+     */
+    public ItemStack build()
     {
-		return item;
-	}
+        return item;
+    }
 
     /**
      * @return Uma nova instancia de {@link ItemBuilder}
@@ -200,10 +200,10 @@ public class ItemBuilder
         return newBuilder().type( material );
     }
 
-	private void consumeMeta( Consumer<ItemMeta> consumer )
+    private void consumeMeta( Consumer<ItemMeta> consumer )
     {
-		final ItemMeta meta = item.getItemMeta();
-		consumer.accept(meta );
-		item.setItemMeta( meta );
-	}
+        final ItemMeta meta = item.getItemMeta();
+        consumer.accept(meta );
+        item.setItemMeta( meta );
+    }
 }

@@ -20,39 +20,38 @@ package io.github.bktlib.reflect.util;
 
 public final class ReflectUtil
 {
-	
-	/**
-	 * Verifica se {@code klass} tem pelo menos 1 construtor publico.
-	 * 
-	 * @param klass
-	 *            Classe que deseja verificar.
-	 * @return se {@code klass} tem pelo menos 1 construtor publico.
-	 */
-	public static boolean hasPublicConstructor( final Class<?> klass )
-	{
-		return klass.getConstructors().length != 0;
-	}
-	
-	/**
-	 * Verifica se {@code klass} é uma classe concreta. (não é um enum,
-	 * anotação, interface ou é abstrata.)
-	 * 
-	 * @param klass Classe que deseja verificar.
-	 * @return se {@code klass} é uma classe concreta
-	 */
-	public static boolean isConcreteClass( final Class<?> klass )
-	{
-		final int INVALID_MODIFIER_FLAGS = 
-    				0x4000	/* Enum */		|
-    				0x2000	/* Annotation */	|
-    				0x400	/* Abstract */		|
-    				0x200	/* Interface */		;
-		
-		return (klass.getModifiers() & INVALID_MODIFIER_FLAGS) == 0;
-	}
-	
-	private ReflectUtil() 
-	{
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Verifica se {@code klass} tem pelo menos 1 construtor publico.
+     *
+     * @param klass
+     *            Classe que deseja verificar.
+     * @return se {@code klass} tem pelo menos 1 construtor publico.
+     */
+    public static boolean hasPublicConstructor( final Class<?> klass )
+    {
+        return klass.getConstructors().length != 0;
+    }
+
+    /**
+     * Verifica se {@code klass} é uma classe concreta. (não é um enum,
+     * anotação, interface ou é abstrata.)
+     *
+     * @param klass Classe que deseja verificar.
+     * @return se {@code klass} é uma classe concreta
+     */
+    public static boolean isConcreteClass( final Class<?> klass )
+    {
+        final int INVALID_MODIFIER_FLAGS =
+                        0x4000  /* Enum */          |
+                        0x2000  /* Annotation */    |
+                        0x400   /* Abstract */      |
+                        0x200   /* Interface */     ;
+
+        return (klass.getModifiers() & INVALID_MODIFIER_FLAGS) == 0;
+    }
+
+    private ReflectUtil()
+    {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -32,39 +32,39 @@ import static com.google.common.base.Preconditions.*;
 
 public final class Items
 {
-	/**
-	 * Define o nome de exibição do item.
-	 * 
-	 * @param item Item que deseja modificar.
-	 * @param name Nome desejado.
-	 */
-	public static void setDisplayName( final ItemStack item, final String name )
-	{
-		checkNotNull( item, "item cannot be null" );
-		checkNotNull( name, "name cannot be null" );
-		
-		consumeMeta( item, meta -> meta.setDisplayName( 
-				translateAlternateColorCodes( '&', name)
-		) );
-	}
-	
-	/**
-	 * Define o lore do item.
-	 * 
-	 * @param item Item que deseja modificar.
-	 * @param lore Lore desejado.
-	 */
-	public static void setLore( final ItemStack item, final String ... lore )
-	{
-		checkNotNull( item, "item cannot be null" );
-		checkNotNull( lore, "lore cannot be null" );
-		
-		consumeMeta( item, meta -> meta.setLore( 
-				Stream.of( lore )
-    				.map( line -> translateAlternateColorCodes( '&', line ) )
-    				.collect( Collectors.toList() ) 
-		));
-	}
+    /**
+     * Define o nome de exibição do item.
+     *
+     * @param item Item que deseja modificar.
+     * @param name Nome desejado.
+     */
+    public static void setDisplayName( final ItemStack item, final String name )
+    {
+        checkNotNull( item, "item cannot be null" );
+        checkNotNull( name, "name cannot be null" );
+
+        consumeMeta( item, meta -> meta.setDisplayName(
+                translateAlternateColorCodes( '&', name)
+        ) );
+    }
+
+    /**
+     * Define o lore do item.
+     *
+     * @param item Item que deseja modificar.
+     * @param lore Lore desejado.
+     */
+    public static void setLore( final ItemStack item, final String ... lore )
+    {
+        checkNotNull( item, "item cannot be null" );
+        checkNotNull( lore, "lore cannot be null" );
+
+        consumeMeta( item, meta -> meta.setLore(
+                Stream.of( lore )
+                        .map( line -> translateAlternateColorCodes( '&', line ) )
+                        .collect( Collectors.toList() )
+        ));
+    }
 
     /**
      * Verifica se o item tem um displayName definido.
@@ -72,7 +72,7 @@ public final class Items
      * @param item Item a ser verificado.
      * @return se o item tem um displayName definido.
      */
-	public static boolean hasDisplayName( final ItemStack item )
+    public static boolean hasDisplayName( final ItemStack item )
     {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName();
     }
@@ -87,27 +87,27 @@ public final class Items
     {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasLore();
     }
-	
+
     public static Optional<String> getDisplayName( final ItemStack item )
     {
-    	return hasDisplayName( item ) 
-    			? Optional.of( item.getItemMeta().getDisplayName() )
-    			: Optional.empty();
+        return hasDisplayName( item )
+                ? Optional.of( item.getItemMeta().getDisplayName() )
+                : Optional.empty();
     }
-    
+
     public static Optional<List<String>> getLore( final ItemStack item )
     {
-    	return hasLore( item ) 
-    			? Optional.of( item.getItemMeta().getLore() )
-    			: Optional.empty();
+        return hasLore( item )
+                ? Optional.of( item.getItemMeta().getLore() )
+                : Optional.empty();
     }
-    
-	private static void consumeMeta( final ItemStack item, final Consumer<ItemMeta> metaConsumer )
-	{
-		ItemMeta meta = item.getItemMeta();
-		metaConsumer.accept( meta );
-		item.setItemMeta( meta );
-	}
+
+    private static void consumeMeta( final ItemStack item, final Consumer<ItemMeta> metaConsumer )
+    {
+        ItemMeta meta = item.getItemMeta();
+        metaConsumer.accept( meta );
+        item.setItemMeta( meta );
+    }
 
     private Items()
     {
