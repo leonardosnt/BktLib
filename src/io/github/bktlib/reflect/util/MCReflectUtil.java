@@ -40,8 +40,8 @@ public final class MCReflectUtil
         {
             Class<?> klass = Class.forName( Strings.of( "org.bukkit.craftukkit." ,
                                                          getCBVersion()          ,
-                                                         '.'					 ,
-                                                         className 				 ));
+                                                         '.'                     ,
+                                                         className               ));
 
             return Optional.of(klass);
         }
@@ -66,8 +66,8 @@ public final class MCReflectUtil
 		{
 			Class<?> klass = Class.forName( Strings.of( "net.minecraft.server." ,
 														getCBVersion()          ,
-														'.'						,
-														className 				));
+														'.'                     ,
+														className               ));
 
 			return Optional.of(klass);
 		}
