@@ -25,17 +25,17 @@ import org.bukkit.Bukkit;
 
 public final class MCReflectUtil
 {
-	/**
-	 * Pega uma classe do CRAFTBUKKIT 
-	 * {@code org.bukkit.craftbukkit.(versao).(*)}
-	 * 
-	 * @param className
-	 *            Nome da classe.
-	 * @return Um {@link Optional} contendo a classe caso encontre, senão
-	 *         retorna um {@link Optional#empty()}
-	 */
-	public static Optional<Class<?>> getCBClass( final String className )
-	{
+    /**
+     * Pega uma classe do CRAFTBUKKIT
+     * {@code org.bukkit.craftbukkit.(versao).(*)}
+     *
+     * @param className
+     *            Nome da classe.
+     * @return Um {@link Optional} contendo a classe caso encontre, senão
+     *         retorna um {@link Optional#empty()}
+     */
+    public static Optional<Class<?>> getCBClass( final String className )
+    {
         try
         {
             Class<?> klass = Class.forName( Strings.of( "org.bukkit.craftukkit." ,
@@ -49,7 +49,7 @@ public final class MCReflectUtil
         {
             return Optional.empty();
         }
-	}
+    }
 
     /**
      * Pega uma classe do MINECRAFTSERVER
