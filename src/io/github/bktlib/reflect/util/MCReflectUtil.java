@@ -55,7 +55,7 @@ public final class MCReflectUtil
 	 * exemplo, {@code org.bukkit.craftbukkit.v1_5_R3.CraftServer}, vai retornar
 	 * {@code V1_5_R3}.
 	 * 
-	 * @return
+	 * @return versão do craftbukkit
 	 */
 	public static String getCBVersion()
 	{
