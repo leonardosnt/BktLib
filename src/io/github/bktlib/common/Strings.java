@@ -28,29 +28,27 @@ public final class Strings
         if ( parts.length == 0 ) return "";
 
         final StringBuilder sb = new StringBuilder();
-
         Stream.of( parts ).forEach( sb::append );
-
         return sb.toString();
     }
     
     public static boolean isNullOrEmpty( final String str )
     {
-    	return str == null || str.length() == 0;
+        return str == null || str.length() == 0;
     }
     
     public static String emptyToNull( final String str )
     {
-    	return isNullOrEmpty( str ) ? null : str;
+        return isNullOrEmpty( str ) ? null : str;
     }
     
     public static String nullToEmpty( final String str )
     {
-    	return str == null ? "" : str;
+        return str == null ? "" : str;
     }
-    
-    private Strings() 
+
+    private Strings()
     {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }
