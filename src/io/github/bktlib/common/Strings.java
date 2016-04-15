@@ -24,9 +24,9 @@ public final class Strings
 {
     public static String of( final Object ... parts )
     {
-    	if ( parts == null ) return "null";
-    	if ( parts.length == 0 ) return "";
-    	
+        if ( parts == null ) return "null";
+        if ( parts.length == 0 ) return "";
+
         final StringBuilder sb = new StringBuilder();
 
         Stream.of( parts ).forEach( sb::append );

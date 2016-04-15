@@ -32,8 +32,6 @@ import static com.google.common.base.Preconditions.*;
 /**
  * Classe utilitaria com metodos frequentemente usados para manipulacao de
  * inventarios
- *
- * @author leonardosc
  */
 public class Invs
 {
@@ -49,8 +47,8 @@ public class Invs
     {
         checkNotNull( inv, "inv cannot be null" );
 
-        IntStream.rangeClosed(
-                0, inv.getSize() - 1
+        IntStream.range(
+                0, inv.getSize()
         ).forEach( idx -> inv.setItem( idx, item ) );
     }
 
@@ -163,7 +161,6 @@ public class Invs
     public static boolean isCompletelyFull( final Inventory inv )
     {
         return isFull( inv ) && stream( inv )
-                .filter( Objects::nonNull )
                 .allMatch( item -> item.getAmount() == item.getMaxStackSize() );
     }
 
