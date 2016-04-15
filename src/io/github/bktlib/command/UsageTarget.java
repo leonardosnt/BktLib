@@ -20,18 +20,18 @@ package io.github.bktlib.command;
 
 public enum UsageTarget
 {
-	/**
-	 * Determina que um comando pode ser usado somente no jogo.
-	 */
-	IN_GAME,
+    /**
+     * Determina que um comando pode ser usado somente no jogo.
+     */
+    IN_GAME,
 
-	/**
-	 * Determina que um comando não pode ser usado no jogo.
-	 */
-	NOT_IN_GAME,
+    /**
+     * Determina que um comando não pode ser usado no jogo.
+     */
+    NOT_IN_GAME,
 
-	/**
-	 * Determina que um comando pode ser usado tanto no jogo, quando fora dele.
-	 */
-	BOTH
+    /**
+     * Determina que um comando pode ser usado tanto no jogo, quando fora dele.
+     */
+    BOTH
 }

@@ -29,58 +29,58 @@ import io.github.bktlib.reflect.MethodRef;
 
 class MethodCommand extends CommandBase
 {
-	MethodRef ref;
+    MethodRef ref;
 
-	MethodCommand(final MethodRef ref)
-	{
-		super( ref.getMethod().getAnnotation( Command.class ) );
-		
-		this.ref = ref;
-		this.ref.getMethod().setAccessible( true );
-	}
+    MethodCommand(final MethodRef ref)
+    {
+        super( ref.getMethod().getAnnotation( Command.class ) );
 
-	MethodCommand(final MethodRef ref, Command commandAnnotation)
-	{
-		super( commandAnnotation );
-		
-		this.ref = ref;
-		this.ref.getMethod().setAccessible( true );
-	}
+        this.ref = ref;
+        this.ref.getMethod().setAccessible( true );
+    }
 
-	@Override
-	public CommandResult onExecute( final CommandSource src, final CommandArgs args )
-	{
-		try
-		{
-			return (CommandResult) ref.getMethod().invoke(
-					ref.getOwner(), src, args );
-		}
-		catch ( InvocationTargetException e )
-		{
-			final Throwable root = Throwables.getRootCause( e );
+    MethodCommand(final MethodRef ref, Command commandAnnotation)
+    {
+        super( commandAnnotation );
 
-			if ( root instanceof CommandException )
-			{
-				return ((CommandException) root).getResult();
-			}
-			else
-			{
-				e.printStackTrace();
-			}
+        this.ref = ref;
+        this.ref.getMethod().setAccessible( true );
+    }
 
-			return CommandResult.genericError();
-		}
-		catch ( IllegalAccessException | IllegalArgumentException e )
-		{
-			e.printStackTrace();
+    @Override
+    public CommandResult onExecute( final CommandSource src, final CommandArgs args )
+    {
+        try
+        {
+            return (CommandResult) ref.getMethod().invoke(
+                    ref.getOwner(), src, args );
+        }
+        catch ( InvocationTargetException e )
+        {
+            final Throwable root = Throwables.getRootCause( e );
 
-			return CommandResult.genericError();
-		}
-	}
+            if ( root instanceof CommandException )
+            {
+                return ((CommandException) root).getResult();
+            }
+            else
+            {
+                e.printStackTrace();
+            }
 
-	@Override
-	public String toString()
-	{
-		return Strings.of( ref );
-	}
+            return CommandResult.genericError();
+        }
+        catch ( IllegalAccessException | IllegalArgumentException e )
+        {
+            e.printStackTrace();
+
+            return CommandResult.genericError();
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return Strings.of( ref );
+    }
 }

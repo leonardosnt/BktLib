@@ -26,106 +26,106 @@ import io.github.bktlib.common.Builder;
 
 public class CommandBuilder implements Builder<CommandBase>
 {
-	private String name, usage, permission, description;
-	private String[] aliases, subCommands;
-	private UsageTarget usageTarget;
-	private CommandFunction executor;
-	
-	private CommandBuilder( String name )
-	{
-		this.name = name;
-		
-		usage = permission = description = "";
-		aliases = subCommands = new String[0];
-		usageTarget = UsageTarget.BOTH;
-	}
+    private String name, usage, permission, description;
+    private String[] aliases, subCommands;
+    private UsageTarget usageTarget;
+    private CommandFunction executor;
 
-	public static CommandBuilder name( String name ) 
-	{
-		checkNotNull( name, "name cannot be null." );
-		
-		return new CommandBuilder( name );
-	}
-	
-	public CommandBuilder permission( String permission )
-	{
-		if ( permission != null )
-			this.permission = permission;
-		return this;
-	}
+    private CommandBuilder( String name )
+    {
+        this.name = name;
 
-	public CommandBuilder description( String description )
-	{
-		if ( description != null )
-			this.description = description;
-		return this;
-	}
+        usage = permission = description = "";
+        aliases = subCommands = new String[0];
+        usageTarget = UsageTarget.BOTH;
+    }
 
-	public CommandBuilder usage( String usage )
-	{
-		if ( usage != null )
-			this.usage = usage;
-		return this;
-	}
+    public static CommandBuilder name( String name )
+    {
+        checkNotNull( name, "name cannot be null." );
 
-	public CommandBuilder aliases( String ... aliases )
-	{
-		if ( aliases != null )
-			this.aliases = aliases;
-		return this;
-	}
+        return new CommandBuilder( name );
+    }
 
-	public CommandBuilder subCommands( String ... subCommands )
-	{
-		if ( subCommands != null )
-			this.subCommands = subCommands;
-		return this;
-	}
+    public CommandBuilder permission( String permission )
+    {
+        if ( permission != null )
+            this.permission = permission;
+        return this;
+    }
 
-	public CommandBuilder usageTarget( UsageTarget usageTarget )
-	{
-		if ( usageTarget != null )
-			this.usageTarget = usageTarget;
-		return this;
-	}
+    public CommandBuilder description( String description )
+    {
+        if ( description != null )
+            this.description = description;
+        return this;
+    }
 
-	public CommandBuilder onExecute( CommandFunction executor )
-	{
-		checkNotNull( executor, "executor cannot be null." );
-		this.executor = executor;
-		return this;
-	}
+    public CommandBuilder usage( String usage )
+    {
+        if ( usage != null )
+            this.usage = usage;
+        return this;
+    }
 
-	public CommandBase buildAndRegister( CommandManager manager )
-	{
-		checkNotNull( manager, "manager cannot be null." );
-		CommandBase built = build();
-		manager.register( built );
-		return built;
-	}
+    public CommandBuilder aliases( String ... aliases )
+    {
+        if ( aliases != null )
+            this.aliases = aliases;
+        return this;
+    }
 
-	@Override
-	public CommandBase build()
-	{
-		checkNotNull( executor, "executor not defined, use onExecutor( (src, args) -> {...} ) to define it." );
-		
-		Command commandAnn = CommandManagerImpl.createCommandAnnotation( 
-				name, 
-				permission, 
-				description, 
-				usage, 
-				aliases, 
-				subCommands, 
-				usageTarget 
-		);
-		
-		return new CommandBase( commandAnn ) 
-		{
-			@Override
-			public CommandResult onExecute( final CommandSource src, final CommandArgs args )
-			{
-				return executor.apply( src, args );
-			}
-		};
-	}
+    public CommandBuilder subCommands( String ... subCommands )
+    {
+        if ( subCommands != null )
+            this.subCommands = subCommands;
+        return this;
+    }
+
+    public CommandBuilder usageTarget( UsageTarget usageTarget )
+    {
+        if ( usageTarget != null )
+            this.usageTarget = usageTarget;
+        return this;
+    }
+
+    public CommandBuilder onExecute( CommandFunction executor )
+    {
+        checkNotNull( executor, "executor cannot be null." );
+        this.executor = executor;
+        return this;
+    }
+
+    public CommandBase buildAndRegister( CommandManager manager )
+    {
+        checkNotNull( manager, "manager cannot be null." );
+        CommandBase built = build();
+        manager.register( built );
+        return built;
+    }
+
+    @Override
+    public CommandBase build()
+    {
+        checkNotNull( executor, "executor not defined, use onExecutor( (src, args) -> {...} ) to define it." );
+
+        Command commandAnn = CommandManagerImpl.createCommandAnnotation(
+                name,
+                permission,
+                description,
+                usage,
+                aliases,
+                subCommands,
+                usageTarget
+        );
+
+        return new CommandBase( commandAnn )
+        {
+            @Override
+            public CommandResult onExecute( final CommandSource src, final CommandArgs args )
+            {
+                return executor.apply( src, args );
+            }
+        };
+    }
 }

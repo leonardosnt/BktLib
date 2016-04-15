@@ -53,110 +53,110 @@ import java.util.function.Function;
  */
 public interface CommandArgs
 {
-	/**
-	 * @return Numero de argumentos presentes.
-	 */
-	int size();
+    /**
+     * @return Numero de argumentos presentes.
+     */
+    int size();
 
-	/**
-	 * @return {@code true} caso não haja nenhum argumento, caso contrario
-	 *         retorna {@code false}
-	 */
-	boolean isEmpty();
+    /**
+     * @return {@code true} caso não haja nenhum argumento, caso contrario
+     *         retorna {@code false}
+     */
+    boolean isEmpty();
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	String get( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    String get( int argIndex );
 
-	/**
-	 * @return
-	 */
-	String[] getRawArgs();
+    /**
+     * @return
+     */
+    String[] getRawArgs();
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	OptionalInt getAsInt( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    OptionalInt getAsInt( int argIndex );
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	OptionalDouble getAsDouble( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    OptionalDouble getAsDouble( int argIndex );
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	Optional<Boolean> getAsBoolean( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    Optional<Boolean> getAsBoolean( int argIndex );
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	Optional<Player> getAsPlayer( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    Optional<Player> getAsPlayer( int argIndex );
 
-	/**
-	 * @param argIndex
-	 * @param failCallback
-	 * @return
-	 */
-	int tryGetAsInt( int argIndex, Function<String, CommandResult> failCallback );
+    /**
+     * @param argIndex
+     * @param failCallback
+     * @return
+     */
+    int tryGetAsInt( int argIndex, Function<String, CommandResult> failCallback );
 
-	/**
-	 * @param argIndex
-	 * @param failCallback
-	 * @return
-	 */
-	double tryGetAsDouble( int argIndex, Function<String, CommandResult> failCallback );
+    /**
+     * @param argIndex
+     * @param failCallback
+     * @return
+     */
+    double tryGetAsDouble( int argIndex, Function<String, CommandResult> failCallback );
 
-	/**
-	 * @param argIndex
-	 * @param failCallback
-	 * @return
-	 */
-	boolean tryGetAsBoolean( int argIndex, Function<String, CommandResult> failCallback );
+    /**
+     * @param argIndex
+     * @param failCallback
+     * @return
+     */
+    boolean tryGetAsBoolean( int argIndex, Function<String, CommandResult> failCallback );
 
-	/**
-	 * @param argIndex
-	 * @param failCallback
-	 * @return
-	 */
-	Player tryGetAsPlayer( int argIndex, Function<String, CommandResult> failCallback );
+    /**
+     * @param argIndex
+     * @param failCallback
+     * @return
+     */
+    Player tryGetAsPlayer( int argIndex, Function<String, CommandResult> failCallback );
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	int unsafeGetAsInt( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    int unsafeGetAsInt( int argIndex );
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	double unsafeGetAsDouble( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    double unsafeGetAsDouble( int argIndex );
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	boolean unsafeGetAsBoolean( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    boolean unsafeGetAsBoolean( int argIndex );
 
-	/**
-	 * @param argIndex
-	 * @return
-	 */
-	Player unsafeGetAsPlayer( int argIndex );
+    /**
+     * @param argIndex
+     * @return
+     */
+    Player unsafeGetAsPlayer( int argIndex );
 
-	/**
-	 * @param rawArgs
-	 * @return
-	 */
-	static CommandArgs of( String... rawArgs )
-	{
-		return new CommandArgsImpl( rawArgs );
-	}
+    /**
+     * @param rawArgs
+     * @return
+     */
+    static CommandArgs of( String... rawArgs )
+    {
+        return new CommandArgsImpl( rawArgs );
+    }
 }

@@ -33,113 +33,113 @@ import io.github.bktlib.command.annotation.Command;
  */
 public class CommandSource
 {
-	private static CommandSource consoleSource;
+    private static CommandSource consoleSource;
 
-	private CommandSender wrappedSender;
+    private CommandSender wrappedSender;
 
-	CommandSource(CommandSender wrappedSender)
-	{
-		this.wrappedSender = wrappedSender;
-	}
+    CommandSource(CommandSender wrappedSender)
+    {
+        this.wrappedSender = wrappedSender;
+    }
 
-	public static CommandSource getConsoleSource()
-	{
-		if ( consoleSource == null ) 
-		{
-			consoleSource = new CommandSource( Bukkit.getConsoleSender() );
-		}
-		
-		return consoleSource;
-	}
+    public static CommandSource getConsoleSource()
+    {
+        if ( consoleSource == null )
+        {
+            consoleSource = new CommandSource( Bukkit.getConsoleSender() );
+        }
 
-	public void sendMessages( String... messages )
-	{
-		if ( messages == null )
-			return;
+        return consoleSource;
+    }
 
-		Stream.of( messages )
-				.map( msg -> ChatColor.translateAlternateColorCodes( '&', msg ) )
-				.forEach( wrappedSender::sendMessage );
-	}
+    public void sendMessages( String... messages )
+    {
+        if ( messages == null )
+            return;
 
-	public void sendMessage( String message, Object... args )
-	{
-		wrappedSender.sendMessage(
-				String.format( ChatColor.translateAlternateColorCodes( '&', message ), args ) );
-	}
+        Stream.of( messages )
+                .map( msg -> ChatColor.translateAlternateColorCodes( '&', msg ) )
+                .forEach( wrappedSender::sendMessage );
+    }
 
-	public void sendMessage( String message )
-	{
-		sendMessage( message, new Object[0] );
-	}
+    public void sendMessage( String message, Object... args )
+    {
+        wrappedSender.sendMessage(
+                String.format( ChatColor.translateAlternateColorCodes( '&', message ), args ) );
+    }
 
-	public void sendMessage( Object rawMessage )
-	{
-		String message;
+    public void sendMessage( String message )
+    {
+        sendMessage( message, new Object[0] );
+    }
 
-		if ( rawMessage instanceof String )
-			message = (String) rawMessage;
-		else
-			message = String.valueOf( rawMessage );
+    public void sendMessage( Object rawMessage )
+    {
+        String message;
 
-		sendMessage( message );
-	}
+        if ( rawMessage instanceof String )
+            message = (String) rawMessage;
+        else
+            message = String.valueOf( rawMessage );
 
-	public String getName()
-	{
-		return wrappedSender.getName();
-	}
+        sendMessage( message );
+    }
 
-	public boolean isOp()
-	{
-		return wrappedSender.isOp();
-	}
+    public String getName()
+    {
+        return wrappedSender.getName();
+    }
 
-	public boolean isPlayer()
-	{
-		return wrappedSender instanceof Player;
-	}
+    public boolean isOp()
+    {
+        return wrappedSender.isOp();
+    }
 
-	public boolean isConsole()
-	{
-		return !isPlayer();
-	}
+    public boolean isPlayer()
+    {
+        return wrappedSender instanceof Player;
+    }
 
-	public void setOp( boolean op )
-	{
-		wrappedSender.setOp( op );
-	}
+    public boolean isConsole()
+    {
+        return !isPlayer();
+    }
 
-	public boolean hasPermission( String permission )
-	{
-		return wrappedSender.hasPermission( permission );
-	}
+    public void setOp( boolean op )
+    {
+        wrappedSender.setOp( op );
+    }
 
-	public boolean canUse( CommandBase command )
-	{
-		Optional<String> commandPermission = command.getPermission();
+    public boolean hasPermission( String permission )
+    {
+        return wrappedSender.hasPermission( permission );
+    }
 
-		return commandPermission.isPresent() &&
-				hasPermission( commandPermission.get() );
-	}
+    public boolean canUse( CommandBase command )
+    {
+        Optional<String> commandPermission = command.getPermission();
 
-	public boolean canUse( Command annotation )
-	{
-		return hasPermission( annotation.permission() );
-	}
+        return commandPermission.isPresent() &&
+                hasPermission( commandPermission.get() );
+    }
 
-	public CommandSender toCommandSender()
-	{
-		return wrappedSender;
-	}
+    public boolean canUse( Command annotation )
+    {
+        return hasPermission( annotation.permission() );
+    }
 
-	public Player toPlayer()
-	{
-		if ( !isPlayer() )
-		{
-			throw new UnsupportedOperationException( "Cannot cast console to player!" );
-		}
-		
-		return (Player) wrappedSender;
-	}
+    public CommandSender toCommandSender()
+    {
+        return wrappedSender;
+    }
+
+    public Player toPlayer()
+    {
+        if ( !isPlayer() )
+        {
+            throw new UnsupportedOperationException( "Cannot cast console to player!" );
+        }
+
+        return (Player) wrappedSender;
+    }
 }

@@ -29,38 +29,38 @@ import io.github.bktlib.command.UsageTarget;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface SubCommand
 {
-	/**
-	 * @see Command#name()
-	 */
-	String name();
+    /**
+     * @see Command#name()
+     */
+    String name();
 
-	/**
-	 * @see Command#permission()
-	 */
-	String permission() default "";
+    /**
+     * @see Command#permission()
+     */
+    String permission() default "";
 
-	/**
-	 * @see Command#description()
-	 */
-	String description() default "";
+    /**
+     * @see Command#description()
+     */
+    String description() default "";
 
-	/**
-	 * @see Command#usage()
-	 */
-	String usage() default "";
+    /**
+     * @see Command#usage()
+     */
+    String usage() default "";
 
-	/**
-	 * @see Command#aliases()
-	 */
-	String[] aliases() default {};
+    /**
+     * @see Command#aliases()
+     */
+    String[] aliases() default {};
 
-	/**
-	 * @see Command#subCommands()
-	 */
-	String[] subCommands() default {};
+    /**
+     * @see Command#subCommands()
+     */
+    String[] subCommands() default {};
 
-	/**
-	 * @see Command#usageTarget()
-	 */
-	UsageTarget usageTarget() default UsageTarget.BOTH;
+    /**
+     * @see Command#usageTarget()
+     */
+    UsageTarget usageTarget() default UsageTarget.BOTH;
 }

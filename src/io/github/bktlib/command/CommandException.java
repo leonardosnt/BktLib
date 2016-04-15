@@ -24,18 +24,18 @@ package io.github.bktlib.command;
  */
 public final class CommandException extends RuntimeException
 {
-	private static final long serialVersionUID = -4371399001333476892L;
-	
-	private CommandResult result;
+    private static final long serialVersionUID = -4371399001333476892L;
 
-	public CommandException(final CommandResult result)
-	{
-		super( result.getMessage().orElse( "" ) );
-		this.result = result;
-	}
+    private CommandResult result;
 
-	public CommandResult getResult()
-	{
-		return result;
-	}
+    public CommandException(final CommandResult result)
+    {
+        super( result.getMessage().orElse( "" ) );
+        this.result = result;
+    }
+
+    public CommandResult getResult()
+    {
+        return result;
+    }
 }

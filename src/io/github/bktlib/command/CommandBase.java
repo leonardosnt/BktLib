@@ -41,185 +41,185 @@ import io.github.bktlib.common.Strings;
 
 public abstract class CommandBase
 {
-	private static final String NOT_ALLOWED_INGAME = "§cEste comando nao pode ser usado in-game.";
-	private static final String ONLY_ALLOWED_INGAME = "§cEste comando so pode ser usado in-game.";
+    private static final String NOT_ALLOWED_INGAME = "§cEste comando nao pode ser usado in-game.";
+    private static final String ONLY_ALLOWED_INGAME = "§cEste comando so pode ser usado in-game.";
 
-	Command commandAnnotation;
-	Map<String, CommandBase> subCommands;
+    Command commandAnnotation;
+    Map<String, CommandBase> subCommands;
 
-	CommandBase(final Command annotation)
-	{
-		commandAnnotation = annotation;
-		subCommands = Maps.newHashMap();
-	}
+    CommandBase(final Command annotation)
+    {
+        commandAnnotation = annotation;
+        subCommands = Maps.newHashMap();
+    }
 
-	protected CommandBase()
-	{
-		commandAnnotation = Preconditions.checkNotNull(
-				getClass().getAnnotation( Command.class ), "Missing 'Command' annotation" );
-		subCommands = Maps.newHashMap();
-	}
+    protected CommandBase()
+    {
+        commandAnnotation = Preconditions.checkNotNull(
+                getClass().getAnnotation( Command.class ), "Missing 'Command' annotation" );
+        subCommands = Maps.newHashMap();
+    }
 
-	/**
-	 * @return Nome desse comando
-	 */
-	public String getName()
-	{
-		return commandAnnotation.name();
-	}
+    /**
+     * @return Nome desse comando
+     */
+    public String getName()
+    {
+        return commandAnnotation.name();
+    }
 
-	/**
-	 * @return Um {@link Set} Contendo as 'aliases' desse comando
-	 */
-	public Set<String> getAliases()
-	{
-		return Sets.newHashSet( commandAnnotation.aliases() );
-	}
+    /**
+     * @return Um {@link Set} Contendo as 'aliases' desse comando
+     */
+    public Set<String> getAliases()
+    {
+        return Sets.newHashSet( commandAnnotation.aliases() );
+    }
 
-	/**
-	 * @return Um {@link Set} Contendo os sub comandos desse comando
-	 */
-	public Set<CommandBase> getSubCommands()
-	{
-		return Sets.newHashSet( subCommands.values() );
-	}
+    /**
+     * @return Um {@link Set} Contendo os sub comandos desse comando
+     */
+    public Set<CommandBase> getSubCommands()
+    {
+        return Sets.newHashSet( subCommands.values() );
+    }
 
-	/**
-	 * @return Retorna o {@link Command#usageTarget() UsageTarget} desse
-	 *         comando.
-	 * @see UsageTarget
-	 */
-	public UsageTarget getUsageTarget()
-	{
-		return commandAnnotation.usageTarget();
-	}
+    /**
+     * @return Retorna o {@link Command#usageTarget() UsageTarget} desse
+     *         comando.
+     * @see UsageTarget
+     */
+    public UsageTarget getUsageTarget()
+    {
+        return commandAnnotation.usageTarget();
+    }
 
-	/**
-	 * @return A {@link Command#description() descrição} desse commando
-	 */
-	public Optional<String> getDescription()
-	{
-		return Optional.ofNullable(
-				Strings.emptyToNull( commandAnnotation.description() ) );
-	}
+    /**
+     * @return A {@link Command#description() descrição} desse commando
+     */
+    public Optional<String> getDescription()
+    {
+        return Optional.ofNullable(
+                Strings.emptyToNull( commandAnnotation.description() ) );
+    }
 
-	/**
-	 * @return A {@link Command#permission() permissão} desse commando
-	 */
-	public Optional<String> getPermission()
-	{
-		return Optional.ofNullable(
-				Strings.emptyToNull( commandAnnotation.permission() ) );
-	}
+    /**
+     * @return A {@link Command#permission() permissão} desse commando
+     */
+    public Optional<String> getPermission()
+    {
+        return Optional.ofNullable(
+                Strings.emptyToNull( commandAnnotation.permission() ) );
+    }
 
-	/**
-	 * @return A {@link Command#usage() usage} desse commando
-	 */
-	public Optional<String> getUsage()
-	{
-		return Optional.ofNullable(
-				Strings.emptyToNull( commandAnnotation.usage() ) );
-	}
+    /**
+     * @return A {@link Command#usage() usage} desse commando
+     */
+    public Optional<String> getUsage()
+    {
+        return Optional.ofNullable(
+                Strings.emptyToNull( commandAnnotation.usage() ) );
+    }
 
-	/**
-	 * Retorna a anotação {@link Command} desse comando, essa anotação é
-	 * obrigatoria em todos os comandos.
-	 *
-	 * @return A anotação {@link Command}
-	 */
-	public Command getAnnotation()
-	{
-		return commandAnnotation;
-	}
+    /**
+     * Retorna a anotação {@link Command} desse comando, essa anotação é
+     * obrigatoria em todos os comandos.
+     *
+     * @return A anotação {@link Command}
+     */
+    public Command getAnnotation()
+    {
+        return commandAnnotation;
+    }
 
-	/**
-	 * Esse método é chamado quando o comando é executado.
-	 *
-	 * @param src
-	 *            A {@link CommandSource fonte} do comando, o jogador/coisa que
-	 *            enviou esse comando.
-	 * @param args
-	 *            Os argumentos passados ao executar esse comando, por exeplo,
-	 *            ao executar /give jogador DIAMOND 1, os argumentos seriam
-	 *            {@literal {jogador, DIAMOND, 1}}
-	 *
-	 * @return O {@link CommandResult} resultado da execução do comando.
-	 *
-	 * @see CommandSource
-	 * @see CommandResult
-	 */
-	public abstract CommandResult onExecute( CommandSource src, CommandArgs args );
+    /**
+     * Esse método é chamado quando o comando é executado.
+     *
+     * @param src
+     *            A {@link CommandSource fonte} do comando, o jogador/coisa que
+     *            enviou esse comando.
+     * @param args
+     *            Os argumentos passados ao executar esse comando, por exeplo,
+     *            ao executar /give jogador DIAMOND 1, os argumentos seriam
+     *            {@literal {jogador, DIAMOND, 1}}
+     *
+     * @return O {@link CommandResult} resultado da execução do comando.
+     *
+     * @see CommandSource
+     * @see CommandResult
+     */
+    public abstract CommandResult onExecute( CommandSource src, CommandArgs args );
 
-	/**
-	 * Método usado internamente para fazer verificações, chamar sub comandos
-	 * etc.
-	 *
-	 * Caso tudo ocorra como desejado ele irá chamar o método
-	 * {@link #onExecute(CommandSource, CommandArgs)}
-	 */
-	void execute( final CommandSender sender, final String[] rawArgs )
-	{
-		final UsageTarget target = getUsageTarget();
+    /**
+     * Método usado internamente para fazer verificações, chamar sub comandos
+     * etc.
+     *
+     * Caso tudo ocorra como desejado ele irá chamar o método
+     * {@link #onExecute(CommandSource, CommandArgs)}
+     */
+    void execute( final CommandSender sender, final String[] rawArgs )
+    {
+        final UsageTarget target = getUsageTarget();
 
-		if ( target == IN_GAME && !(sender instanceof Player) )
-		{
-			sender.sendMessage( ONLY_ALLOWED_INGAME );
-		}
-		else if ( target == NOT_IN_GAME && (sender instanceof Player) )
-		{
-			sender.sendMessage( NOT_ALLOWED_INGAME );
-		}
-		else
-		{
-			final CommandSource src = sender == Bukkit.getConsoleSender()
-					? CommandSource.getConsoleSource()
-					: new CommandSource( sender );
+        if ( target == IN_GAME && !(sender instanceof Player) )
+        {
+            sender.sendMessage( ONLY_ALLOWED_INGAME );
+        }
+        else if ( target == NOT_IN_GAME && (sender instanceof Player) )
+        {
+            sender.sendMessage( NOT_ALLOWED_INGAME );
+        }
+        else
+        {
+            final CommandSource src = sender == Bukkit.getConsoleSender()
+                    ? CommandSource.getConsoleSource()
+                    : new CommandSource( sender );
 
-			try
-			{
-				if ( rawArgs.length > 0 )
-				{
-					final CommandBase subCmd = subCommands.get( rawArgs[0].toLowerCase() );
+            try
+            {
+                if ( rawArgs.length > 0 )
+                {
+                    final CommandBase subCmd = subCommands.get( rawArgs[0].toLowerCase() );
 
-					if ( subCmd != null )
-					{
-						subCmd.execute( sender, Arrays.copyOfRange( rawArgs, 1, rawArgs.length ) );
-						return;
-					}
-				}
+                    if ( subCmd != null )
+                    {
+                        subCmd.execute( sender, Arrays.copyOfRange( rawArgs, 1, rawArgs.length ) );
+                        return;
+                    }
+                }
 
-				final CommandResult result = onExecute( src, CommandArgs.of( rawArgs ) );
+                final CommandResult result = onExecute( src, CommandArgs.of( rawArgs ) );
 
-				if ( result == CommandResult.success() )
-					return;
+                if ( result == CommandResult.success() )
+                    return;
 
-				if ( result == CommandResult.showUsage() )
-				{
-					final String msg = Strings.of(
-							result.getType().getColor(), "Use: /", getName(), " ", getUsage().orElse( "" ) );
+                if ( result == CommandResult.showUsage() )
+                {
+                    final String msg = Strings.of(
+                            result.getType().getColor(), "Use: /", getName(), " ", getUsage().orElse( "" ) );
 
-					sender.sendMessage( msg );
+                    sender.sendMessage( msg );
 
-					return;
-				}
+                    return;
+                }
 
-				result.getMessage().ifPresent( sender::sendMessage );
-			}
-			catch ( CommandException ex )
-			{
-				if ( ex.getResult() == CommandResult.success() )
-					return;
+                result.getMessage().ifPresent( sender::sendMessage );
+            }
+            catch ( CommandException ex )
+            {
+                if ( ex.getResult() == CommandResult.success() )
+                    return;
 
-				ex.getResult().getMessage().ifPresent( sender::sendMessage );
-			}
-		}
-	}
+                ex.getResult().getMessage().ifPresent( sender::sendMessage );
+            }
+        }
+    }
 
-	@Override
-	public String toString()
-	{
-		return Objects.toStringHelper( this )
-				.add( "name", getName() )
-				.toString();
-	}
+    @Override
+    public String toString()
+    {
+        return Objects.toStringHelper( this )
+                .add( "name", getName() )
+                .toString();
+    }
 }
