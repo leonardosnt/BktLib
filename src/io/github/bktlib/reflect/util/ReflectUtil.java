@@ -18,6 +18,9 @@
 
 package io.github.bktlib.reflect.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 public final class ReflectUtil
 {
     /**
@@ -48,6 +51,82 @@ public final class ReflectUtil
                         0x200   /* Interface */     ;
 
         return (klass.getModifiers() & INVALID_MODIFIER_FLAGS) == 0;
+    }
+
+    /**
+     * @param method Método que deseja pegar os modificadores.
+     * @return Os modificadores de um método ou -1 caso ocorra algum erro.
+     * @see java.lang.reflect.Modifier
+     */
+    public static int getModifiers( final Method method )
+    {
+        try
+        {
+            final Field modifiers = Method.class.getField( "modifiers" );
+            return (int) modifiers.get( method );
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    /**
+     * @param field Field que deseja pegar os modificadores.
+     * @return Os modificadores de um field ou -1 caso ocorra algum erro.
+     * @see java.lang.reflect.Modifier
+     */
+    public static int getModifiers( final Field field )
+    {
+        try
+        {
+            final Field modifiers = Field.class.getField( "modifiers" );
+            return (int) modifiers.get( field );
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    /**
+     * Define os modificadores de um método.
+     *
+     * @param method Método que deseja pegar os modificadores.
+     * @see java.lang.reflect.Modifier
+     */
+    public static void setModifiers( final Method method, final int mods )
+    {
+        try
+        {
+            final Field modifiers = Method.class.getField( "modifiers" );
+            modifiers.set( method, mods );
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Define os modificadores de um Field.
+     *
+     * @param field Field que deseja pegar os modificadores.
+     * @see java.lang.reflect.Modifier
+     */
+    public static void setModifiers( final Field field, final int mods )
+    {
+        try
+        {
+            final Field modifiers = Field.class.getField( "modifiers" );
+            modifiers.set( field, mods );
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private ReflectUtil()
