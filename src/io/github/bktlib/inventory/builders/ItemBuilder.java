@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -64,7 +66,7 @@ public class ItemBuilder
     {
         checkArgument( durability <= Short.MAX_VALUE, "withDurability must less or " +
                         "equals than %s (Short.MAX_VALUE)",
-                Short.MAX_VALUE );
+                        Short.MAX_VALUE );
 
         item.setDurability( (short) (item.getType().getMaxDurability() - durability) );
         return this;
@@ -108,9 +110,9 @@ public class ItemBuilder
     public ItemBuilder displayName( String displayName )
     {
         if ( displayName == null ) return this;
-        consumeMeta( meta -> {
-            meta.setDisplayName( TRANSLATE_COLOR_CHARS.apply(displayName) );
-        });
+        consumeMeta( meta ->
+            meta.setDisplayName( TRANSLATE_COLOR_CHARS.apply( displayName ) )
+        );
         return this;
     }
 
@@ -175,12 +177,37 @@ public class ItemBuilder
     }
 
     /**
-     * Controi o item.
+     * Constroi o item.
      *
      * @return O ItemStack "construido"
      */
     public ItemStack build()
     {
+        return item;
+    }
+
+    /**
+     * Constroi o item e adiciona ao invetario do {@code player}.
+     *
+     * @return O ItemStack "construido"
+     */
+    public ItemStack buildAndGive( Player player )
+    {
+        checkNotNull(player, "player cannot be null");
+        return buildAndAdd( player.getInventory() );
+    }
+
+    /**
+     * Constroi o item e adiciona ao invetario {@code inv}.
+     *
+     * @return O ItemStack "construido"
+     */
+    public ItemStack buildAndAdd( Inventory inv )
+    {
+        checkNotNull(inv, "inv cannot be null");
+
+        ItemStack item = build();
+        inv.addItem( item );
         return item;
     }
 
@@ -203,7 +230,7 @@ public class ItemBuilder
     private void consumeMeta( Consumer<ItemMeta> consumer )
     {
         final ItemMeta meta = item.getItemMeta();
-        consumer.accept(meta );
+        consumer.accept( meta );
         item.setItemMeta( meta );
     }
 }
