@@ -50,7 +50,7 @@ public class ItemBuilder
      * @param mat
      *            Material desejado
      */
-    public ItemBuilder type(Material mat )
+    public ItemBuilder type( Material mat )
     {
         item.setType( mat );
         return this;
@@ -62,7 +62,7 @@ public class ItemBuilder
      * @param durability
      *            Durabilidade desejada
      */
-    public ItemBuilder durability(int durability )
+    public ItemBuilder durability( int durability )
     {
         checkArgument( durability <= Short.MAX_VALUE, "withDurability must less or " +
                         "equals than %s (Short.MAX_VALUE)",
