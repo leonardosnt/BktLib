@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public final class DynamicEvents {
-  private static Map<Plugin, DynamicEvents> cache;
+  private static Map<Plugin, DynamicEvents> cache = Maps.newHashMap();
   private Map<String, Listener> registered;
   private Plugin owner;
 
@@ -38,7 +38,6 @@ public final class DynamicEvents {
   private DynamicEvents(Plugin plugin) {
     owner = plugin;
     registered = Maps.newHashMap();
-    cache = Maps.newHashMap();
   }
 
   @SuppressWarnings("unchecked")
