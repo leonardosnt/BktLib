@@ -92,7 +92,7 @@ public final class DynamicEvents {
 
   private Player getPlayerFromEvent(Event e) {
     final Class<?> clazz = e.getClass();
-    if (clazz.isAssignableFrom(PlayerEvent.class)) {
+    if (PlayerEvent.class.isAssignableFrom(clazz)) {
       return ((PlayerEvent) e).getPlayer();
     }
     if (clazz == PlayerLeashEntityEvent.class) {
