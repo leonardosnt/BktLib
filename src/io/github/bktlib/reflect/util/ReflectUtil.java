@@ -41,10 +41,10 @@ public final class ReflectUtil {
    */
   public static boolean isConcreteClass(final Class<?> klass) {
     final int INVALID_MODIFIER_FLAGS =
-            0x4000  /* Enum */ |
+                    0x4000  /* Enum */       |
                     0x2000  /* Annotation */ |
-                    0x400   /* Abstract */ |
-                    0x200   /* Interface */;
+                    0x400   /* Abstract */   |
+                    0x200   /* Interface */  ;
 
     return (klass.getModifiers() & INVALID_MODIFIER_FLAGS) == 0;
   }

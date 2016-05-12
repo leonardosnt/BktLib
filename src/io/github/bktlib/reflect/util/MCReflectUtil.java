@@ -24,6 +24,7 @@ import io.github.bktlib.common.Strings;
 import org.bukkit.Bukkit;
 
 public final class MCReflectUtil {
+
   /**
    * Pega uma classe do CRAFTBUKKIT
    * {@code org.bukkit.craftbukkit.(versao).(*)}
@@ -35,9 +36,7 @@ public final class MCReflectUtil {
   public static Optional<Class<?>> getCBClass(final String className) {
     try {
       Class<?> klass = Class.forName(Strings.of("org.bukkit.craftukkit.",
-              getCBVersion(),
-              '.',
-              className));
+          getCBVersion(), '.', className));
 
       return Optional.of(klass);
     } catch (ClassNotFoundException e) {
@@ -56,9 +55,7 @@ public final class MCReflectUtil {
   public static Optional<Class<?>> getNMSClass(final String className) {
     try {
       Class<?> klass = Class.forName(Strings.of("net.minecraft.server.",
-              getCBVersion(),
-              '.',
-              className));
+          getCBVersion(), '.', className));
 
       return Optional.of(klass);
     } catch (ClassNotFoundException e) {
