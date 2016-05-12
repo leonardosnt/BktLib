@@ -31,17 +31,17 @@ public final class Strings
         Stream.of( parts ).forEach( sb::append );
         return sb.toString();
     }
-    
+
     public static boolean isNullOrEmpty( final String str )
     {
         return str == null || str.length() == 0;
     }
-    
+
     public static String emptyToNull( final String str )
     {
         return isNullOrEmpty( str ) ? null : str;
     }
-    
+
     public static String nullToEmpty( final String str )
     {
         return str == null ? "" : str;
