@@ -2,9 +2,7 @@ package io.github.bktlib.event;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -60,6 +58,7 @@ public final class DynamicEvents {
     });
   }
 
+  @SuppressWarnings("unchecked")
   public <E extends Event> void registerForEntity(
       Entity entity, String id, Class<E> eventClass, Consumer<E> consumer) {
     Preconditions.checkArgument(isEntityEvent(eventClass),
