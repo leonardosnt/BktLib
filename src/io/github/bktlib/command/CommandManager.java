@@ -29,119 +29,98 @@ import io.github.bktlib.command.args.CommandArgs;
 
 /**
  * Classe reponsavel pelo gerenciamento dos {@link CommandBase comandos}
- *
+ * <p>
  * A maioria dos metodos lancam um {@link NullPointerException} caso o objeto
  * passado por argumento seja nulo.
  */
-public interface CommandManager
-{
-    /**
-     * Registra o comando com a instancia passada por parametro.
-     *
-     * @param commandInstance
-     *            Instancia da classe do comando
-     */
-    void register( CommandBase commandInstance );
+public interface CommandManager {
+  /**
+   * Registra o comando com a instancia passada por parametro.
+   *
+   * @param commandInstance Instancia da classe do comando
+   */
+  void register(CommandBase commandInstance);
 
-    /**
-     * Registra o comando com a classe do comando passada por parametro.
-     *
-     * @param command
-     *            A classe do comando.
-     */
-    void register( Class<? extends CommandBase> command );
+  /**
+   * Registra o comando com a classe do comando passada por parametro.
+   *
+   * @param command A classe do comando.
+   */
+  void register(Class<? extends CommandBase> command);
 
-    /**
-     * Registra um metodo que representa um comando.
-     *
-     * <p>
-     * O comando deve retornar um {@link CommandResult} e deve receber apenas 2
-     * parametros, o primeiro deve ser do tipo {@link CommandSource}, e o
-     * segundo deve ser do tipo {@link CommandArgs}
-     * <p>
-     *
-     * @param methodClass
-     *            Classe que o metodo esta definido.
-     * @param methodName
-     *            Nome do metodo a ser registrado. (diferencia maiusculas e
-     *            minusculas).
-     *
-     * @throws IllegalArgumentException
-     *             Caso a {@code methodClass} seja abstrata, ou nao tenha um
-     *             construtor visivel.
-     *
-     * @throws IllegalArgumentException
-     *             Caso {@code methodName} seja nulo ou vazio.
-     */
-    void registerMethod( Class<?> methodClass, String methodName );
+  /**
+   * Registra um metodo que representa um comando.
+   * <p>
+   * <p>
+   * O comando deve retornar um {@link CommandResult} e deve receber apenas 2
+   * parametros, o primeiro deve ser do tipo {@link CommandSource}, e o
+   * segundo deve ser do tipo {@link CommandArgs}
+   * <p>
+   *
+   * @param methodClass Classe que o metodo esta definido.
+   * @param methodName  Nome do metodo a ser registrado. (diferencia maiusculas e
+   *                    minusculas).
+   * @throws IllegalArgumentException Caso a {@code methodClass} seja abstrata, ou nao tenha um
+   *                                  construtor visivel.
+   * @throws IllegalArgumentException Caso {@code methodName} seja nulo ou vazio.
+   */
+  void registerMethod(Class<?> methodClass, String methodName);
 
-    /**
-     * @param instance
-     *            Objeto em que o metodo esta definido.
-     * @param methodName
-     *            Nome do metodo a ser registrado.
-     *
-     * @see #registerMethod(Class, String)
-     */
-    void registerMethod( Object instance, String methodName );
+  /**
+   * @param instance   Objeto em que o metodo esta definido.
+   * @param methodName Nome do metodo a ser registrado.
+   * @see #registerMethod(Class, String)
+   */
+  void registerMethod(Object instance, String methodName);
 
-    /**
-     * Registrar todos os comandos no plugin.
-     */
-    void registerAll();
+  /**
+   * Registrar todos os comandos no plugin.
+   */
+  void registerAll();
 
-    /**
-     * Registra todos os metodos que contem a anotacao {@link Command} e seguem
-     * a assinatura {@link #registerMethod(Class, String) correta}.
-     *
-     * @param klass
-     *            Classe que deseja registrar os comandos.
-     *
-     * @see #registerMethod(Class, String)
-     */
-    void registerAll( Class<?> klass );
+  /**
+   * Registra todos os metodos que contem a anotacao {@link Command} e seguem
+   * a assinatura {@link #registerMethod(Class, String) correta}.
+   *
+   * @param klass Classe que deseja registrar os comandos.
+   * @see #registerMethod(Class, String)
+   */
+  void registerAll(Class<?> klass);
 
-    /**
-     * Pega um comando pela classe.
-     *
-     * @param klass
-     *            Classe do comando.
-     * @return {@link Optional#empty()} caso nao exista um comando com essa
-     *         classe, senao retorna um {@link Optional} contendo a instancia do
-     *         comando.
-     */
-    <T extends CommandBase> Optional<T> getCommandByClass( Class<T> klass );
+  /**
+   * Pega um comando pela classe.
+   *
+   * @param klass Classe do comando.
+   * @return {@link Optional#empty()} caso nao exista um comando com essa
+   * classe, senao retorna um {@link Optional} contendo a instancia do
+   * comando.
+   */
+  <T extends CommandBase> Optional<T> getCommandByClass(Class<T> klass);
 
-    /**
-     * Pega um comando pelo nome.
-     *
-     * @param name
-     *            Nome do comando.
-     * @return {@link Optional#empty()} caso nao exista um comando com esse
-     *         nome, senao retorna um {@link Optional} contendo a instancia do
-     *         comando.
-     */
-    Optional<CommandBase> getCommandByName( String name );
+  /**
+   * Pega um comando pelo nome.
+   *
+   * @param name Nome do comando.
+   * @return {@link Optional#empty()} caso nao exista um comando com esse
+   * nome, senao retorna um {@link Optional} contendo a instancia do
+   * comando.
+   */
+  Optional<CommandBase> getCommandByName(String name);
 
-    /**
-     * @return O plugin que passado por parametro no
-     *         {@link #newInstance(Plugin)}
-     */
-    Plugin getOwner();
+  /**
+   * @return O plugin que passado por parametro no
+   * {@link #newInstance(Plugin)}
+   */
+  Plugin getOwner();
 
-    /**
-     * Retorna uma nova instancia da implementacao dessa interface.
-     *
-     * @param plugin
-     *            O plugin que está rodando.
-     *
-     * @return Uma nova instancia da implementacao dessa interface.
-     *
-     * @throws NullPointerException
-     *             Caso o {@code plugin} seja nulo.
-     */
-    static CommandManager newInstance( final Plugin plugin )
-    {
-        return new CommandManagerImpl( Preconditions.checkNotNull( plugin, "plugin cannot be null" ) );
-    }
+  /**
+   * Retorna uma nova instancia da implementacao dessa interface.
+   *
+   * @param plugin O plugin que está rodando.
+   * @return Uma nova instancia da implementacao dessa interface.
+   * @throws NullPointerException Caso o {@code plugin} seja nulo.
+   */
+  static CommandManager newInstance(final Plugin plugin) {
+    return new CommandManagerImpl(Preconditions.checkNotNull(plugin, "plugin cannot be null"));
+  }
 }

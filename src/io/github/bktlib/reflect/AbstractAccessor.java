@@ -18,17 +18,14 @@
 
 package io.github.bktlib.reflect;
 
-public abstract class AbstractAccessor
-{
-	protected Object owner;
-	
-	public AbstractAccessor(Object owner)
-	{
-		this.owner = owner;
-	}
+public abstract class AbstractAccessor {
+  protected Object owner;
 
-	public Object getOwner()
-	{
-		return owner;
-	}
+  public AbstractAccessor(Object owner) {
+    this.owner = owner;
+  }
+
+  public Object getOwner() {
+    return owner;
+  }
 }

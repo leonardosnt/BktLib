@@ -27,60 +27,47 @@ import io.github.bktlib.command.args.CommandArgs;
 import io.github.bktlib.common.Strings;
 import io.github.bktlib.reflect.MethodRef;
 
-class MethodCommand extends CommandBase
-{
-    MethodRef ref;
+class MethodCommand extends CommandBase {
+  MethodRef ref;
 
-    MethodCommand(final MethodRef ref)
-    {
-        super( ref.getMethod().getAnnotation( Command.class ) );
+  MethodCommand(final MethodRef ref) {
+    super(ref.getMethod().getAnnotation(Command.class));
 
-        this.ref = ref;
-        this.ref.getMethod().setAccessible( true );
+    this.ref = ref;
+    this.ref.getMethod().setAccessible(true);
+  }
+
+  MethodCommand(final MethodRef ref, Command commandAnnotation) {
+    super(commandAnnotation);
+
+    this.ref = ref;
+    this.ref.getMethod().setAccessible(true);
+  }
+
+  @Override
+  public CommandResult onExecute(final CommandSource src, final CommandArgs args) {
+    try {
+      return (CommandResult) ref.getMethod().invoke(
+              ref.getOwner(), src, args);
+    } catch (InvocationTargetException e) {
+      final Throwable root = Throwables.getRootCause(e);
+
+      if (root instanceof CommandException) {
+        return ((CommandException) root).getResult();
+      } else {
+        e.printStackTrace();
+      }
+
+      return CommandResult.genericError();
+    } catch (IllegalAccessException | IllegalArgumentException e) {
+      e.printStackTrace();
+
+      return CommandResult.genericError();
     }
+  }
 
-    MethodCommand(final MethodRef ref, Command commandAnnotation)
-    {
-        super( commandAnnotation );
-
-        this.ref = ref;
-        this.ref.getMethod().setAccessible( true );
-    }
-
-    @Override
-    public CommandResult onExecute( final CommandSource src, final CommandArgs args )
-    {
-        try
-        {
-            return (CommandResult) ref.getMethod().invoke(
-                    ref.getOwner(), src, args );
-        }
-        catch ( InvocationTargetException e )
-        {
-            final Throwable root = Throwables.getRootCause( e );
-
-            if ( root instanceof CommandException )
-            {
-                return ((CommandException) root).getResult();
-            }
-            else
-            {
-                e.printStackTrace();
-            }
-
-            return CommandResult.genericError();
-        }
-        catch ( IllegalAccessException | IllegalArgumentException e )
-        {
-            e.printStackTrace();
-
-            return CommandResult.genericError();
-        }
-    }
-
-    @Override
-    public String toString()
-    {
-        return Strings.of( ref );
-    }
+  @Override
+  public String toString() {
+    return Strings.of(ref);
+  }
 }

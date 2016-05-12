@@ -22,20 +22,17 @@ package io.github.bktlib.command;
  * Essa é uma classe usada internamente, a mesma pode ser removida ou modificada
  * sem aviso previo.
  */
-public final class CommandException extends RuntimeException
-{
-    private static final long serialVersionUID = -4371399001333476892L;
+public final class CommandException extends RuntimeException {
+  private static final long serialVersionUID = -4371399001333476892L;
 
-    private CommandResult result;
+  private CommandResult result;
 
-    public CommandException(final CommandResult result)
-    {
-        super( result.getMessage().orElse( "" ) );
-        this.result = result;
-    }
+  public CommandException(final CommandResult result) {
+    super(result.getMessage().orElse(""));
+    this.result = result;
+  }
 
-    public CommandResult getResult()
-    {
-        return result;
-    }
+  public CommandResult getResult() {
+    return result;
+  }
 }

@@ -25,168 +25,151 @@ import java.util.Optional;
 /**
  * Essa classe representa o resultado da execução do um comando.
  */
-public final class CommandResult
-{
-    private static final String GENERIC_ERROR_MESSAGE = "§4An internal error occurred attempting to execute this command.";
+public final class CommandResult {
+  private static final String GENERIC_ERROR_MESSAGE = "§4An internal error occurred attempting to execute this command.";
 
-    private static final CommandResult SUCCESS = new CommandResult( null, ResultType.SUCCESS );
-    private static final CommandResult SHOW_USAGE = new CommandResult( null, ResultType.SHOW_USAGE );
+  private static final CommandResult SUCCESS = new CommandResult(null, ResultType.SUCCESS);
+  private static final CommandResult SHOW_USAGE = new CommandResult(null, ResultType.SHOW_USAGE);
 
-    private String message;
-    private ResultType type;
+  private String message;
+  private ResultType type;
 
-    private CommandResult(final String message, final ResultType type)
-    {
-        this.message = message;
-        this.type = type;
-    }
+  private CommandResult(final String message, final ResultType type) {
+    this.message = message;
+    this.type = type;
+  }
+
+  /**
+   * Retorna a mensagem do resultado, no caso do #success() ou
+   * #showUsage() ela é {@code nula}
+   *
+   * @return Um Optional} contendo a mensagem do resultado, ou
+   * Optional#empty() caso a mensagem seja {@code nula}
+   */
+  public Optional<String> getMessage() {
+    return message == null
+            ? Optional.empty()
+            : Optional.of(type.getColor() + message);
+  }
+
+  /**
+   * @return O ResultType tipo} do resultado.
+   * @see ResultType
+   */
+  public ResultType getType() {
+    return type;
+  }
+
+  /**
+   * Indica que um erro ocorreu.
+   *
+   * @param message Mensagem do ocorrido
+   * @return Nova instancia dessa classe com as informações necessarias para
+   * serem usadas internamente.
+   */
+  public static CommandResult fail(final String message) {
+    return new CommandResult(message, ResultType.FAIL);
+  }
+
+  /**
+   * @see #fail(String)
+   */
+  public static CommandResult fail(final String message, final Object... formatArgs) {
+    return new CommandResult(String.format(message, formatArgs), ResultType.FAIL);
+  }
+
+  /**
+   * Indica que ocorreu alguma coisa inesperada..
+   *
+   * @param message Mensagem do ocorrido
+   * @return Nova instancia dessa classe com as informações necessarias para
+   * serem usadas internamente.
+   */
+  public static CommandResult warning(final String message) {
+    return new CommandResult(message, ResultType.WARNING);
+  }
+
+  /**
+   * @see #warning(String)
+   */
+  public static CommandResult warning(final String message, final Object... formatArgs) {
+    return new CommandResult(String.format(message, formatArgs), ResultType.WARNING);
+  }
+
+  /**
+   * Indica que a execução foi um sucesso.
+   *
+   * @return Nova instancia dessa classe com as informações necessarias para
+   * serem usadas internamente.
+   */
+  public static CommandResult success() {
+    return SUCCESS;
+  }
+
+  /**
+   * Indica ao sistema que ele deve enviar a CommandBase#getUsage()
+   * para o jogador. Geralmente usado quando o jogador digita o comando com os
+   * argumentos incorretos.
+   *
+   * @return Nova instancia dessa classe com as informações necessarias para
+   * serem usadas internamente.
+   */
+  public static CommandResult showUsage() {
+    return SHOW_USAGE;
+  }
+
+  /**
+   * Indica que ocorreu um erro generico.
+   * <p>
+   * <p>
+   * A mensagem de erro generico PADRÃO é
+   * {@code "An internal error occurred attempting to execute this command."}
+   * </p>
+   *
+   * @return Nova instancia dessa classe com as informações necessarias para
+   * serem usadas internamente.
+   */
+  public static CommandResult genericError() {
+    return new CommandResult(GENERIC_ERROR_MESSAGE, ResultType.GENERIC_ERROR);
+  }
+
+  /**
+   * Tipos de resultado. Usado internamente.
+   */
+  public enum ResultType {
+    /**
+     * @see CommandResult#success()
+     */
+    SUCCESS(ChatColor.GREEN),
 
     /**
-     * Retorna a mensagem do resultado, no caso do #success() ou
-     * #showUsage() ela é {@code nula}
-     *
-     * @return Um Optional} contendo a mensagem do resultado, ou
-     *         Optional#empty() caso a mensagem seja {@code nula}
+     * @see CommandResult#fail(String)
      */
-    public Optional<String> getMessage()
-    {
-        return message == null
-                ? Optional.empty()
-                : Optional.of( type.getColor() + message );
-    }
+    FAIL(ChatColor.RED),
 
     /**
-     * @return O ResultType tipo} do resultado.
-     *
-     * @see ResultType
+     * @see CommandResult#genericError()
      */
-    public ResultType getType()
-    {
-        return type;
-    }
+    GENERIC_ERROR(FAIL.getColor()),
 
     /**
-     * Indica que um erro ocorreu.
-     *
-     * @param message
-     *            Mensagem do ocorrido
-     * @return Nova instancia dessa classe com as informações necessarias para
-     *         serem usadas internamente.
+     * @see CommandResult#warning(String)
      */
-    public static CommandResult fail( final String message )
-    {
-        return new CommandResult( message, ResultType.FAIL );
-    }
+    WARNING(ChatColor.YELLOW),
 
     /**
-     * @see #fail(String)
+     * @see CommandResult#showUsage()
      */
-    public static CommandResult fail( final String message, final Object... formatArgs )
-    {
-        return new CommandResult( String.format( message, formatArgs ), ResultType.FAIL );
+    SHOW_USAGE(ChatColor.GRAY);
+
+    ChatColor color;
+
+    ResultType(ChatColor color) {
+      this.color = color;
     }
 
-    /**
-     * Indica que ocorreu alguma coisa inesperada..
-     *
-     * @param message
-     *            Mensagem do ocorrido
-     * @return Nova instancia dessa classe com as informações necessarias para
-     *         serem usadas internamente.
-     */
-    public static CommandResult warning( final String message )
-    {
-        return new CommandResult( message, ResultType.WARNING );
+    public ChatColor getColor() {
+      return color;
     }
-
-    /**
-     * @see #warning(String)
-     */
-    public static CommandResult warning( final String message, final Object... formatArgs )
-    {
-        return new CommandResult( String.format( message, formatArgs ), ResultType.WARNING );
-    }
-
-    /**
-     * Indica que a execução foi um sucesso.
-     *
-     * @return Nova instancia dessa classe com as informações necessarias para
-     *         serem usadas internamente.
-     */
-    public static CommandResult success()
-    {
-        return SUCCESS;
-    }
-
-    /**
-     * Indica ao sistema que ele deve enviar a CommandBase#getUsage()
-     * para o jogador. Geralmente usado quando o jogador digita o comando com os
-     * argumentos incorretos.
-     *
-     * @return Nova instancia dessa classe com as informações necessarias para
-     *         serem usadas internamente.
-     */
-    public static CommandResult showUsage()
-    {
-        return SHOW_USAGE;
-    }
-
-    /**
-     * Indica que ocorreu um erro generico.
-     *
-     * <p>
-     * A mensagem de erro generico PADRÃO é
-     * {@code "An internal error occurred attempting to execute this command."}
-     * </p>
-     *
-     * @return Nova instancia dessa classe com as informações necessarias para
-     *         serem usadas internamente.
-     */
-    public static CommandResult genericError()
-    {
-        return new CommandResult( GENERIC_ERROR_MESSAGE, ResultType.GENERIC_ERROR );
-    }
-
-    /**
-     * Tipos de resultado. Usado internamente.
-     */
-    public enum ResultType
-    {
-        /**
-         * @see CommandResult#success()
-         */
-        SUCCESS(ChatColor.GREEN),
-
-        /**
-         * @see CommandResult#fail(String)
-         */
-        FAIL(ChatColor.RED),
-
-        /**
-         * @see CommandResult#genericError()
-         */
-        GENERIC_ERROR(FAIL.getColor()),
-
-        /**
-         * @see CommandResult#warning(String)
-         */
-        WARNING(ChatColor.YELLOW),
-
-        /**
-         * @see CommandResult#showUsage()
-         */
-        SHOW_USAGE(ChatColor.GRAY);
-
-        ChatColor color;
-
-        ResultType(ChatColor color)
-        {
-            this.color = color;
-        }
-
-        public ChatColor getColor()
-        {
-            return color;
-        }
-    }
+  }
 }

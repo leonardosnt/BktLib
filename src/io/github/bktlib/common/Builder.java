@@ -18,7 +18,6 @@
 
 package io.github.bktlib.common;
 
-public interface Builder<T>
-{
-	T build();
+public interface Builder<T> {
+  T build();
 }

@@ -31,173 +31,145 @@ import com.google.common.base.Preconditions;
 
 import io.github.bktlib.command.CommandResult;
 
-class CommandArgsImpl implements CommandArgs
-{
-    private String[] rawArgs;
+class CommandArgsImpl implements CommandArgs {
+  private String[] rawArgs;
 
-    CommandArgsImpl(String... rawArgs)
-    {
-        // TODO: parser ( parse arg between " this " )
-        this.rawArgs = rawArgs;
+  CommandArgsImpl(String... rawArgs) {
+    // TODO: parser ( parse arg between " this " )
+    this.rawArgs = rawArgs;
+  }
+
+  @Override
+  public int size() {
+    return rawArgs.length;
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return size() == 0;
+  }
+
+  @Override
+  public String get(int argIndex) {
+    Preconditions.checkPositionIndex(argIndex, size());
+
+    return rawArgs[argIndex];
+  }
+
+  @Override
+  public String[] getRawArgs() {
+    return rawArgs;
+  }
+
+  @Override
+  public OptionalInt getAsInt(int argIdx) {
+    try {
+      return OptionalInt.of(
+              Integer.parseInt(get(argIdx)));
+    } catch (NumberFormatException e) {
+      return OptionalInt.empty();
     }
+  }
 
-    @Override
-    public int size()
-    {
-        return rawArgs.length;
+  @Override
+  public OptionalDouble getAsDouble(int argIdx) {
+    try {
+      return OptionalDouble.of(
+              Double.parseDouble(get(argIdx)));
+    } catch (NumberFormatException e) {
+      return OptionalDouble.empty();
     }
+  }
 
-    @Override
-    public boolean isEmpty()
-    {
-        return size() == 0;
+  @Override
+  public Optional<Boolean> getAsBoolean(int argIdx) {
+    try {
+      return Optional.of(
+              Boolean.parseBoolean(get(argIdx)));
+    } catch (NumberFormatException e) {
+      return Optional.empty();
     }
+  }
 
-    @Override
-    public String get( int argIndex )
-    {
-        Preconditions.checkPositionIndex( argIndex, size() );
+  @Override
+  public Optional<Player> getAsPlayer(int argIdx) {
+    Player player = Bukkit.getPlayer(get(argIdx));
 
-        return rawArgs[argIndex];
-    }
+    return player == null
+            ? Optional.empty()
+            : Optional.of(player);
+  }
 
-    @Override
-    public String[] getRawArgs()
-    {
-        return rawArgs;
-    }
+  @Override
+  public int tryGetAsInt(int argIdx, Function<String, CommandResult> failCallback) {
+    OptionalInt i = getAsInt(argIdx);
 
-    @Override
-    public OptionalInt getAsInt( int argIdx )
-    {
-        try
-        {
-            return OptionalInt.of(
-                    Integer.parseInt( get( argIdx ) ) );
-        }
-        catch ( NumberFormatException e )
-        {
-            return OptionalInt.empty();
-        }
-    }
+    if (i.isPresent())
+      return i.getAsInt();
 
-    @Override
-    public OptionalDouble getAsDouble( int argIdx )
-    {
-        try
-        {
-            return OptionalDouble.of(
-                    Double.parseDouble( get( argIdx ) ) );
-        }
-        catch ( NumberFormatException e )
-        {
-            return OptionalDouble.empty();
-        }
-    }
+    CommandResult result = failCallback.apply(get(argIdx));
 
-    @Override
-    public Optional<Boolean> getAsBoolean( int argIdx )
-    {
-        try
-        {
-            return Optional.of(
-                    Boolean.parseBoolean( get( argIdx ) ) );
-        }
-        catch ( NumberFormatException e )
-        {
-            return Optional.empty();
-        }
-    }
+    throw new io.github.bktlib.command.CommandException(result);
+  }
 
-    @Override
-    public Optional<Player> getAsPlayer( int argIdx )
-    {
-        Player player = Bukkit.getPlayer( get( argIdx ) );
+  @Override
+  public double tryGetAsDouble(int argIdx, Function<String, CommandResult> failCallback) {
+    OptionalInt i = getAsInt(argIdx);
 
-        return player == null
-                ? Optional.empty()
-                : Optional.of( player );
-    }
+    if (i.isPresent())
+      return i.getAsInt();
 
-    @Override
-    public int tryGetAsInt( int argIdx, Function<String, CommandResult> failCallback )
-    {
-        OptionalInt i = getAsInt( argIdx );
+    CommandResult result = failCallback.apply(get(argIdx));
 
-        if ( i.isPresent() )
-            return i.getAsInt();
+    throw new io.github.bktlib.command.CommandException(result);
+  }
 
-        CommandResult result = failCallback.apply( get( argIdx ) );
+  @Override
+  public boolean tryGetAsBoolean(int argIdx, Function<String, CommandResult> failCallback) {
+    Optional<Boolean> i = getAsBoolean(argIdx);
 
-        throw new io.github.bktlib.command.CommandException( result );
-    }
+    if (i.isPresent())
+      return i.get();
 
-    @Override
-    public double tryGetAsDouble( int argIdx, Function<String, CommandResult> failCallback )
-    {
-        OptionalInt i = getAsInt( argIdx );
+    CommandResult result = failCallback.apply(get(argIdx));
 
-        if ( i.isPresent() )
-            return i.getAsInt();
+    throw new io.github.bktlib.command.CommandException(result);
+  }
 
-        CommandResult result = failCallback.apply( get( argIdx ) );
+  @Override
+  public Player tryGetAsPlayer(int argIdx, Function<String, CommandResult> failCallback) {
+    Optional<Player> i = getAsPlayer(argIdx);
 
-        throw new io.github.bktlib.command.CommandException( result );
-    }
+    if (i.isPresent())
+      return i.get();
 
-    @Override
-    public boolean tryGetAsBoolean( int argIdx, Function<String, CommandResult> failCallback )
-    {
-        Optional<Boolean> i = getAsBoolean( argIdx );
+    CommandResult result = failCallback.apply(get(argIdx));
 
-        if ( i.isPresent() )
-            return i.get();
+    throw new io.github.bktlib.command.CommandException(result);
+  }
 
-        CommandResult result = failCallback.apply( get( argIdx ) );
+  @Override
+  public int unsafeGetAsInt(int argIdx) {
+    return Integer.parseInt(get(argIdx));
+  }
 
-        throw new io.github.bktlib.command.CommandException( result );
-    }
+  @Override
+  public double unsafeGetAsDouble(int argIdx) {
+    return Double.parseDouble(get(argIdx));
+  }
 
-    @Override
-    public Player tryGetAsPlayer( int argIdx, Function<String, CommandResult> failCallback )
-    {
-        Optional<Player> i = getAsPlayer( argIdx );
+  @Override
+  public boolean unsafeGetAsBoolean(int argIdx) {
+    return Boolean.parseBoolean(get(argIdx));
+  }
 
-        if ( i.isPresent() )
-            return i.get();
+  @Override
+  public Player unsafeGetAsPlayer(int argIdx) {
+    return Bukkit.getPlayer(get(argIdx));
+  }
 
-        CommandResult result = failCallback.apply( get( argIdx ) );
-
-        throw new io.github.bktlib.command.CommandException( result );
-    }
-
-    @Override
-    public int unsafeGetAsInt( int argIdx )
-    {
-        return Integer.parseInt( get( argIdx ) );
-    }
-
-    @Override
-    public double unsafeGetAsDouble( int argIdx )
-    {
-        return Double.parseDouble( get( argIdx ) );
-    }
-
-    @Override
-    public boolean unsafeGetAsBoolean( int argIdx )
-    {
-        return Boolean.parseBoolean( get( argIdx ) );
-    }
-
-    @Override
-    public Player unsafeGetAsPlayer( int argIdx )
-    {
-        return Bukkit.getPlayer( get( argIdx ) );
-    }
-
-    @Override
-    public String toString()
-    {
-        return Arrays.toString( rawArgs );
-    }
+  @Override
+  public String toString() {
+    return Arrays.toString(rawArgs);
+  }
 }

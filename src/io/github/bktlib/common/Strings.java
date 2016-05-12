@@ -20,35 +20,29 @@ package io.github.bktlib.common;
 
 import java.util.stream.Stream;
 
-public final class Strings
-{
-    public static String of( final Object ... parts )
-    {
-        if ( parts == null ) return "null";
-        if ( parts.length == 0 ) return "";
+public final class Strings {
+  public static String of(final Object... parts) {
+    if (parts == null) return "null";
+    if (parts.length == 0) return "";
 
-        final StringBuilder sb = new StringBuilder();
-        Stream.of( parts ).forEach( sb::append );
-        return sb.toString();
-    }
+    final StringBuilder sb = new StringBuilder();
+    Stream.of(parts).forEach(sb::append);
+    return sb.toString();
+  }
 
-    public static boolean isNullOrEmpty( final String str )
-    {
-        return str == null || str.length() == 0;
-    }
+  public static boolean isNullOrEmpty(final String str) {
+    return str == null || str.length() == 0;
+  }
 
-    public static String emptyToNull( final String str )
-    {
-        return isNullOrEmpty( str ) ? null : str;
-    }
+  public static String emptyToNull(final String str) {
+    return isNullOrEmpty(str) ? null : str;
+  }
 
-    public static String nullToEmpty( final String str )
-    {
-        return str == null ? "" : str;
-    }
+  public static String nullToEmpty(final String str) {
+    return str == null ? "" : str;
+  }
 
-    private Strings()
-    {
-        throw new UnsupportedOperationException();
-    }
+  private Strings() {
+    throw new UnsupportedOperationException();
+  }
 }

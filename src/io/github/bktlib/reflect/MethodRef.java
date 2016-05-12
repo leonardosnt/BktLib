@@ -22,35 +22,29 @@ import java.lang.reflect.Method;
 
 import io.github.bktlib.common.Strings;
 
-public class MethodRef
-{
-	private Object owner;
-	private Method method;
-	
-	private MethodRef( Object instance, Method method )
-	{
-		this.owner = instance;
-		this.method = method;
-	}
-	
-	public Object getOwner()
-	{
-		return owner;
-	}
-	
-	public Method getMethod()
-	{
-		return method;
-	}
-	
-	public static MethodRef of( Object instance, Method method )
-	{
-		return new MethodRef( instance, method );
-	}
-	
-	@Override
-	public String toString()
-	{
-		return Strings.of( owner.getClass(), "#", method == null ? "null" : method.getName() );
-	}
+public class MethodRef {
+  private Object owner;
+  private Method method;
+
+  private MethodRef(Object instance, Method method) {
+    this.owner = instance;
+    this.method = method;
+  }
+
+  public Object getOwner() {
+    return owner;
+  }
+
+  public Method getMethod() {
+    return method;
+  }
+
+  public static MethodRef of(Object instance, Method method) {
+    return new MethodRef(instance, method);
+  }
+
+  @Override
+  public String toString() {
+    return Strings.of(owner.getClass(), "#", method == null ? "null" : method.getName());
+  }
 }

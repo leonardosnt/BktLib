@@ -24,78 +24,69 @@ import org.bukkit.util.Vector;
 
 import static com.google.common.base.Preconditions.*;
 
-public final class Locations
-{
-    public static Location of( final double x, final double y, final double z )
-    {
-        return of( "world", x, y, z );
-    }
+public final class Locations {
+  public static Location of(final double x, final double y, final double z) {
+    return of("world", x, y, z);
+  }
 
-    public static Location of( final String world, final double x, final double y,
-                               final double z )
-    {
-        checkNotNull( world, "world cannot be null" );
+  public static Location of(final String world, final double x, final double y,
+                            final double z) {
+    checkNotNull(world, "world cannot be null");
 
-        return new Location( Bukkit.getWorld( world ), x, y, z );
-    }
+    return new Location(Bukkit.getWorld(world), x, y, z);
+  }
 
-    public static Location of( final String world, final Vector vec )
-    {
-        checkNotNull( world, "world cannot be null" );
+  public static Location of(final String world, final Vector vec) {
+    checkNotNull(world, "world cannot be null");
 
-        return new Location(
-                Bukkit.getWorld( world ),
-                vec.getX(),
-                vec.getY(),
-                vec.getZ()
-        );
-    }
+    return new Location(
+            Bukkit.getWorld(world),
+            vec.getX(),
+            vec.getY(),
+            vec.getZ()
+    );
+  }
 
-    /**
-     * Retorna o ponto máximo entre {@code l1} e {@code l2}.
-     *
-     * @param l1 Localização 1
-     * @param l2 Localização 2
-     *
-     * @return uma nova {@link Location} com o ponto máximo entre as duas.
-     *
-     * @see #min(Location, Location)
-     */
-    public static Location max( final Location l1, final Location l2 )
-    {
-        checkNotNull( l1, "l1 cannot be null" );
-        checkNotNull( l2, "l2 cannot be null" );
+  /**
+   * Retorna o ponto máximo entre {@code l1} e {@code l2}.
+   *
+   * @param l1 Localização 1
+   * @param l2 Localização 2
+   * @return uma nova {@link Location} com o ponto máximo entre as duas.
+   * @see #min(Location, Location)
+   */
+  public static Location max(final Location l1, final Location l2) {
+    checkNotNull(l1, "l1 cannot be null");
+    checkNotNull(l2, "l2 cannot be null");
 
-        return new Location(
-                l1.getWorld(),
-                Math.max( l1.getX(), l2.getX() ),
-                Math.max( l1.getY(), l2.getY() ),
-                Math.max( l1.getZ(), l2.getZ() )
-        );
-    }
+    return new Location(
+            l1.getWorld(),
+            Math.max(l1.getX(), l2.getX()),
+            Math.max(l1.getY(), l2.getY()),
+            Math.max(l1.getZ(), l2.getZ())
+    );
+  }
 
-    /**
-     * Retorna o ponto mínimo entre {@code l1} e {@code l2}.
-     *
-     * @param l1 Localização 1
-     * @param l2 Localização 2
-     *
-     * @return uma nova {@link Location} com o ponto mínimo entre as duas.
-     *
-     * @see #max(Location, Location)
-     */
-    public static Location min( final Location l1, final Location l2 )
-    {
-        checkNotNull( l1, "l1 cannot be null" );
-        checkNotNull( l2, "l2 cannot be null" );
+  /**
+   * Retorna o ponto mínimo entre {@code l1} e {@code l2}.
+   *
+   * @param l1 Localização 1
+   * @param l2 Localização 2
+   * @return uma nova {@link Location} com o ponto mínimo entre as duas.
+   * @see #max(Location, Location)
+   */
+  public static Location min(final Location l1, final Location l2) {
+    checkNotNull(l1, "l1 cannot be null");
+    checkNotNull(l2, "l2 cannot be null");
 
-        return new Location(
-                l1.getWorld(),
-                Math.min( l1.getX(), l2.getX() ),
-                Math.min( l1.getY(), l2.getY() ),
-                Math.min( l1.getZ(), l2.getZ() )
-        );
-    }
-    
-    private Locations() {}
+    return new Location(
+            l1.getWorld(),
+            Math.min(l1.getX(), l2.getX()),
+            Math.min(l1.getY(), l2.getY()),
+            Math.min(l1.getZ(), l2.getZ())
+    );
+  }
+
+  private Locations() {
+  }
 }

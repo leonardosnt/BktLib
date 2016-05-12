@@ -22,68 +22,55 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-class MethodAccessorImpl<T> extends AbstractAccessor implements MethodAccessor<T>
-{
-	private Method method;
+class MethodAccessorImpl<T> extends AbstractAccessor implements MethodAccessor<T> {
+  private Method method;
 
-	MethodAccessorImpl(final Object owner, final String methodName, final Class<?> ... params)
-	{
-		super( owner );
+  MethodAccessorImpl(final Object owner, final String methodName, final Class<?>... params) {
+    super(owner);
 
-		Class<?> klass = owner instanceof Class ? (Class<?>) owner : owner.getClass();
+    Class<?> klass = owner instanceof Class ? (Class<?>) owner : owner.getClass();
 
-		final Method ret = findMethodRecursive( klass, methodName, params );
+    final Method ret = findMethodRecursive(klass, methodName, params);
 
-		if ( ret == null )
-			throw new RuntimeException(
-					String.format( "could not find method %s.%s", klass, methodName ) );
+    if (ret == null)
+      throw new RuntimeException(
+              String.format("could not find method %s.%s", klass, methodName));
 
-		this.method = ret;
-	}
+    this.method = ret;
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Optional<T> invoke( Object... params )
-	{
-		if ( !method.isAccessible() )
-			method.setAccessible( true );
+  @Override
+  @SuppressWarnings("unchecked")
+  public Optional<T> invoke(Object... params) {
+    if (!method.isAccessible())
+      method.setAccessible(true);
 
-		try
-		{
-			return (Optional<T>) Optional.ofNullable( method.invoke( owner, params ) );
-		}
-		catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException e )
-		{
-			e.printStackTrace();
-		}
-		return Optional.empty();
-	}
+    try {
+      return (Optional<T>) Optional.ofNullable(method.invoke(owner, params));
+    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return Optional.empty();
+  }
 
-	@Override
-	public Method getMethod()
-	{
-		return method;
-	}
-	
-	private static Method findMethodRecursive( final Class<?> klass, final String methodName,
-			final Class<?>... params )
-	{
-		if ( klass == null )
-			return null;
+  @Override
+  public Method getMethod() {
+    return method;
+  }
 
-		try
-		{
-			return klass.getDeclaredMethod( methodName, params );
-		}
-		catch ( NoSuchMethodException e )
-		{
-			return findMethodRecursive( klass.getSuperclass(), methodName, params );
-		}
-		catch ( SecurityException e )
-		{
-			e.printStackTrace();
-		}
+  private static Method findMethodRecursive(final Class<?> klass, final String methodName,
+                                            final Class<?>... params) {
+    if (klass == null)
+      return null;
 
-		return null;
-	}
+    try {
+      return klass.getDeclaredMethod(methodName, params);
+    } catch (NoSuchMethodException e) {
+      return findMethodRecursive(klass.getSuperclass(), methodName, params);
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
 }

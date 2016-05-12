@@ -29,33 +29,30 @@ import com.google.common.collect.Lists;
  * Classe usada internamente para "adaptar" a classe {@link CommandBase} para
  * {@link org.bukkit.command.Command}
  */
-final class CommandAdapter extends org.bukkit.command.Command
-{
-    CommandBase base;
+final class CommandAdapter extends org.bukkit.command.Command {
+  CommandBase base;
 
-    CommandAdapter(final CommandBase base)
-    {
-        super( base.getName() );
+  CommandAdapter(final CommandBase base) {
+    super(base.getName());
 
-        this.base = base;
+    this.base = base;
 
-        Optional<String> perm = base.getPermission();
-        Optional<String> usage = base.getUsage();
-        Optional<String> desc = base.getDescription();
-        Set<String> aliases = base.getAliases();
+    Optional<String> perm = base.getPermission();
+    Optional<String> usage = base.getUsage();
+    Optional<String> desc = base.getDescription();
+    Set<String> aliases = base.getAliases();
 
-        desc.ifPresent( this::setDescription );
-        perm.ifPresent( this::setPermission );
-        usage.ifPresent( this::setUsage );
+    desc.ifPresent(this::setDescription);
+    perm.ifPresent(this::setPermission);
+    usage.ifPresent(this::setUsage);
 
-        if ( aliases.size() > 0 )
-            setAliases( Lists.newArrayList( aliases ) );
-    }
+    if (aliases.size() > 0)
+      setAliases(Lists.newArrayList(aliases));
+  }
 
-    @Override
-    public boolean execute( final CommandSender sender, final String s, final String[] rawArgs )
-    {
-        base.execute( sender, rawArgs );
-        return true;
-    }
+  @Override
+  public boolean execute(final CommandSender sender, final String s, final String[] rawArgs) {
+    base.execute(sender, rawArgs);
+    return true;
+  }
 }

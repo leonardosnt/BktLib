@@ -24,45 +24,37 @@ import java.util.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-public interface MethodAccessor<T>
-{
-	/**
-	 * Chama o método com os parametros informados.
-	 * 
-	 * @param params
-	 *            Parametros a ser passado para o método
-	 * @return Um {@link Optional} contendo o retorno do método, caso ele tenha
-	 *         um.
-	 */
-	Optional<T> invoke( Object... params );
+public interface MethodAccessor<T> {
+  /**
+   * Chama o método com os parametros informados.
+   *
+   * @param params Parametros a ser passado para o método
+   * @return Um {@link Optional} contendo o retorno do método, caso ele tenha
+   * um.
+   */
+  Optional<T> invoke(Object... params);
 
-	/**
-	 * @return O {@link Method método} que está sendo acessado.
-	 */
-	Method getMethod();
+  /**
+   * @return O {@link Method método} que está sendo acessado.
+   */
+  Method getMethod();
 
-	/**
-	 * Acessa um determinado método.
-	 * 
-	 * @param obj
-	 *            Objeto que contem o método, ou a classe caso o método seja
-	 *            estatico.
-	 * @param methodName
-	 *            Nome do método a ser acessado.
-	 * @param params
-	 *            Lista de parametros que o método recebe.
-	 * @param <T>
-	 *            O tipo de retorno do método.
-	 *
-	 * @return Nova instancia de {@link MethodAccessor}
-	 */
-	static <T> MethodAccessor<T> access( final Object obj, final String methodName,
-			Class<?>... params )
-	{
-		Preconditions.checkNotNull( obj, "obj cannot be null" );
-		Preconditions.checkArgument( !Strings.isNullOrEmpty( methodName ),
-				"methodName cannot be null or empty" );
+  /**
+   * Acessa um determinado método.
+   *
+   * @param obj        Objeto que contem o método, ou a classe caso o método seja
+   *                   estatico.
+   * @param methodName Nome do método a ser acessado.
+   * @param params     Lista de parametros que o método recebe.
+   * @param <T>        O tipo de retorno do método.
+   * @return Nova instancia de {@link MethodAccessor}
+   */
+  static <T> MethodAccessor<T> access(final Object obj, final String methodName,
+                                      Class<?>... params) {
+    Preconditions.checkNotNull(obj, "obj cannot be null");
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(methodName),
+            "methodName cannot be null or empty");
 
-		return new MethodAccessorImpl<>( obj, methodName, params );
-	}
+    return new MethodAccessorImpl<>(obj, methodName, params);
+  }
 }

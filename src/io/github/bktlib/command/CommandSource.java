@@ -31,115 +31,96 @@ import io.github.bktlib.command.annotation.Command;
 /**
  * Essa classe é meio que uma wrapper de {@link CommandSender}
  */
-public class CommandSource
-{
-    private static CommandSource consoleSource;
+public class CommandSource {
+  private static CommandSource consoleSource;
 
-    private CommandSender wrappedSender;
+  private CommandSender wrappedSender;
 
-    CommandSource(CommandSender wrappedSender)
-    {
-        this.wrappedSender = wrappedSender;
+  CommandSource(CommandSender wrappedSender) {
+    this.wrappedSender = wrappedSender;
+  }
+
+  public static CommandSource getConsoleSource() {
+    if (consoleSource == null) {
+      consoleSource = new CommandSource(Bukkit.getConsoleSender());
     }
 
-    public static CommandSource getConsoleSource()
-    {
-        if ( consoleSource == null )
-        {
-            consoleSource = new CommandSource( Bukkit.getConsoleSender() );
-        }
+    return consoleSource;
+  }
 
-        return consoleSource;
+  public void sendMessages(String... messages) {
+    if (messages == null)
+      return;
+
+    Stream.of(messages)
+            .map(msg -> ChatColor.translateAlternateColorCodes('&', msg))
+            .forEach(wrappedSender::sendMessage);
+  }
+
+  public void sendMessage(String message, Object... args) {
+    wrappedSender.sendMessage(
+            String.format(ChatColor.translateAlternateColorCodes('&', message), args));
+  }
+
+  public void sendMessage(String message) {
+    sendMessage(message, new Object[0]);
+  }
+
+  public void sendMessage(Object rawMessage) {
+    String message;
+
+    if (rawMessage instanceof String)
+      message = (String) rawMessage;
+    else
+      message = String.valueOf(rawMessage);
+
+    sendMessage(message);
+  }
+
+  public String getName() {
+    return wrappedSender.getName();
+  }
+
+  public boolean isOp() {
+    return wrappedSender.isOp();
+  }
+
+  public boolean isPlayer() {
+    return wrappedSender instanceof Player;
+  }
+
+  public boolean isConsole() {
+    return !isPlayer();
+  }
+
+  public void setOp(boolean op) {
+    wrappedSender.setOp(op);
+  }
+
+  public boolean hasPermission(String permission) {
+    return wrappedSender.hasPermission(permission);
+  }
+
+  public boolean canUse(CommandBase command) {
+    Optional<String> commandPermission = command.getPermission();
+
+    return commandPermission.isPresent() &&
+            hasPermission(commandPermission.get());
+  }
+
+  public boolean canUse(Command annotation) {
+    return hasPermission(annotation.permission());
+  }
+
+  public CommandSender toCommandSender() {
+    return wrappedSender;
+  }
+
+  public Player toPlayer() {
+    if (!isPlayer()) {
+      throw new UnsupportedOperationException("Cannot cast console to player!");
     }
 
-    public void sendMessages( String... messages )
-    {
-        if ( messages == null )
-            return;
-
-        Stream.of( messages )
-                .map( msg -> ChatColor.translateAlternateColorCodes( '&', msg ) )
-                .forEach( wrappedSender::sendMessage );
-    }
-
-    public void sendMessage( String message, Object... args )
-    {
-        wrappedSender.sendMessage(
-                String.format( ChatColor.translateAlternateColorCodes( '&', message ), args ) );
-    }
-
-    public void sendMessage( String message )
-    {
-        sendMessage( message, new Object[0] );
-    }
-
-    public void sendMessage( Object rawMessage )
-    {
-        String message;
-
-        if ( rawMessage instanceof String )
-            message = (String) rawMessage;
-        else
-            message = String.valueOf( rawMessage );
-
-        sendMessage( message );
-    }
-
-    public String getName()
-    {
-        return wrappedSender.getName();
-    }
-
-    public boolean isOp()
-    {
-        return wrappedSender.isOp();
-    }
-
-    public boolean isPlayer()
-    {
-        return wrappedSender instanceof Player;
-    }
-
-    public boolean isConsole()
-    {
-        return !isPlayer();
-    }
-
-    public void setOp( boolean op )
-    {
-        wrappedSender.setOp( op );
-    }
-
-    public boolean hasPermission( String permission )
-    {
-        return wrappedSender.hasPermission( permission );
-    }
-
-    public boolean canUse( CommandBase command )
-    {
-        Optional<String> commandPermission = command.getPermission();
-
-        return commandPermission.isPresent() &&
-                hasPermission( commandPermission.get() );
-    }
-
-    public boolean canUse( Command annotation )
-    {
-        return hasPermission( annotation.permission() );
-    }
-
-    public CommandSender toCommandSender()
-    {
-        return wrappedSender;
-    }
-
-    public Player toPlayer()
-    {
-        if ( !isPlayer() )
-        {
-            throw new UnsupportedOperationException( "Cannot cast console to player!" );
-        }
-
-        return (Player) wrappedSender;
-    }
+    return (Player) wrappedSender;
+  }
 }

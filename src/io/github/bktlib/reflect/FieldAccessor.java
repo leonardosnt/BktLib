@@ -24,50 +24,41 @@ import java.util.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-public interface FieldAccessor<T>
-{
-	/**
-	 * @return O valor do {@link Field}.
-	 */
-	Optional<T> getValue();
+public interface FieldAccessor<T> {
+  /**
+   * @return O valor do {@link Field}.
+   */
+  Optional<T> getValue();
 
-	/**
-	 * Define o valor do {@link Field} para {@code newValue}
-	 * 
-	 * @param newValue
-	 *            Valor a ser definido
-	 *
-	 * @throws IllegalStateException
-	 *             Se o {@code field} for estatico e o objeto passado no
-	 *             {@link #access(Object, String)} nao é uma instancia de um
-	 *             objeto.
-	 */
-	void setValue( T newValue );
+  /**
+   * Define o valor do {@link Field} para {@code newValue}
+   *
+   * @param newValue Valor a ser definido
+   * @throws IllegalStateException Se o {@code field} for estatico e o objeto passado no
+   *                               {@link #access(Object, String)} nao é uma instancia de um
+   *                               objeto.
+   */
+  void setValue(T newValue);
 
-	/**
-	 * @return Retorna o {@link Field} que está sendo acessado.
-	 */
-	Field getField();
+  /**
+   * @return Retorna o {@link Field} que está sendo acessado.
+   */
+  Field getField();
 
-	/**
-	 * Acessa um determinado {@link Field}.
-	 * 
-	 * @param obj
-	 *            Objeto que contem o {@link Field}, ou a classe caso o
-	 *            {@link Field} seja estatico.
-	 * @param fieldName
-	 *            Nome do {@link Field} a ser acessado.
-	 * @param <T>
-	 *            Tipo do campo.
-	 * 
-	 * @return Nova instancia de {@link FieldAccessor}
-	 */
-	static <T> FieldAccessor<T> access( final Object obj, final String fieldName )
-	{
-		Preconditions.checkNotNull( obj, "obj cannot be null" );
-		Preconditions.checkArgument( !Strings.isNullOrEmpty( fieldName ),
-				"fieldName cannot be null or empty" );
+  /**
+   * Acessa um determinado {@link Field}.
+   *
+   * @param obj       Objeto que contem o {@link Field}, ou a classe caso o
+   *                  {@link Field} seja estatico.
+   * @param fieldName Nome do {@link Field} a ser acessado.
+   * @param <T>       Tipo do campo.
+   * @return Nova instancia de {@link FieldAccessor}
+   */
+  static <T> FieldAccessor<T> access(final Object obj, final String fieldName) {
+    Preconditions.checkNotNull(obj, "obj cannot be null");
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(fieldName),
+            "fieldName cannot be null or empty");
 
-		return new FieldAccessorImpl<>( obj, fieldName );
-	}
+    return new FieldAccessorImpl<>(obj, fieldName);
+  }
 }

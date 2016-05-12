@@ -33,161 +33,137 @@ import static com.google.common.base.Preconditions.*;
  * Classe utilitaria com metodos frequentemente usados para manipulacao de
  * inventarios
  */
-public class Invs
-{
-    /**
-     * Preenche o inventario com o {@code item}
-     *
-     * @param inv
-     *            Inventario a ser preenchido.
-     * @param item
-     *            Item com que deseja preencher o {@code inv}
-     */
-    public static void fill( final Inventory inv, final ItemStack item )
-    {
-        checkNotNull( inv, "inv cannot be null" );
+public class Invs {
+  /**
+   * Preenche o inventario com o {@code item}
+   *
+   * @param inv  Inventario a ser preenchido.
+   * @param item Item com que deseja preencher o {@code inv}
+   */
+  public static void fill(final Inventory inv, final ItemStack item) {
+    checkNotNull(inv, "inv cannot be null");
 
-        IntStream.range( 0, inv.getSize() ).forEach( idx -> inv.setItem( idx, item ) );
-    }
+    IntStream.range(0, inv.getSize()).forEach(idx -> inv.setItem(idx, item));
+  }
 
-    /**
-     * @see #fill(Inventory, ItemStack)
-     */
-    public static void fill( final Supplier<? extends Inventory> supplier, final ItemStack item )
-    {
-        fill( supplier.get(), item );
-    }
+  /**
+   * @see #fill(Inventory, ItemStack)
+   */
+  public static void fill(final Supplier<? extends Inventory> supplier, final ItemStack item) {
+    fill(supplier.get(), item);
+  }
 
-    /**
-     * @see #fill(Inventory, ItemStack)
-     */
-    public static void fill( final Inventory inv, final Supplier<ItemStack> itemSupp )
-    {
-        IntStream.range( 0, inv.getSize() ).forEach( idx -> inv.setItem( idx, itemSupp.get() ) );
-    }
+  /**
+   * @see #fill(Inventory, ItemStack)
+   */
+  public static void fill(final Inventory inv, final Supplier<ItemStack> itemSupp) {
+    IntStream.range(0, inv.getSize()).forEach(idx -> inv.setItem(idx, itemSupp.get()));
+  }
 
-    /**
-     * @see #fill(Inventory, ItemStack)
-     */
-    public static void fill( final Supplier<? extends Inventory> supplier, final Supplier<ItemStack> itemSupp )
-    {
-        fill( supplier.get(), itemSupp );
-    }
+  /**
+   * @see #fill(Inventory, ItemStack)
+   */
+  public static void fill(final Supplier<? extends Inventory> supplier, final Supplier<ItemStack> itemSupp) {
+    fill(supplier.get(), itemSupp);
+  }
 
-    /**
-     * Preenche o inventario com o {@code material}
-     *
-     * @param inv
-     *            Inventario a ser preenchido.
-     * @param material
-     *            Material com que deseja preencher o {@code inv}
-     */
-    public static void fill( final Inventory inv, final Material material )
-    {
-        checkNotNull( inv, "inv cannot be null" );
+  /**
+   * Preenche o inventario com o {@code material}
+   *
+   * @param inv      Inventario a ser preenchido.
+   * @param material Material com que deseja preencher o {@code inv}
+   */
+  public static void fill(final Inventory inv, final Material material) {
+    checkNotNull(inv, "inv cannot be null");
 
-        if ( material == Material.AIR ) return;
+    if (material == Material.AIR) return;
 
-        fill( inv, new ItemStack( material ) );
-    }
+    fill(inv, new ItemStack(material));
+  }
 
-    /**
-     * @see #fill(Inventory, Material)
-     */
-    public static void fill( final Supplier<? extends Inventory> supplier, Material mat )
-    {
-        fill( supplier.get(), mat );
-    }
+  /**
+   * @see #fill(Inventory, Material)
+   */
+  public static void fill(final Supplier<? extends Inventory> supplier, Material mat) {
+    fill(supplier.get(), mat);
+  }
 
-    /**
-     * Verifica se o {@code inv} está vazio.
-     *
-     * @param inv
-     *            Invetario a ser verificado.
-     * @return se o {@code inv} está vazio.
-     */
-    public static boolean isEmpty( final Inventory inv )
-    {
-        checkNotNull( inv, "inv cannot be null" );
+  /**
+   * Verifica se o {@code inv} está vazio.
+   *
+   * @param inv Invetario a ser verificado.
+   * @return se o {@code inv} está vazio.
+   */
+  public static boolean isEmpty(final Inventory inv) {
+    checkNotNull(inv, "inv cannot be null");
 
-        return stream( inv ).allMatch( Objects::isNull );
-    }
+    return stream(inv).allMatch(Objects::isNull);
+  }
 
-    /**
-     * @see #isEmpty(Inventory)
-     */
-    public static boolean isEmpty( final Supplier<? extends Inventory> supplier )
-    {
-        return isEmpty( supplier.get() );
-    }
+  /**
+   * @see #isEmpty(Inventory)
+   */
+  public static boolean isEmpty(final Supplier<? extends Inventory> supplier) {
+    return isEmpty(supplier.get());
+  }
 
-    /**
-     * Cria uma nova {@link Stream} dos items do {@code inv}
-     *
-     * @param inv
-     *            Inventario Inventario em sí
-     * @return Uma nova {@link Stream} dos items do {@code inv}
-     */
-    public static Stream<ItemStack> stream( final Inventory inv )
-    {
-        checkNotNull( inv, "inv cannot be null" );
+  /**
+   * Cria uma nova {@link Stream} dos items do {@code inv}
+   *
+   * @param inv Inventario Inventario em sí
+   * @return Uma nova {@link Stream} dos items do {@code inv}
+   */
+  public static Stream<ItemStack> stream(final Inventory inv) {
+    checkNotNull(inv, "inv cannot be null");
 
-        return Stream.of( inv.getContents() );
-    }
+    return Stream.of(inv.getContents());
+  }
 
-    /**
-     * @see #stream(Inventory)
-     */
-    public static Stream<ItemStack> stream( final Supplier<? extends Inventory> supplier )
-    {
-        return stream( supplier.get() );
-    }
+  /**
+   * @see #stream(Inventory)
+   */
+  public static Stream<ItemStack> stream(final Supplier<? extends Inventory> supplier) {
+    return stream(supplier.get());
+  }
 
-    /**
-     * Verifica se todos os slots estão com pelo menos 1 item.
-     *
-     * @param inv
-     *            Inventario a ser checado
-     * @return Se o inventario está cheio
-     */
-    public static boolean isFull( final Inventory inv )
-    {
-        checkNotNull( inv, "inv cannot be null" );
+  /**
+   * Verifica se todos os slots estão com pelo menos 1 item.
+   *
+   * @param inv Inventario a ser checado
+   * @return Se o inventario está cheio
+   */
+  public static boolean isFull(final Inventory inv) {
+    checkNotNull(inv, "inv cannot be null");
 
-        return inv.firstEmpty() == -1;
-    }
+    return inv.firstEmpty() == -1;
+  }
 
-    /**
-     * @see #isFull(Inventory)
-     */
-    public static boolean isFull( final Supplier<? extends Inventory> inv )
-    {
-        return isFull( inv.get() );
-    }
+  /**
+   * @see #isFull(Inventory)
+   */
+  public static boolean isFull(final Supplier<? extends Inventory> inv) {
+    return isFull(inv.get());
+  }
 
-    /**
-     * Verifica se TODOS os slots do inventario estão com stacks cheias.
-     *
-     * @param inv
-     *            Inventario a ser checado
-     * @return Se o inventario está completamente cheio
-     */
-    public static boolean isCompletelyFull( final Inventory inv )
-    {
-        return isFull( inv ) && stream( inv )
-                .allMatch( item -> item.getAmount() == item.getMaxStackSize() );
-    }
+  /**
+   * Verifica se TODOS os slots do inventario estão com stacks cheias.
+   *
+   * @param inv Inventario a ser checado
+   * @return Se o inventario está completamente cheio
+   */
+  public static boolean isCompletelyFull(final Inventory inv) {
+    return isFull(inv) && stream(inv)
+            .allMatch(item -> item.getAmount() == item.getMaxStackSize());
+  }
 
-    /**
-     * @see #isCompletelyFull(Inventory)
-     */
-    public static boolean isCompletelyFull( final Supplier<? extends Inventory> inv )
-    {
-        return isCompletelyFull( inv.get() );
-    }
+  /**
+   * @see #isCompletelyFull(Inventory)
+   */
+  public static boolean isCompletelyFull(final Supplier<? extends Inventory> inv) {
+    return isCompletelyFull(inv.get());
+  }
 
-    private Invs()
-    {
-        throw new UnsupportedOperationException();
-    }
+  private Invs() {
+    throw new UnsupportedOperationException();
+  }
 }

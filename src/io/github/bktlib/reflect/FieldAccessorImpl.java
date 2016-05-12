@@ -21,95 +21,76 @@ package io.github.bktlib.reflect;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T>
-{
-	private Field field;
-	
-	FieldAccessorImpl( final Object obj, String fieldName )
-	{
-		super( obj );
+class FieldAccessorImpl<T> extends AbstractAccessor implements FieldAccessor<T> {
+  private Field field;
 
-		Class<?> klass = obj instanceof Class ? (Class<?>) obj : obj.getClass();
+  FieldAccessorImpl(final Object obj, String fieldName) {
+    super(obj);
 
-		Field ret = findFieldRecursive( klass, fieldName );
+    Class<?> klass = obj instanceof Class ? (Class<?>) obj : obj.getClass();
 
-		if ( ret == null )
-			throw new RuntimeException( String.format( "could not find field %s.%s", klass, fieldName ) );
+    Field ret = findFieldRecursive(klass, fieldName);
 
-		this.field = ret;
-	}
+    if (ret == null)
+      throw new RuntimeException(String.format("could not find field %s.%s", klass, fieldName));
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Optional<T> getValue()
-	{
-		if ( !field.isAccessible() )
-			field.setAccessible( true );
-		
-		try
-		{
-			checkStatic();
-			
-			return (Optional<T>) Optional.ofNullable(  field.get( owner ) );
-		}
-		catch ( IllegalArgumentException | IllegalAccessException e )
-		{
-			e.printStackTrace();
-			
-			return Optional.empty();
-		}
-	}
-	
-	@Override
-	public void setValue( T newValue )
-	{
-		if ( !field.isAccessible() )
-			field.setAccessible( true );
-		
-		try
-		{
-			checkStatic();
-			
-			field.set( owner, newValue );
-		}
-		catch ( IllegalArgumentException | IllegalAccessException e )
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public Field getField()
-	{
-		return field;
-	}
-	
-	private void checkStatic()
-	{
-		if ( owner instanceof Class && ( field.getModifiers() & 0x8 ) == 0 )
-		{
-			throw new IllegalStateException( "non-static field requires an instance." );
-		}
-	}
-	
-	private static Field findFieldRecursive( final Class<?> klass, final String fieldName )
-	{
-		if ( klass == null )
-			return null;
+    this.field = ret;
+  }
 
-		try
-		{
-			return klass.getDeclaredField( fieldName );
-		}
-		catch ( NoSuchFieldException e )
-		{
-			return findFieldRecursive( klass.getSuperclass(), fieldName );
-		}
-		catch ( SecurityException e )
-		{
-			e.printStackTrace();
-		}
+  @Override
+  @SuppressWarnings("unchecked")
+  public Optional<T> getValue() {
+    if (!field.isAccessible())
+      field.setAccessible(true);
 
-		return null;
-	}
+    try {
+      checkStatic();
+
+      return (Optional<T>) Optional.ofNullable(field.get(owner));
+    } catch (IllegalArgumentException | IllegalAccessException e) {
+      e.printStackTrace();
+
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public void setValue(T newValue) {
+    if (!field.isAccessible())
+      field.setAccessible(true);
+
+    try {
+      checkStatic();
+
+      field.set(owner, newValue);
+    } catch (IllegalArgumentException | IllegalAccessException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public Field getField() {
+    return field;
+  }
+
+  private void checkStatic() {
+    if (owner instanceof Class && (field.getModifiers() & 0x8) == 0) {
+      throw new IllegalStateException("non-static field requires an instance.");
+    }
+  }
+
+  private static Field findFieldRecursive(final Class<?> klass, final String fieldName) {
+    if (klass == null)
+      return null;
+
+    try {
+      return klass.getDeclaredField(fieldName);
+    } catch (NoSuchFieldException e) {
+      return findFieldRecursive(klass.getSuperclass(), fieldName);
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
 }
