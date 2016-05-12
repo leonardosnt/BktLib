@@ -32,7 +32,8 @@ public final class DynamicEvents {
   public static DynamicEvents from(Plugin plugin) {
     Preconditions.checkNotNull(plugin, "plugin");
 
-    return cache.putIfAbsent(plugin, new DynamicEvents(plugin));
+    cache.putIfAbsent(plugin, new DynamicEvents(plugin));
+    return cache.get(plugin);
   }
 
   private DynamicEvents(Plugin plugin) {
