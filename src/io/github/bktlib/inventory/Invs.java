@@ -47,9 +47,7 @@ public class Invs
     {
         checkNotNull( inv, "inv cannot be null" );
 
-        IntStream.range(
-                0, inv.getSize()
-        ).forEach( idx -> inv.setItem( idx, item ) );
+        IntStream.range( 0, inv.getSize() ).forEach( idx -> inv.setItem( idx, item ) );
     }
 
     /**
@@ -58,6 +56,22 @@ public class Invs
     public static void fill( final Supplier<? extends Inventory> supplier, final ItemStack item )
     {
         fill( supplier.get(), item );
+    }
+
+    /**
+     * @see #fill(Inventory, ItemStack)
+     */
+    public static void fill( final Inventory inv, final Supplier<ItemStack> itemSupp )
+    {
+        IntStream.range( 0, inv.getSize() ).forEach( idx -> inv.setItem( idx, itemSupp.get() ) );
+    }
+
+    /**
+     * @see #fill(Inventory, ItemStack)
+     */
+    public static void fill( final Supplier<? extends Inventory> supplier, final Supplier<ItemStack> itemSupp )
+    {
+        fill( supplier.get(), itemSupp );
     }
 
     /**
