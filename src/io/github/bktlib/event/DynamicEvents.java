@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.player.PlayerEvent;
@@ -66,7 +67,13 @@ public final class DynamicEvents {
 
   public <E extends Event> void registerForEntity(
       Entity entity, String id, Class<E> eventClass, Consumer<E> consumer) {
-    throw new NotImplementedException();
+    Preconditions.checkArgument(isEntityEvent(eventClass),
+            eventClass + " is not a entity event.");
+    register0(eventClass, id, (l, e) -> {
+      if (getEntityFromEvent(e) == entity) {
+        consumer.accept((E) e);
+      }
+    });
   }
 
   public void unregister(String id) {
@@ -75,6 +82,7 @@ public final class DynamicEvents {
       return;
     }
     HandlerList.unregisterAll(listener);
+    registered.remove(id);
   }
 
   private <E extends Event> void register0(
@@ -116,13 +124,21 @@ public final class DynamicEvents {
     return null;
   }
 
+  private Entity getEntityFromEvent(Event e) {
+    return ((EntityEvent) e).getEntity();
+  }
+
   private boolean isPlayerEvent(Class<?> clazz) {
-    return clazz.isAssignableFrom(PlayerEvent.class)
+    return PlayerEvent.class.isAssignableFrom(clazz)
             || clazz == PlayerLeashEntityEvent.class
             || clazz == PlayerUnleashEntityEvent.class
             || clazz == PlayerDeathEvent.class
             || clazz == BlockBreakEvent.class
             || clazz == BlockPlaceEvent.class
             || clazz == SignChangeEvent.class;
+  }
+
+  private boolean isEntityEvent(Class<?> clazz) {
+    return EntityEvent.class.isAssignableFrom(clazz);
   }
 }
