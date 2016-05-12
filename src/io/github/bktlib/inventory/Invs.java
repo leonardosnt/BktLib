@@ -19,6 +19,7 @@
 package io.github.bktlib.inventory;
 
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -34,6 +35,7 @@ import static com.google.common.base.Preconditions.*;
  * inventarios
  */
 public class Invs {
+
   /**
    * Preenche o inventario com o {@code item}
    *
@@ -43,28 +45,58 @@ public class Invs {
   public static void fill(final Inventory inv, final ItemStack item) {
     checkNotNull(inv, "inv cannot be null");
 
-    IntStream.range(0, inv.getSize()).forEach(idx -> inv.setItem(idx, item));
+    IntStream.range(0, inv.getSize()).forEach(idx ->
+      inv.setItem(idx, item)
+    );
   }
 
   /**
    * @see #fill(Inventory, ItemStack)
    */
-  public static void fill(final Supplier<? extends Inventory> supplier, final ItemStack item) {
-    fill(supplier.get(), item);
+  public static void fill(final Supplier<? extends Inventory> inv, final ItemStack item) {
+    fill(inv.get(), item);
   }
 
   /**
    * @see #fill(Inventory, ItemStack)
    */
   public static void fill(final Inventory inv, final Supplier<ItemStack> itemSupp) {
-    IntStream.range(0, inv.getSize()).forEach(idx -> inv.setItem(idx, itemSupp.get()));
+    checkNotNull(inv, "inv cannot be null");
+    checkNotNull(itemSupp, "itemSupp cannot be null");
+
+    IntStream.range(0, inv.getSize()).forEach(idx ->
+      inv.setItem(idx, itemSupp.get())
+    );
   }
 
   /**
    * @see #fill(Inventory, ItemStack)
+  */
+  public static void fill(final Supplier<? extends Inventory> inv,
+                          final Supplier<ItemStack> itemSupp) {
+    fill(inv.get(), itemSupp);
+  }
+
+  /**
+   * @param inv Invetario
+   * @param itemSupp Função que retorna o Item que sera colocado no determinado slot
    */
-  public static void fill(final Supplier<? extends Inventory> supplier, final Supplier<ItemStack> itemSupp) {
-    fill(supplier.get(), itemSupp);
+  public static void fillWithIndex(final Inventory inv,
+                                   final Function<Integer, ItemStack> itemSupp) {
+    checkNotNull(inv, "inv cannot be null");
+    checkNotNull(itemSupp, "itemSupp cannot be null");
+
+    IntStream.range(0, inv.getSize()).forEach(idx ->
+      inv.setItem(idx, itemSupp.apply(idx))
+    );
+  }
+
+  /**
+   * @see #fillWithIndex(Inventory, Function)
+   */
+  public static void fillWithIndex(final Supplier<? extends Inventory> inv,
+                                   final Function<Integer, ItemStack> itemSupp) {
+    fillWithIndex(inv.get(), itemSupp);
   }
 
   /**
@@ -76,16 +108,7 @@ public class Invs {
   public static void fill(final Inventory inv, final Material material) {
     checkNotNull(inv, "inv cannot be null");
 
-    if (material == Material.AIR) return;
-
     fill(inv, new ItemStack(material));
-  }
-
-  /**
-   * @see #fill(Inventory, Material)
-   */
-  public static void fill(final Supplier<? extends Inventory> supplier, Material mat) {
-    fill(supplier.get(), mat);
   }
 
   /**
