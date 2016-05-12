@@ -60,11 +60,6 @@ public final class DynamicEvents {
     });
   }
 
-  public <E extends Event> void registerForBlock(
-      Block block, String id, Class<E> eventClass, Consumer<E> consumer) {
-    throw new NotImplementedException();
-  }
-
   public <E extends Event> void registerForEntity(
       Entity entity, String id, Class<E> eventClass, Consumer<E> consumer) {
     Preconditions.checkArgument(isEntityEvent(eventClass),
@@ -83,6 +78,11 @@ public final class DynamicEvents {
     }
     HandlerList.unregisterAll(listener);
     registered.remove(id);
+  }
+
+  public void unregisterAll() {
+    registered.values().forEach(HandlerList::unregisterAll);
+    registered.clear();
   }
 
   private <E extends Event> void register0(
