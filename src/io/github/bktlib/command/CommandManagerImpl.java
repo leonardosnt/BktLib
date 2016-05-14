@@ -40,6 +40,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import io.github.bktlib.misc.BukkitUtil;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -58,7 +59,6 @@ import io.github.bktlib.common.Strings;
 import io.github.bktlib.reflect.FieldAccessor;
 import io.github.bktlib.reflect.MethodAccessor;
 import io.github.bktlib.reflect.MethodRef;
-import io.github.bktlib.reflect.util.MCReflectUtil;
 import io.github.bktlib.reflect.util.ReflectUtil;
 
 /**
@@ -291,7 +291,7 @@ class CommandManagerImpl implements CommandManager {
       return optCmdMap.get();
 
     final String message = String.format("Cound not get commandMap, CraftBukkit Version: %s, PluginManager: %s",
-            MCReflectUtil.getCBVersion(),
+            BukkitUtil.getImplVersion(),
             pluginManager);
 
     throw new IllegalStateException(message);

@@ -18,8 +18,18 @@
 
 package io.github.bktlib.reflect.util;
 
+import com.google.gson.internal.Primitives;
+import io.github.bktlib.misc.BukkitUtil;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.IntFunction;
+import java.util.stream.Stream;
 
 public final class ReflectUtil {
   /**
@@ -107,6 +117,67 @@ public final class ReflectUtil {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  //TODO CACHE
+  public static Class<?> getClass(String clazz) {
+    final String version = BukkitUtil.getImplVersion();
+    clazz = clazz.replaceAll("\\{cb\\}", "org.bukkit.craftbukkit." + version);
+    clazz = clazz.replaceAll("\\{nms\\}", "net.minecraft.server." + version);
+    try {
+      return Class.forName(clazz);
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  public static Object instantiate(final String clazz, Object ... params) {
+    try {
+      Class<?> targetClass = ReflectUtil.getClass(clazz);
+      if (targetClass == null) {
+        return null;
+      }
+      if (!isConcreteClass(targetClass)) {
+        throw new IllegalArgumentException(targetClass + " is not a concrete class.");
+      }
+      if (params == null || params.length == 0) {
+        return targetClass.newInstance();
+      }
+      Class<?>[] classes = Stream.of(params)
+        .map(Object::getClass)
+        .map(Primitives::unwrap)
+        .toArray(Class[]::new);
+      Constructor<?> ctor = targetClass.getConstructor(classes);
+      ctor.setAccessible(true);
+      return ctor.newInstance(params);
+    } catch (InstantiationException | IllegalAccessException |
+             NoSuchMethodException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public static Object getNmsHandle(final Object obj) {
+    if (obj instanceof Player || obj instanceof World) { // TODO implementar outros.
+      try {
+        Method getHandle = obj.getClass().getMethod("getHandle");
+        return getHandle.invoke(obj);
+      } catch (NoSuchMethodException | InvocationTargetException |
+              IllegalAccessException e) {
+        e.printStackTrace();
+      }
+    }
+    if (obj instanceof ItemStack) {
+      try {
+        Field handle = obj.getClass().getDeclaredField("handle");
+        handle.setAccessible(true);
+        return handle.get(obj);
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
   }
 
   private ReflectUtil() {
