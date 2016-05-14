@@ -3,7 +3,7 @@
   GAMBIARRA FEITA POR leonardosnt.
 
   Classe: net.minecraft.server.v1_8_R3.NBTTagCompound
-  Data: 2016-05-14T01:07:31.933Z
+  Data: 2016-05-14T01:52:46.102Z
 */
 package io.github.bktlib.wrappers;
 
@@ -14,18 +14,23 @@ public final class NBTTagCompoundWrapper {
   private Class<?> nBTTagCompoundClass;
   private Method setByteMethod;
   private Method setShortMethod;
+  private Method setIntMethod;
   private Method setFloatMethod;
   private Method setStringMethod;
   private Method setByteArrayMethod;
   private Method setIntArrayMethod;
   private Method setBooleanMethod;
+  private Method hasKeyMethod;
   private Method getByteMethod;
   private Method getShortMethod;
+  private Method getIntMethod;
   private Method getFloatMethod;
   private Method getStringMethod;
   private Method getByteArrayMethod;
   private Method getIntArrayMethod;
   private Method getBooleanMethod;
+  private Method removeMethod;
+  private Method isEmptyMethod;
 
   public static NBTTagCompoundWrapper of(Object instance) {
     return new NBTTagCompoundWrapper(instance);
@@ -48,6 +53,13 @@ public final class NBTTagCompoundWrapper {
       setShortMethod = getMethod("setShort", java.lang.String.class, short.class);
     }
     invokeMethod(setShortMethod, param1, param2);
+  }
+
+  public void setInt(java.lang.String param1, int param2) {
+    if (setIntMethod == null) {
+      setIntMethod = getMethod("setInt", java.lang.String.class, int.class);
+    }
+    invokeMethod(setIntMethod, param1, param2);
   }
 
   public void setFloat(java.lang.String param1, float param2) {
@@ -85,6 +97,13 @@ public final class NBTTagCompoundWrapper {
     invokeMethod(setBooleanMethod, param1, param2);
   }
 
+  public boolean hasKey(java.lang.String param1) {
+    if (hasKeyMethod == null) {
+      hasKeyMethod = getMethod("hasKey", java.lang.String.class);
+    }
+    return (boolean) invokeMethod(hasKeyMethod, param1);
+  }
+
   public byte getByte(java.lang.String param1) {
     if (getByteMethod == null) {
       getByteMethod = getMethod("getByte", java.lang.String.class);
@@ -97,6 +116,13 @@ public final class NBTTagCompoundWrapper {
       getShortMethod = getMethod("getShort", java.lang.String.class);
     }
     return (short) invokeMethod(getShortMethod, param1);
+  }
+
+  public int getInt(java.lang.String param1) {
+    if (getIntMethod == null) {
+      getIntMethod = getMethod("getInt", java.lang.String.class);
+    }
+    return (int) invokeMethod(getIntMethod, param1);
   }
 
   public float getFloat(java.lang.String param1) {
@@ -132,6 +158,20 @@ public final class NBTTagCompoundWrapper {
       getBooleanMethod = getMethod("getBoolean", java.lang.String.class);
     }
     return (boolean) invokeMethod(getBooleanMethod, param1);
+  }
+
+  public void remove(java.lang.String param1) {
+    if (removeMethod == null) {
+      removeMethod = getMethod("remove", java.lang.String.class);
+    }
+    invokeMethod(removeMethod, param1);
+  }
+
+  public boolean isEmpty() {
+    if (isEmptyMethod == null) {
+      isEmptyMethod = getMethod("isEmpty");
+    }
+    return (boolean) invokeMethod(isEmptyMethod);
   }
 
   private Method getMethod(String methodName, Class<?> ... params) {
