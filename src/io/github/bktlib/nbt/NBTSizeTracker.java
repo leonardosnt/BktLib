@@ -2,10 +2,11 @@ package io.github.bktlib.nbt;
 
 public class NBTSizeTracker {
 
-  private final long max;
   public static final NBTSizeTracker INFINITE = new NBTSizeTracker(0L) {
     public void read(long bits) {}
   };
+
+  private final long max;
 
   public NBTSizeTracker(long max) {
     this.max = max;
