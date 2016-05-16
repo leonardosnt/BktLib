@@ -99,6 +99,12 @@ public final class DynamicEvents {
     });
   }
 
+  /**
+   * Desregistra uma determinada 'ação' registrada por
+   * {@link #register(String, Class, Consumer)}
+   *
+   * @param id Id da 'ação'
+   */
   public void unregister(String id) {
     final Listener listener = registered.get(id);
     if (listener == null) {
@@ -108,10 +114,14 @@ public final class DynamicEvents {
     registered.remove(id);
   }
 
+  /**
+   * Desregistra todas as 'ações' registradas.
+   */
   public void unregisterAll() {
     registered.values().forEach(HandlerList::unregisterAll);
     registered.clear();
   }
+
 
   private <E extends Event> void register0(
       Class<E> eventClass, String id, EventExecutor executor) {
