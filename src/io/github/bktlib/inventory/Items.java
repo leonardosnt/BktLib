@@ -19,8 +19,8 @@
 package io.github.bktlib.inventory;
 
 import io.github.bktlib.misc.LazyInitVar;
+import io.github.bktlib.nbt.NBTTagCompound;
 import io.github.bktlib.reflect.util.ReflectUtil;
-import io.github.bktlib.wrappers.NBTTagCompoundWrapper;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -100,6 +100,59 @@ public final class Items {
             : Optional.empty();
   }
 
+  private static LazyInitVar<Method> nmsItemGetTag = new LazyInitVar<Method>() {
+    @Override
+    public Method init() {
+      try {
+        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
+        return nmsItemStackClass.getDeclaredMethod("getTag");
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  };
+  private static LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
+    @Override
+    public Method init() {
+      try {
+        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
+        Class<?> cls = ReflectUtil.getClass("{nms}.NBTTagCompound");
+        return nmsItemStackClass.getDeclaredMethod("setTag", cls);
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  };
+
+  private static Object getTag(ItemStack item) {
+    try {
+      final Object itemHandle = ReflectUtil.getNmsHandle(item);
+      final Object nbtCompound;
+      if (nmsItemGetTag.get().invoke(itemHandle) == null) {
+        nbtCompound = ReflectUtil.instantiate("{nms}.NBTTagCompound");
+        nmsItemSetTag.get().invoke(itemHandle, nbtCompound);
+      } else {
+        nbtCompound = nmsItemGetTag.get().invoke(itemHandle);
+      }
+      return nbtCompound;
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /**
+   * @param item ItemStack
+   * @return Nova instancia de {@link NBTTagCompound}
+   */
+  public static NBTTagCompound getNBTTagCompound(ItemStack item) {
+    checkNotNull(item, "item");
+
+    return NBTTagCompound.fromNMSCompound(getTag(item));
+  }
+
   private static void consumeMeta(final ItemStack item, final Consumer<ItemMeta> metaConsumer) {
     ItemMeta meta = item.getItemMeta();
     metaConsumer.accept(meta);
@@ -110,116 +163,4 @@ public final class Items {
     throw new UnsupportedOperationException();
   }
 
-  public static class Meta {
-    private static LazyInitVar<Method> nmsItemGetTag = new LazyInitVar<Method>() {
-      @Override
-      public Method init() {
-        try {
-          Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
-          return nmsItemStackClass.getDeclaredMethod("getTag");
-        } catch (NoSuchMethodException e) {
-          e.printStackTrace();
-        }
-        return null;
-      }
-    };
-    private static LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
-      @Override
-      public Method init() {
-        try {
-          Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
-          Class<?> cls = ReflectUtil.getClass("{nms}.NBTTagCompound");
-          return nmsItemStackClass.getDeclaredMethod("setTag", cls);
-        } catch (NoSuchMethodException e) {
-          e.printStackTrace();
-        }
-        return null;
-      }
-    };
-
-    private static Object getTag(ItemStack item) {
-      try {
-        final Object itemHandle = ReflectUtil.getNmsHandle(item);
-        final Object nbtCompound;
-        if (nmsItemGetTag.get().invoke(itemHandle) == null) {
-          nbtCompound = ReflectUtil.instantiate("{nms}.NBTTagCompound");
-          nmsItemSetTag.get().invoke(itemHandle, nbtCompound);
-        } else {
-          nbtCompound = nmsItemGetTag.get().invoke(itemHandle);
-        }
-        return nbtCompound;
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-
-    public static void removeKey(ItemStack item, String key) {
-      NBTTagCompoundWrapper.of(getTag(item)).remove(key);
-    }
-
-    public static void setString(ItemStack item, String key, String value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setString(key, value);
-    }
-
-    public static void setBoolean(ItemStack item, String key, boolean value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setBoolean(key, value);
-    }
-
-    public static void setByte(ItemStack item, String key, byte value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setByte(key, value);
-    }
-
-    public static void setFloat(ItemStack item, String key, float value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setFloat(key, value);
-    }
-
-    public static void setInt(ItemStack item, String key, int value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setInt(key, value);
-    }
-
-    public static void setShort(ItemStack item, String key, short value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setShort(key, value);
-    }
-
-    public static void setByteArray(ItemStack item, String key, byte[] value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setByteArray(key, value);
-    }
-
-    public static void setIntArray(ItemStack item, String key, int[] value) {
-      NBTTagCompoundWrapper.of(getTag(item)).setIntArray(key, value);
-    }
-
-    public static String getString(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getString(key);
-    }
-
-    public static boolean getBoolean(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getBoolean(key);
-    }
-
-    public static byte getByte(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getByte(key);
-    }
-
-    public static float getFloat(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getFloat(key);
-    }
-
-    public static int getInteger(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getInt(key);
-    }
-
-    public static short getShort(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getShort(key);
-    }
-
-    public static byte[] getByteArray(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getByteArray(key);
-    }
-
-    public static int[] getIntArray(ItemStack item, String key) {
-      return NBTTagCompoundWrapper.of(getTag(item)).getIntArray(key);
-    }
-  }
 }

@@ -23,6 +23,8 @@ import io.github.bktlib.misc.BukkitUtil;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.testng.CommandLineArgs;
+import org.testng.xml.dom.Reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -158,7 +160,7 @@ public final class ReflectUtil {
     return null;
   }
 
-  public static Object getNmsHandle(final Object obj) {
+  public static Object getNmsHandle(Object obj) {
     if (obj instanceof Player || obj instanceof World) { // TODO implementar outros.
       try {
         Method getHandle = obj.getClass().getMethod("getHandle");
@@ -169,6 +171,16 @@ public final class ReflectUtil {
       }
     }
     if (obj instanceof ItemStack) {
+      if (!obj.getClass().getSimpleName().endsWith("CraftItemStack")) {
+        Class<?> cls = ReflectUtil.getClass("{cb}.inventory.CraftItemStack");
+        try {
+          Method md = cls.getDeclaredMethod("asCraftCopy", ItemStack.class);
+          obj = md.invoke(null, obj);
+        } catch (NoSuchMethodException | InvocationTargetException |
+                IllegalAccessException e) {
+          e.printStackTrace();
+        }
+      }
       try {
         Field handle = obj.getClass().getDeclaredField("handle");
         handle.setAccessible(true);
