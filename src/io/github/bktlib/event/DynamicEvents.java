@@ -40,32 +40,61 @@ public final class DynamicEvents {
     registered = Maps.newHashMap();
   }
 
+  /**
+   * Registra a ação({@code action}) que sera executada quando o
+   * determinado evento({@code eventClass}) for executado.
+   *
+   * @param id Um id unico, que pode ou não ser usado no {@link #unregister(String)}
+   * @param eventClass Classe do evento
+   * @param action Ação que será executada.
+   * @param <E> Tipo do evento
+   */
   @SuppressWarnings("unchecked")
   public <E extends Event> void register(
-          String id, Class<E> eventClass,  Consumer<E> consumer) {
-    register0(eventClass, id, (l, e) -> consumer.accept((E) e));
+          String id, Class<E> eventClass,  Consumer<E> action) {
+    register0(eventClass, id, (l, e) -> action.accept((E) e));
   }
 
+  /**
+   * Registra a ação({@code action}) que sera executada quando o
+   * jogador executar determinado evento({@code eventClass}).
+   *
+   * @param player Jogador desejado.
+   * @param id Um id unico, que pode ou não ser usado no {@link #unregister(String)}
+   * @param eventClass Classe do evento
+   * @param action Ação que será executada.
+   * @param <E> Tipo do evento
+   */
   @SuppressWarnings("unchecked")
   public <E extends Event> void registerForPlayer(
-      Player player, String id, Class<E> eventClass, Consumer<E> consumer) {
-    Preconditions.checkArgument(isPlayerEvent(eventClass),
-            eventClass + " is not a player event.");
+      Player player, String id, Class<E> eventClass, Consumer<E> action) {
+    Preconditions.checkArgument(isPlayerEvent(eventClass), eventClass + " is not a player event.");
+
     register0(eventClass, id, (l, e) -> {
       if (getPlayerFromEvent(e) == player) {
-        consumer.accept((E) e);
+        action.accept((E) e);
       }
     });
   }
 
+  /**
+   * Registra a ação({@code action}) que sera executada quando a
+   * entidade executar determinado evento({@code eventClass}).
+   *
+   * @param entity Jogador desejado.
+   * @param id Um id unico, que pode ou não ser usado no {@link #unregister(String)}
+   * @param eventClass Classe do evento
+   * @param action Ação que será executada.
+   * @param <E> Tipo do evento
+   */
   @SuppressWarnings("unchecked")
   public <E extends Event> void registerForEntity(
-      Entity entity, String id, Class<E> eventClass, Consumer<E> consumer) {
-    Preconditions.checkArgument(isEntityEvent(eventClass),
-            eventClass + " is not a entity event.");
+      Entity entity, String id, Class<E> eventClass, Consumer<E> action) {
+    Preconditions.checkArgument(isEntityEvent(eventClass), eventClass + " is not a entity event.");
+
     register0(eventClass, id, (l, e) -> {
       if (getEntityFromEvent(e) == entity) {
-        consumer.accept((E) e);
+        action.accept((E) e);
       }
     });
   }
