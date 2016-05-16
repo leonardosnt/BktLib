@@ -19,8 +19,8 @@ public class NBTTagFloat extends NBTBase.NBTPrimitive {
     output.writeFloat(this.data);
   }
 
-  void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
-    sizeTracker.read(32L);
+  void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException {
+    readLimiter.read(32L);
     this.data = input.readFloat();
   }
 

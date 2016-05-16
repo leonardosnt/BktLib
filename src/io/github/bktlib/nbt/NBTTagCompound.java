@@ -2,12 +2,9 @@ package io.github.bktlib.nbt;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
-import io.github.bktlib.misc.LazyInitVar;
 import io.github.bktlib.reflect.util.ReflectUtil;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -15,43 +12,27 @@ import java.util.stream.Collectors;
 
 public class NBTTagCompound extends NBTBase {
 
-  private Map<String, NBTBase> dataMap = Maps.newHashMap();
-  private static LazyInitVar<Method> nbtWriteMethod = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      Class<?> nbtCompoundClass = ReflectUtil.getClass("{nms}.NBTTagCompound");
-      if (nbtCompoundClass == null) {
-        throw new RuntimeException("Could not find net.minecraft" +
-                                   ".server.<version>.NBTTagCompound class.");
-      }
-      try {
-        Method writeMethod = nbtCompoundClass.getDeclaredMethod("write", DataOutput.class);
-        writeMethod.setAccessible(true);
-        return writeMethod;
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
+  protected Map<String, NBTBase> dataMap = Maps.newHashMap();
 
   public static NBTTagCompound fromNMSCompound(Object nmsCompound) {
-    /*
-        Copy data from nms compound.
-     */
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    DataOutputStream das = new DataOutputStream(baos);
-    try {
-      nbtWriteMethod.get().invoke(nmsCompound, das);
-      NBTTagCompound tagCompound = new NBTTagCompound();
-      ByteArrayInputStream byteArrayInput = new ByteArrayInputStream(baos.toByteArray());
-      DataInputStream dataInput = new DataInputStream(byteArrayInput);
-      tagCompound.read(dataInput, 0, NBTSizeTracker.INFINITE);
-      return tagCompound;
-    } catch (IOException | IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
+    if (nmsCompound.getClass() != ReflectUtil.getClass("{nms}.NBTTagCompound")) {
+      throw new IllegalArgumentException(nmsCompound + " is not of type " +
+              ReflectUtil.getClass("{nms}.NBTTagCompound").getName() );
     }
-    return null;
+    return new NMSNBTTagCompound(nmsCompound);
+  }
+
+  public Object asNMSCompound() {
+    if (this instanceof NMSNBTTagCompound) {
+      NMSNBTTagCompound thiz = (NMSNBTTagCompound) this;
+      thiz.saveToHandle();
+      return thiz.getHandle();
+    }
+    Object newInst = ReflectUtil.instantiate("{nms}.NBTTagCompound");
+    NMSNBTTagCompound newCompound = new NMSNBTTagCompound(newInst);
+    newCompound.merge(this);
+    newCompound.saveToHandle();
+    return newInst;
   }
 
   public Set<String> getKeySet() {
@@ -255,19 +236,19 @@ public class NBTTagCompound extends NBTBase {
     }
   }
 
-  private static byte readType(DataInput input, NBTSizeTracker sizeTracker) throws IOException {
+  private static byte readType(DataInput input, NBTReadLimiter readLimiter) throws IOException {
     return input.readByte();
   }
 
-  private static String readKey(DataInput input, NBTSizeTracker sizeTracker) throws IOException {
+  private static String readKey(DataInput input, NBTReadLimiter readLimiter) throws IOException {
     return input.readUTF();
   }
 
-  static NBTBase readNBT(byte id, String key, DataInput input, int depth, NBTSizeTracker sizeTracker) {
+  static NBTBase readNBT(byte id, String key, DataInput input, int depth, NBTReadLimiter readLimiter) {
     NBTBase base = NBTBase.createNewByType(id);
 
     try {
-      base.read(input, depth, sizeTracker);
+      base.read(input, depth, readLimiter);
       return base;
     } catch (IOException e) {
       Throwables.propagate(e);
@@ -307,17 +288,17 @@ public class NBTTagCompound extends NBTBase {
     output.writeByte(0);
   }
 
-  void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
+  void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException {
     if (depth > 512) {
       throw new RuntimeException("Tried to read NBT tag with too high complexity, depth > 512");
     } else {
       this.dataMap.clear();
       byte b;
 
-      while ((b = readType(input, sizeTracker)) != 0) {
-        String key = readKey(input, sizeTracker);
-        sizeTracker.read((long) (16 * key.length()));
-        NBTBase nbtBase = readNBT(b, key, input, depth + 1, sizeTracker);
+      while ((b = readType(input, readLimiter)) != 0) {
+        String key = readKey(input, readLimiter);
+        readLimiter.read((long) (16 * key.length()));
+        NBTBase nbtBase = readNBT(b, key, input, depth + 1, readLimiter);
         this.dataMap.put(key, nbtBase);
       }
     }

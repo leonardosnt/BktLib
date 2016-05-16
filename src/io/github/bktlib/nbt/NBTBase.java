@@ -9,7 +9,7 @@ public abstract class NBTBase {
 
   abstract void write(DataOutput output) throws IOException;
 
-  abstract void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException;
+  abstract void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException;
 
   public abstract String toString();
 

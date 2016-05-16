@@ -23,9 +23,9 @@ public class NBTTagString extends NBTBase {
     output.writeUTF(this.data);
   }
 
-  void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
+  void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException {
     this.data = input.readUTF();
-    sizeTracker.read((long) (16 * this.data.length()));
+    readLimiter.read((long) (16 * this.data.length()));
   }
 
   public byte getId() {

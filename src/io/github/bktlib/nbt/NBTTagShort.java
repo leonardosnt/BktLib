@@ -18,8 +18,8 @@ public class NBTTagShort extends NBTBase.NBTPrimitive {
     output.writeShort(this.data);
   }
 
-  void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
-    sizeTracker.read(16L);
+  void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException {
+    readLimiter.read(16L);
     this.data = input.readShort();
   }
 

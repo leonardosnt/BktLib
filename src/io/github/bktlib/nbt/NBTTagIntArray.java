@@ -23,9 +23,9 @@ public class NBTTagIntArray extends NBTBase {
     }
   }
 
-  void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
+  void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException {
     int i = input.readInt();
-    sizeTracker.read((long) (32 * i));
+    readLimiter.read((long) (32 * i));
     this.intArray = new int[i];
 
     for (int j = 0; j < i; ++j) {

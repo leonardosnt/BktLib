@@ -100,7 +100,7 @@ public final class Items {
             : Optional.empty();
   }
 
-  private static LazyInitVar<Method> nmsItemGetTag = new LazyInitVar<Method>() {
+  private static final LazyInitVar<Method> nmsItemGetTag = new LazyInitVar<Method>() {
     @Override
     public Method init() {
       try {
@@ -112,7 +112,7 @@ public final class Items {
       return null;
     }
   };
-  private static LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
+  private static final LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
     @Override
     public Method init() {
       try {
@@ -125,8 +125,20 @@ public final class Items {
       return null;
     }
   };
+  private static final LazyInitVar<Method> asCraftCopyMethod = new LazyInitVar<Method>() {
+    @Override
+    public Method init() {
+      Class<?> craftItem = ReflectUtil.getClass("{cb}.inventory.CraftItemStack");
+      try {
+        return craftItem.getMethod("asCraftCopy", ItemStack.class);
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  };
 
-  private static Object getTag(ItemStack item) {
+  private static Object getTag0(ItemStack item) {
     try {
       final Object itemHandle = ReflectUtil.getNmsHandle(item);
       final Object nbtCompound;
@@ -144,13 +156,81 @@ public final class Items {
   }
 
   /**
+   * <p>Pega o {@link NBTTagCompound} do item.</p>
+   * <p>Obs: caso você mude alguma coisa você precisa
+   * usar o {@link #setNbtTag(ItemStack, NBTTagCompound)} para que as
+   * alterações sejam salvas no item.</p>
+   *
    * @param item ItemStack
-   * @return Nova instancia de {@link NBTTagCompound}
+   * @return Um novo {@link NBTTagCompound}
    */
-  public static NBTTagCompound getNBTTagCompound(ItemStack item) {
+  public static NBTTagCompound getNbtTag(ItemStack item) {
+    checkNotNull(item, "item");
+    if (item.getClass() == ItemStack.class) {
+      /**
+       * O ItemStack puro não tem o NBTTagCompound.
+       */
+      throw new UnsupportedOperationException("Cannot get tag from ItemStack, " +
+              "the item must be converted as CraftItemStack, use Items.asCraftCopy(item) to do this.");
+    }
+    return NBTTagCompound.fromNMSCompound(getTag0(item));
+  }
+
+  /**
+   * Define o {@link NBTTagCompound} do {@code item}
+   *
+   * @param item Item
+   * @param compound Compound
+   */
+  public static void setNbtTag(ItemStack item, NBTTagCompound compound) {
     checkNotNull(item, "item");
 
-    return NBTTagCompound.fromNMSCompound(getTag(item));
+    try {
+      if (item.getClass() == ItemStack.class) {
+        /**
+         * O ItemStack puro não tem o NBTTagCompound.
+         */
+        throw new UnsupportedOperationException("Cannot use setTag on ItemStack, " +
+                "the item must be converted as CraftItemStack, use Items.asCraftCopy(item) to do this.");
+      }
+      nmsItemSetTag.get().invoke(ReflectUtil.getNmsHandle(item), compound.asNMSCompound());
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * É o equivalente a
+   * <pre>{@code
+   * NBTTagCompound tag = Items.getNbtTag(item);
+   * tag.setString("hello", "world"); // Modifica a tag.
+   * Items.setNbtTag(item, tag);
+   * }</pre>
+   *
+   * @param item Item
+   * @param consumer Consumer
+   */
+  public static void modifyTag(ItemStack item, Consumer<NBTTagCompound> consumer) {
+    checkNotNull(item);
+
+    final NBTTagCompound itemTag = getNbtTag(item);
+    consumer.accept(itemTag);
+    setNbtTag(item, itemTag);
+  }
+
+  /**
+   * Converte o ItemStack {@code item} para CraftItemStack.
+   *
+   * @param item Item
+   * @return O item convertido para CraftItemStack.
+   */
+  public static ItemStack asCraftCopy(ItemStack item) {
+    try {
+      return /* CraftItemStack */(ItemStack) asCraftCopyMethod.get().invoke(null, item);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   private static void consumeMeta(final ItemStack item, final Consumer<ItemMeta> metaConsumer) {
@@ -162,5 +242,4 @@ public final class Items {
   private Items() {
     throw new UnsupportedOperationException();
   }
-
 }

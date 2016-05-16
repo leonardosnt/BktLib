@@ -17,8 +17,8 @@ public class NBTTagDouble extends NBTBase.NBTPrimitive {
     output.writeDouble(this.data);
   }
 
-  void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
-    sizeTracker.read(64L);
+  void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException {
+    readLimiter.read(64L);
     this.data = input.readDouble();
   }
 

@@ -171,16 +171,6 @@ public final class ReflectUtil {
       }
     }
     if (obj instanceof ItemStack) {
-      if (!obj.getClass().getSimpleName().endsWith("CraftItemStack")) {
-        Class<?> cls = ReflectUtil.getClass("{cb}.inventory.CraftItemStack");
-        try {
-          Method md = cls.getDeclaredMethod("asCraftCopy", ItemStack.class);
-          obj = md.invoke(null, obj);
-        } catch (NoSuchMethodException | InvocationTargetException |
-                IllegalAccessException e) {
-          e.printStackTrace();
-        }
-      }
       try {
         Field handle = obj.getClass().getDeclaredField("handle");
         handle.setAccessible(true);

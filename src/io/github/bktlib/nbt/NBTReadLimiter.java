@@ -1,14 +1,14 @@
 package io.github.bktlib.nbt;
 
-public class NBTSizeTracker {
+public class NBTReadLimiter {
 
-  public static final NBTSizeTracker INFINITE = new NBTSizeTracker(0L) {
+  public static final NBTReadLimiter INFINITE = new NBTReadLimiter(0L) {
     public void read(long bits) {}
   };
 
   private final long max;
 
-  public NBTSizeTracker(long max) {
+  public NBTReadLimiter(long max) {
     this.max = max;
   }
 

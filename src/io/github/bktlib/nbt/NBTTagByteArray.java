@@ -20,9 +20,9 @@ public class NBTTagByteArray extends NBTBase {
     output.write(this.data);
   }
 
-  void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
+  void read(DataInput input, int depth, NBTReadLimiter readLimiter) throws IOException {
     int i = input.readInt();
-    sizeTracker.read(8 * i);
+    readLimiter.read(8 * i);
     this.data = new byte[i];
     input.readFully(this.data);
   }
