@@ -100,61 +100,6 @@ public final class Items {
             : Optional.empty();
   }
 
-  private static final LazyInitVar<Method> nmsItemGetTag = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      try {
-        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
-        return nmsItemStackClass.getDeclaredMethod("getTag");
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
-  private static final LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      try {
-        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
-        Class<?> cls = ReflectUtil.getClass("{nms}.NBTTagCompound");
-        return nmsItemStackClass.getDeclaredMethod("setTag", cls);
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
-  private static final LazyInitVar<Method> asCraftCopyMethod = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      Class<?> craftItem = ReflectUtil.getClass("{cb}.inventory.CraftItemStack");
-      try {
-        return craftItem.getMethod("asCraftCopy", ItemStack.class);
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
-
-  private static Object getTag0(ItemStack item) {
-    try {
-      final Object itemHandle = ReflectUtil.getNmsHandle(item);
-      final Object nbtCompound;
-      if (nmsItemGetTag.get().invoke(itemHandle) == null) {
-        nbtCompound = ReflectUtil.instantiate("{nms}.NBTTagCompound");
-        nmsItemSetTag.get().invoke(itemHandle, nbtCompound);
-      } else {
-        nbtCompound = nmsItemGetTag.get().invoke(itemHandle);
-      }
-      return nbtCompound;
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   /**
    * <p>Pega o {@link NBTTagCompound} do item.</p>
    * <p>Obs: caso você mude alguma coisa você precisa
@@ -233,6 +178,23 @@ public final class Items {
     return null;
   }
 
+  private static Object getTag0(ItemStack item) {
+    try {
+      final Object itemHandle = ReflectUtil.getNmsHandle(item);
+      final Object nbtCompound;
+      if (nmsItemGetTag.get().invoke(itemHandle) == null) {
+        nbtCompound = ReflectUtil.instantiate("{nms}.NBTTagCompound");
+        nmsItemSetTag.get().invoke(itemHandle, nbtCompound);
+      } else {
+        nbtCompound = nmsItemGetTag.get().invoke(itemHandle);
+      }
+      return nbtCompound;
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   private static void consumeMeta(final ItemStack item, final Consumer<ItemMeta> metaConsumer) {
     ItemMeta meta = item.getItemMeta();
     metaConsumer.accept(meta);
@@ -242,4 +204,42 @@ public final class Items {
   private Items() {
     throw new UnsupportedOperationException();
   }
+
+  private static final LazyInitVar<Method> nmsItemGetTag = new LazyInitVar<Method>() {
+    @Override
+    public Method init() {
+      try {
+        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
+        return nmsItemStackClass.getDeclaredMethod("getTag");
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  };
+  private static final LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
+    @Override
+    public Method init() {
+      try {
+        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
+        Class<?> cls = ReflectUtil.getClass("{nms}.NBTTagCompound");
+        return nmsItemStackClass.getDeclaredMethod("setTag", cls);
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  };
+  private static final LazyInitVar<Method> asCraftCopyMethod = new LazyInitVar<Method>() {
+    @Override
+    public Method init() {
+      Class<?> craftItem = ReflectUtil.getClass("{cb}.inventory.CraftItemStack");
+      try {
+        return craftItem.getMethod("asCraftCopy", ItemStack.class);
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  };
 }
