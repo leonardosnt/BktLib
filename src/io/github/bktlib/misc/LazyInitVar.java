@@ -31,5 +31,5 @@ public abstract class LazyInitVar<T> {
     return obj;
   }
 
-  public abstract T init();
+  protected abstract T init();
 }
