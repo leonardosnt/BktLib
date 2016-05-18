@@ -24,8 +24,10 @@ public class ItemsTest {
   }
 
   public static void test4(ItemStack item) {
-    Items.modifyTag(item, tag -> {
-      tag.getCompoundTag("display").setString("Name", "§3Nome legal");
+    Items.modifyTag(item, e -> {
+      if (!e.hasKey("display"))
+        e.setTag("display", new NBTTagCompound());
+      e.getCompoundTag("display").setString("Name", "nome");
     });
   }
 }

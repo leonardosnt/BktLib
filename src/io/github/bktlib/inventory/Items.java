@@ -118,7 +118,16 @@ public final class Items {
       throw new UnsupportedOperationException("Cannot get tag from ItemStack, " +
               "the item must be converted as CraftItemStack, use Items.asCraftCopy(item) to do this.");
     }
-    return NBTTagCompound.fromNMSCompound(getTag0(item));
+    try {
+      Object nmsTag = nmsItemGetTag.get().invoke(ReflectUtil.getNmsHandle(item));
+      if (nmsTag == null) {
+        return new NBTTagCompound();
+      }
+      return NBTTagCompound.fromNMSCompound(nmsTag);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return new NBTTagCompound();
   }
 
   /**
@@ -178,23 +187,6 @@ public final class Items {
     return null;
   }
 
-  private static Object getTag0(ItemStack item) {
-    try {
-      final Object itemHandle = ReflectUtil.getNmsHandle(item);
-      final Object nbtCompound;
-      if (nmsItemGetTag.get().invoke(itemHandle) == null) {
-        nbtCompound = ReflectUtil.instantiate("{nms}.NBTTagCompound");
-        nmsItemSetTag.get().invoke(itemHandle, nbtCompound);
-      } else {
-        nbtCompound = nmsItemGetTag.get().invoke(itemHandle);
-      }
-      return nbtCompound;
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   private static void consumeMeta(final ItemStack item, final Consumer<ItemMeta> metaConsumer) {
     ItemMeta meta = item.getItemMeta();
     metaConsumer.accept(meta);
@@ -217,7 +209,7 @@ public final class Items {
       return null;
     }
   };
-  private static final LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
+  public static final LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
     @Override
     public Method init() {
       try {
