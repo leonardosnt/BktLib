@@ -27,7 +27,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import io.github.bktlib.inventory.Items;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -203,17 +202,6 @@ public class ItemBuilder {
     final ItemStack item = build();
     inv.addItem(item);
     return item;
-  }
-
-  /**
-   * <p>Converte o ItemStack para CraftItemStack.</p>
-   * <p>Isso é util caso você vá mexer com coisas internas
-   * do craftbukkit ou nms.</p>
-   * @return O item convertido para CraftItemStack
-   */
-  public ItemBuilder asCraftItem() {
-    item = Items.asCraftCopy(item);
-    return this;
   }
 
   /**
