@@ -123,15 +123,20 @@ public final class ReflectUtil {
 
   //TODO CACHE
   public static Class<?> getClass(String clazz) {
-    final String version = BukkitUtil.getImplVersion();
-    clazz = clazz.replaceAll("\\{cb\\}", "org.bukkit.craftbukkit." + version);
-    clazz = clazz.replaceAll("\\{nms\\}", "net.minecraft.server." + version);
+    clazz = resolveClassName(clazz);
     try {
       return Class.forName(clazz);
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public static String resolveClassName(String clazz) {
+    final String version = BukkitUtil.getImplVersion();
+    clazz = clazz.replaceAll("\\{cb\\}", "org.bukkit.craftbukkit." + version);
+    clazz = clazz.replaceAll("\\{nms\\}", "net.minecraft.server." + version);
+    return clazz;
   }
 
   public static Object instantiate(final String clazz, Object ... params) {

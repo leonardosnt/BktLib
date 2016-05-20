@@ -20,6 +20,7 @@ package io.github.bktlib.inventory;
 
 import io.github.bktlib.misc.LazyInitVar;
 import io.github.bktlib.nbt.NBTTagCompound;
+import io.github.bktlib.reflect.LazyInitMethod;
 import io.github.bktlib.reflect.util.ReflectUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -197,41 +198,15 @@ public final class Items {
     throw new UnsupportedOperationException();
   }
 
-  private static final LazyInitVar<Method> nmsItemGetTag = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      try {
-        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
-        return nmsItemStackClass.getDeclaredMethod("getTag");
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
-  public static final LazyInitVar<Method> nmsItemSetTag = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      try {
-        Class<?> nmsItemStackClass = ReflectUtil.getClass("{nms}.ItemStack");
-        Class<?> cls = ReflectUtil.getClass("{nms}.NBTTagCompound");
-        return nmsItemStackClass.getDeclaredMethod("setTag", cls);
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
-  private static final LazyInitVar<Method> asCraftCopyMethod = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      Class<?> craftItem = ReflectUtil.getClass("{cb}.inventory.CraftItemStack");
-      try {
-        return craftItem.getMethod("asCraftCopy", ItemStack.class);
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
+  private static final LazyInitMethod nmsItemGetTag = new LazyInitMethod(
+      ReflectUtil.resolveClassName("{nms}.ItemStack"), "getTag", new Class[0]);
+
+  private static final LazyInitMethod nmsItemSetTag = new LazyInitMethod(
+      ReflectUtil.resolveClassName("{nms}.ItemStack"), "setTag",
+      ReflectUtil.resolveClassName("{nms}.NBTTagCompound"));
+
+  private static final LazyInitMethod asCraftCopyMethod = new LazyInitMethod(
+      ReflectUtil.resolveClassName("{cb}.inventory.CraftItemStack"),
+      "asCraftCopy", ItemStack.class);
+
 }
