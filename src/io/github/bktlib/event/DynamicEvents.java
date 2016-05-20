@@ -20,13 +20,11 @@ package io.github.bktlib.event;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -37,8 +35,11 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Base64;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public final class DynamicEvents {
@@ -53,9 +54,30 @@ public final class DynamicEvents {
     return cache.get(plugin);
   }
 
+  public static DynamicEvents from(Class<? extends JavaPlugin> pluginClass) {
+    Preconditions.checkNotNull(pluginClass, "pluginClass");
+
+    Plugin plugin = JavaPlugin.getProvidingPlugin(pluginClass);
+    cache.putIfAbsent(plugin, new DynamicEvents(plugin));
+    return cache.get(plugin);
+  }
+
   private DynamicEvents(Plugin plugin) {
     owner = plugin;
     registered = Maps.newHashMap();
+  }
+
+  /**
+   * Registra a ação({@code action}) que sera executada quando o
+   * determinado evento({@code eventClass}) for executado.
+   *
+   * @param eventClass Classe do evento
+   * @param action Ação que será executada.
+   * @param <E> Tipo do evento
+   */
+  public <E extends Event> void register(Class<E> eventClass, Consumer<E> action) {
+    final String randomId = RandomStringUtils.random(5);
+    register(randomId, eventClass, action);
   }
 
   /**
