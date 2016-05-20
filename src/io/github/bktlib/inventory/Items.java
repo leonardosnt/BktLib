@@ -18,7 +18,6 @@
 
 package io.github.bktlib.inventory;
 
-import io.github.bktlib.misc.LazyInitVar;
 import io.github.bktlib.nbt.NBTTagCompound;
 import io.github.bktlib.reflect.LazyInitMethod;
 import io.github.bktlib.reflect.util.ReflectUtil;
@@ -26,7 +25,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
