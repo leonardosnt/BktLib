@@ -19,16 +19,22 @@
 package io.github.bktlib.network;
 
 import io.github.bktlib.reflect.Fields;
+import io.github.bktlib.reflect.LazyInitMethod;
 import io.github.bktlib.reflect.util.ReflectUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
+
 public final class NetworkUtils {
 
+  private static final LazyInitMethod sendPacket = new LazyInitMethod(
+      ReflectUtil.resolveClassName("{nms}.PlayerConnection"), "sendPacket",
+      ReflectUtil.resolveClassName("{nms}.Packet"));
+
   public static Channel getPlayerConnectionChannel(Player player) {
-    final Object playerHandle = ReflectUtil.getNmsHandle(player);
-    return Fields.from(playerHandle)
+    return Fields.from(ReflectUtil.getNmsHandle(player))
             .find("playerConnection").getAsFields()
             .find("networkManager").getAsFields()
             .find("channel").get();
@@ -47,5 +53,15 @@ public final class NetworkUtils {
   public static void detachChannelFromPlayerConnection(Player player,
                                                        ChannelHandler handler) {
     getPlayerConnectionChannel(player).pipeline().remove(handler);
+  }
+
+  public static void sendPacket(Player player, Object packet) {
+    Object playerCon = Fields.from(ReflectUtil.getNmsHandle(player))
+        .find("playerConnection").get();
+    try {
+      sendPacket.get().invoke(playerCon, packet);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
   }
 }
