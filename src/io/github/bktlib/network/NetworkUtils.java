@@ -33,6 +33,12 @@ public final class NetworkUtils {
       ReflectUtil.resolveClassName("{nms}.PlayerConnection"), "sendPacket",
       ReflectUtil.resolveClassName("{nms}.Packet"));
 
+  /**
+   * Pega a o {@link Channel canal} da conexão do jogador
+   *
+   * @param player Jogador
+   * @return {@link Channel canal} da conexão do jogador
+   */
   public static Channel getPlayerConnectionChannel(Player player) {
     return Fields.from(ReflectUtil.getNmsHandle(player))
             .find("playerConnection").getAsFields()
@@ -40,21 +46,49 @@ public final class NetworkUtils {
             .find("channel").get();
   }
 
-  public static void attachChannelToPlayerConnection(Player player, String id,
-                                                     ChannelHandler handler) {
+  /**
+   * Adicionar um {@link ChannelHandler} no {@link io.netty.channel.ChannelPipeline}
+   * da conexão do jogador.
+   *
+   * @param player Jogador
+   * @param id Id do handler
+   * @param handler O handler
+   */
+  public static void addChannelToPlayerConnection(Player player, String id,
+                                                  ChannelHandler handler) {
     getPlayerConnectionChannel(player).pipeline()
         .addBefore("packet_handler", id, handler);
   }
 
-  public static void detachChannelFromPlayerConnection(Player player, String id) {
+  /**
+   * Remove um {@link ChannelHandler} da {@link io.netty.channel.ChannelPipeline}
+   * da conexão do jogador.
+   *
+   * @param player Jogador
+   * @param id Id do handler
+   */
+  public static void removeChannelFromPlayerConnection(Player player, String id) {
     getPlayerConnectionChannel(player).pipeline().remove(id);
   }
 
-  public static void detachChannelFromPlayerConnection(Player player,
+  /**
+   * Remove um {@link ChannelHandler} da {@link io.netty.channel.ChannelPipeline}
+   * da conexão do jogador.
+   *
+   * @param player Jogador
+   * @param handler Instancia do handler
+   */
+  public static void removeChannelFromPlayerConnection(Player player,
                                                        ChannelHandler handler) {
     getPlayerConnectionChannel(player).pipeline().remove(handler);
   }
 
+  /**
+   * Envia um pacote ao jogador.
+   *
+   * @param player Jogador
+   * @param packet Pacote
+   */
   public static void sendPacket(Player player, Object packet) {
     Object playerCon = Fields.from(ReflectUtil.getNmsHandle(player))
         .find("playerConnection").get();
