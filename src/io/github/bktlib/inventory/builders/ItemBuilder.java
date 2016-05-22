@@ -18,8 +18,6 @@
 
 package io.github.bktlib.inventory.builders;
 
-import static com.google.common.base.Preconditions.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -39,9 +38,9 @@ import com.google.common.collect.Lists;
 
 public class ItemBuilder {
 
-  protected static final Function<String, String> TRANSLATE_COLOR_CHARS = text -> {
-    return text == null ? null : CharMatcher.anyOf("&").collapseFrom(text, '\u00a7');
-  };
+  protected static final Function<String, String> TRANSLATE_COLOR_CHARS = text -> (
+    text == null ? null : CharMatcher.anyOf("&").collapseFrom(text, '\u00a7')
+  );
 
   protected ItemStack item = new ItemStack(Material.AIR);
 
@@ -61,9 +60,8 @@ public class ItemBuilder {
    * @param damage Material desejado
    */
   public ItemBuilder damage(int damage) {
-    checkArgument(damage <= Short.MAX_VALUE, "withDurability must less or " +
-                                             "equals than %s (Short.MAX_VALUE)",
-                                             Short.MAX_VALUE);
+    Preconditions.checkArgument(damage <= Short.MAX_VALUE, "damage must less or " +
+        "equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE);
     item.setDurability((short) damage);
     return this;
   }
@@ -74,9 +72,8 @@ public class ItemBuilder {
    * @param durability Durabilidade desejada
    */
   public ItemBuilder durability(int durability) {
-    checkArgument(durability <= Short.MAX_VALUE, "withDurability must less or " +
-                                                 "equals than %s (Short.MAX_VALUE)",
-                                                 Short.MAX_VALUE);
+    Preconditions.checkArgument(durability <= Short.MAX_VALUE, "durability must less or " +
+        "equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE);
     item.setDurability((short) (item.getType().getMaxDurability() - durability));
     return this;
   }
@@ -94,7 +91,7 @@ public class ItemBuilder {
    * @param amount Quantidade desejada
    */
   public ItemBuilder amount(int amount) {
-    checkArgument(amount > 0, "withAmount must be positive");
+    Preconditions.checkArgument(amount > 0, "amount must be positive");
     item.setAmount(amount);
     return this;
   }
@@ -154,7 +151,7 @@ public class ItemBuilder {
    * @param level       Level do encantamento
    */
   public ItemBuilder enchantment(Enchantment enchantment, int level) {
-    checkArgument(level > 0, "level must be positive");
+    Preconditions.checkArgument(level > 0, "level must be positive");
     item.addUnsafeEnchantment(enchantment, level);
     return this;
   }
@@ -166,7 +163,7 @@ public class ItemBuilder {
    */
   @SuppressWarnings("unchecked")
   public <T extends ItemMeta> ItemBuilder meta(Consumer<T> metaConsumer) {
-    checkNotNull(metaConsumer, "metaMapper cannot be null.");
+    Preconditions.checkNotNull(metaConsumer, "metaMapper cannot be null.");
     final ItemMeta meta = item.getItemMeta();
     metaConsumer.accept((T) meta);
     item.setItemMeta(meta);
@@ -188,7 +185,7 @@ public class ItemBuilder {
    * @return O ItemStack "construido"
    */
   public ItemStack buildAndGive(Player player) {
-    checkNotNull(player, "player cannot be null");
+    Preconditions.checkNotNull(player, "player cannot be null");
     return buildAndAdd(player.getInventory());
   }
 
@@ -198,7 +195,7 @@ public class ItemBuilder {
    * @return O ItemStack "construido"
    */
   public ItemStack buildAndAdd(Inventory inv) {
-    checkNotNull(inv, "inv cannot be null");
+    Preconditions.checkNotNull(inv, "inv cannot be null");
     final ItemStack item = build();
     inv.addItem(item);
     return item;
