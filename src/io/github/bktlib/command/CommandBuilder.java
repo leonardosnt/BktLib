@@ -80,7 +80,7 @@ public class CommandBuilder implements Builder<CommandBase> {
     return this;
   }
 
-  public CommandBuilder onExecute(CommandFunction executor) {
+  public CommandBuilder executor(CommandFunction executor) {
     checkNotNull(executor, "executor cannot be null.");
     this.executor = executor;
     return this;
