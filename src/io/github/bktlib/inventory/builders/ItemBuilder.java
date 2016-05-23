@@ -26,10 +26,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -63,6 +65,24 @@ public class ItemBuilder {
     Preconditions.checkArgument(damage <= Short.MAX_VALUE, "damage must less or " +
         "equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE);
     item.setDurability((short) damage);
+    return this;
+  }
+
+  /**
+   * Adiciona as {@code flags} ao item.
+   *
+   * @param flags Flags
+   */
+  public ItemBuilder flags(ItemFlag ... flags) {
+    if (flags == null || flags.length == 0) {
+      return this;
+    }
+    editMeta(i -> {
+      if (i == null) {
+        throw new UnsupportedOperationException("Cannot define flags for this item " + item);
+      }
+      i.getItemFlags().addAll(Sets.newHashSet(flags));
+    });
     return this;
   }
 
@@ -112,7 +132,7 @@ public class ItemBuilder {
     if (displayName == null) {
       return this;
     }
-    consumeMeta(meta ->
+    editMeta(meta ->
       meta.setDisplayName(TRANSLATE_COLOR_CHARS.apply(displayName))
     );
     return this;
@@ -127,7 +147,7 @@ public class ItemBuilder {
     if (lines == null || lines.length == 0) {
       return this;
     }
-    consumeMeta(meta -> {
+    editMeta(meta -> {
       ArrayList<String> lore = Lists.newArrayList();
       List<String> currentLore = meta.getLore();
 
@@ -157,7 +177,7 @@ public class ItemBuilder {
   }
 
   /**
-   * Modifica o {@link ItemMeta} do item. O ItemMeta pode ser {@code null}, cuidado.
+   * Modifica o {@link ItemMeta} do item. O ItemMeta pode ser {@code null}.
    *
    * @param metaConsumer Função de modifica o {@link ItemMeta}
    */
@@ -215,10 +235,9 @@ public class ItemBuilder {
     return newBuilder().type(material);
   }
 
-  private void consumeMeta(Consumer<ItemMeta> consumer) {
+  private void editMeta(Consumer<ItemMeta> consumer) {
     final ItemMeta meta = item.getItemMeta();
     consumer.accept(meta);
     item.setItemMeta(meta);
   }
-
 }
