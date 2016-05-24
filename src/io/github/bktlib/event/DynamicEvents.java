@@ -41,14 +41,14 @@ public final class DynamicEvents {
   private Map<String, Listener> registered;
   private Plugin owner;
 
-  public static DynamicEvents from(Plugin plugin) {
+  public static DynamicEvents of(Plugin plugin) {
     Preconditions.checkNotNull(plugin, "plugin");
 
     cache.putIfAbsent(plugin, new DynamicEvents(plugin));
     return cache.get(plugin);
   }
 
-  public static DynamicEvents from(Class<? extends JavaPlugin> pluginClass) {
+  public static DynamicEvents of(Class<? extends JavaPlugin> pluginClass) {
     Preconditions.checkNotNull(pluginClass, "pluginClass");
 
     Plugin plugin = JavaPlugin.getProvidingPlugin(pluginClass);

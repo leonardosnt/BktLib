@@ -109,7 +109,7 @@ public interface CommandManager {
 
   /**
    * @return O plugin que passado por parametro no
-   * {@link #newInstance(Plugin)}
+   * {@link #of(Plugin)}
    */
   Plugin getOwner();
 
@@ -120,7 +120,7 @@ public interface CommandManager {
    * @return Uma nova instancia da implementacao dessa interface.
    * @throws NullPointerException Caso o {@code plugin} seja nulo.
    */
-  static CommandManager newInstance(final Plugin plugin) {
+  static CommandManager of(final Plugin plugin) {
     return new CommandManagerImpl(Preconditions.checkNotNull(plugin, "plugin cannot be null"));
   }
 }
