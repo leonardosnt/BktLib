@@ -16,10 +16,10 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package io.github.bktlib.reflect;
+package io.github.bktlib.lazy;
 
-import io.github.bktlib.misc.LazyInitVar;
-
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
@@ -33,24 +33,25 @@ public class LazyInitMethod extends LazyInitVar<Method> {
   private String clazzName;
   private String[] methodParamsClassNames;
 
-  public LazyInitMethod(Class<?> clazz, String methodName, Class<?> ... methodParamsType) {
+  public LazyInitMethod(@Nonnull  Class<?> clazz, @Nonnull String methodName, Class<?> ... methodParamsType) {
     this.methodParamsType = methodParamsType;
     this.methodName = methodName;
     this.clazz = clazz;
   }
 
-  public LazyInitMethod(String clazzName, String methodName, Class<?> ... methodParamsType) {
+  public LazyInitMethod(@Nonnull String clazzName, @Nonnull String methodName, Class<?> ... methodParamsType) {
     this.methodParamsType = methodParamsType;
     this.clazzName = clazzName;
     this.methodName = methodName;
   }
 
-  public LazyInitMethod(String clazzName, String methodName, String ... methodParamsType) {
+  public LazyInitMethod(@Nonnull String clazzName, @Nonnull String methodName, String ... methodParamsType) {
     this.methodParamsClassNames = methodParamsType;
     this.clazzName = clazzName;
     this.methodName = methodName;
   }
 
+  @Nullable
   @Override
   protected Method init() {
     if (clazz == null) {

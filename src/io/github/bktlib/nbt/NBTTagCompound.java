@@ -17,7 +17,7 @@ public class NBTTagCompound extends NBTBase {
   public static NBTTagCompound fromNMSCompound(Object nmsCompound) {
     if (nmsCompound.getClass() != ReflectUtil.getClass("{nms}.NBTTagCompound")) {
       throw new IllegalArgumentException(nmsCompound + " is not of type " +
-              ReflectUtil.getClass("{nms}.NBTTagCompound").getName());
+              ReflectUtil.resolveClassName("{nms}.NBTTagCompound"));
     }
     return new NMSNBTTagCompound(nmsCompound);
   }

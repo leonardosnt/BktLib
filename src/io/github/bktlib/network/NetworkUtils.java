@@ -18,8 +18,11 @@
 
 package io.github.bktlib.network;
 
+import io.github.bktlib.lazy.LazyInitField;
+import io.github.bktlib.lazy.LazyInitVar;
+import io.github.bktlib.misc.BukkitUtil;
 import io.github.bktlib.reflect.Fields;
-import io.github.bktlib.reflect.LazyInitMethod;
+import io.github.bktlib.lazy.LazyInitMethod;
 import io.github.bktlib.reflect.util.ReflectUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
@@ -29,6 +32,10 @@ import java.lang.reflect.InvocationTargetException;
 
 public final class NetworkUtils {
 
+  private static final LazyInitField playerConnection = new LazyInitField(
+      ReflectUtil.resolveClassName("{nms}.PlayerConnection"),
+      "playerConnection"
+  );
   private static final LazyInitMethod sendPacket = new LazyInitMethod(
       ReflectUtil.resolveClassName("{nms}.PlayerConnection"), "sendPacket",
       ReflectUtil.resolveClassName("{nms}.Packet"));
@@ -40,7 +47,7 @@ public final class NetworkUtils {
    * @return {@link Channel canal} da conexão do jogador
    */
   public static Channel getPlayerConnectionChannel(Player player) {
-    return Fields.from(ReflectUtil.getNmsHandle(player))
+    return Fields.from(BukkitUtil.unwrap(player))
             .find("playerConnection").getAsFields()
             .find("networkManager").getAsFields()
             .find("channel").get();
@@ -90,9 +97,8 @@ public final class NetworkUtils {
    * @param packet Pacote
    */
   public static void sendPacket(Player player, Object packet) {
-    Object playerCon = Fields.from(ReflectUtil.getNmsHandle(player))
-        .find("playerConnection").get();
     try {
+      Object playerCon = playerConnection.get().get(BukkitUtil.unwrap(player));
       sendPacket.get().invoke(playerCon, packet);
     } catch (IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();

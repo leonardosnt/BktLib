@@ -47,8 +47,7 @@ class MethodCommand extends CommandBase {
   @Override
   public CommandResult onExecute(final CommandSource src, final CommandArgs args) {
     try {
-      return (CommandResult) ref.getMethod().invoke(
-              ref.getOwner(), src, args);
+      return (CommandResult) ref.getMethod().invoke(ref.getOwner(), src, args);
     } catch (InvocationTargetException e) {
       final Throwable root = Throwables.getRootCause(e);
 

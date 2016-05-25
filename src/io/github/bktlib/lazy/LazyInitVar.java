@@ -16,7 +16,7 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package io.github.bktlib.misc;
+package io.github.bktlib.lazy;
 
 public abstract class LazyInitVar<T> {
 

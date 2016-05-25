@@ -23,5 +23,4 @@ import java.util.function.BiFunction;
 import io.github.bktlib.command.args.CommandArgs;
 
 @FunctionalInterface
-public interface CommandFunction extends BiFunction<CommandSource, CommandArgs, CommandResult> {
-}
+public interface CommandExecutor extends BiFunction<CommandSource, CommandArgs, CommandResult> {}

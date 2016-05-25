@@ -28,7 +28,7 @@ public class CommandBuilder implements Builder<CommandBase> {
   private String name, usage, permission, description;
   private String[] aliases, subCommands;
   private UsageTarget usageTarget;
-  private CommandFunction executor;
+  private CommandExecutor executor;
 
   private CommandBuilder(String name) {
     this.name = name;
@@ -68,6 +68,9 @@ public class CommandBuilder implements Builder<CommandBase> {
     return this;
   }
 
+  /**
+   * See {@link Command#subCommands()}
+   */
   public CommandBuilder subCommands(String... subCommands) {
     if (subCommands != null)
       this.subCommands = subCommands;
@@ -80,7 +83,7 @@ public class CommandBuilder implements Builder<CommandBase> {
     return this;
   }
 
-  public CommandBuilder executor(CommandFunction executor) {
+  public CommandBuilder executor(CommandExecutor executor) {
     checkNotNull(executor, "executor cannot be null.");
     this.executor = executor;
     return this;
@@ -95,16 +98,16 @@ public class CommandBuilder implements Builder<CommandBase> {
 
   @Override
   public CommandBase build() {
-    checkNotNull(executor, "executor not defined, use onExecutor( (src, args) -> {...} ) to define it.");
+    checkNotNull(executor, "executor not defined, use executor( (src, args) -> {...} ) to define it.");
 
     Command commandAnn = CommandManagerImpl.createCommandAnnotation(
-            name,
-            permission,
-            description,
-            usage,
-            aliases,
-            subCommands,
-            usageTarget
+        name,
+        permission,
+        description,
+        usage,
+        aliases,
+        subCommands,
+        usageTarget
     );
 
     return new CommandBase(commandAnn) {

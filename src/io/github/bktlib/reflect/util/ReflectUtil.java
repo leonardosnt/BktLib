@@ -20,17 +20,11 @@ package io.github.bktlib.reflect.util;
 
 import com.google.gson.internal.Primitives;
 import io.github.bktlib.misc.BukkitUtil;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.testng.CommandLineArgs;
-import org.testng.xml.dom.Reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 public final class ReflectUtil {
@@ -161,28 +155,6 @@ public final class ReflectUtil {
     } catch (InstantiationException | IllegalAccessException |
              NoSuchMethodException | InvocationTargetException e) {
       e.printStackTrace();
-    }
-    return null;
-  }
-
-  public static Object getNmsHandle(Object obj) {
-    if (obj instanceof Player || obj instanceof World) { // TODO implementar outros.
-      try {
-        Method getHandle = obj.getClass().getMethod("getHandle");
-        return getHandle.invoke(obj);
-      } catch (NoSuchMethodException | InvocationTargetException |
-              IllegalAccessException e) {
-        e.printStackTrace();
-      }
-    }
-    if (obj instanceof ItemStack) {
-      try {
-        Field handle = obj.getClass().getDeclaredField("handle");
-        handle.setAccessible(true);
-        return handle.get(obj);
-      } catch (NoSuchFieldException | IllegalAccessException e) {
-        e.printStackTrace();
-      }
     }
     return null;
   }

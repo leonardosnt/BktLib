@@ -19,6 +19,11 @@
 package io.github.bktlib.misc;
 
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class BukkitUtil {
 
@@ -38,4 +43,29 @@ public class BukkitUtil {
     return cachedImplVersion;
   }
 
+  /**
+   * Pega o 'nms handle' do objeto.
+
+   * @param obj Objeto
+   * @return 'nms handle' do objeto.
+   */
+  public static Object unwrap(Object obj) {
+    if (obj instanceof ItemStack) {
+      try {
+        Field handle = obj.getClass().getDeclaredField("handle");
+        handle.setAccessible(true);
+        return handle.get(obj);
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        e.printStackTrace();
+      }
+    }
+    try {
+      Method getHandle = obj.getClass().getMethod("getHandle");
+      return getHandle.invoke(obj);
+    } catch (NoSuchMethodException | InvocationTargetException |
+            IllegalAccessException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 }

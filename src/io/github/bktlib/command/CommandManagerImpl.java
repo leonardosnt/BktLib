@@ -374,23 +374,20 @@ class CommandManagerImpl implements CommandManager {
               } else {
                 if (!className.contains(".")) {
                   className = Strings.of(
-                          command.getClass().getPackage().getName(),
-                          ".",
-                          className
-                  );
+                      command.getClass().getPackage().getName(), ".", className);
                 }
 
                 try {
                   klass = Class.forName(className);
                 } catch (ClassNotFoundException e) {
-                  invalidSubCmd("Class %s not found.", rawSubCommand,
-                          command, e.getMessage());
+                  invalidSubCmd("Class %s not found.", rawSubCommand, command,
+                      e.getMessage());
                 }
               }
 
               if (!ReflectUtil.isConcreteClass(klass)) {
                 invalidSubCmd("Class '%s' isn't a concrete class.", rawSubCommand,
-                        command, klass.getName());
+                    command, klass.getName());
               }
 
               Object klassInstance = null;
@@ -421,7 +418,7 @@ class CommandManagerImpl implements CommandManager {
                 try {
                   // TODO: parametros serao alterados para (CommandSource,CommandArgs,CommandBase)
                   subCmdMethod = finalKlass.getDeclaredMethod(mdName,
-                          CommandSource.class, CommandArgs.class);
+                      CommandSource.class, CommandArgs.class);
 
                 } catch (NoSuchMethodException e) {
                   invalidSubCmd("Method '%s' not found.", rawSubCommand,
@@ -435,7 +432,6 @@ class CommandManagerImpl implements CommandManager {
                           rawSubCommand, command, methodName);
                 }
 
-
                 final Command commandAnnotation = createCommandAnnotation(
                         subCmdAnnotation.name(),
                         subCmdAnnotation.permission(),
@@ -447,7 +443,7 @@ class CommandManagerImpl implements CommandManager {
                 );
 
                 /**
-                 * Por equanto os subcomandos poderão ser apenas
+                 * Por enquanto os subcomandos poderão ser apenas
                  * métodos.
                  *
                  * Talvez eu adicione para poder colocar classes como
@@ -464,8 +460,7 @@ class CommandManagerImpl implements CommandManager {
                 }
               };
 
-              if (methodName.equals("*")) // all commands
-              {
+              if (methodName.equals("*")) { // all commands
                 Stream.of(klass.getDeclaredMethods())
                         .filter(md -> md.isAnnotationPresent(SubCommand.class))
                         .map(Method::getName)

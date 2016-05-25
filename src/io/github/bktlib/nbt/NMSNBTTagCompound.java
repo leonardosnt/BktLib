@@ -1,6 +1,6 @@
 package io.github.bktlib.nbt;
 
-import io.github.bktlib.misc.LazyInitVar;
+import io.github.bktlib.lazy.LazyInitVar;
 import io.github.bktlib.reflect.util.ReflectUtil;
 
 import java.io.*;
