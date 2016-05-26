@@ -550,8 +550,6 @@ class CommandManagerImpl implements CommandManager {
     Class<? extends TabCompleter> tabCompleter = command.commandAnnotation.tabCompleter();
     if (tabCompleter == null || tabCompleter == DefaultTabCompleter.class &&
         !Strings.isNullOrEmpty(command.commandAnnotation.tabCompletions())) { // parse tabCompletions
-
-      System.out.println(">>>> " + command.commandAnnotation.tabCompletions());
       return new TabCompleter() {
         final Map<Integer, Supplier<List<String>>> completions = parseTabCompletions(command);
         @Override
