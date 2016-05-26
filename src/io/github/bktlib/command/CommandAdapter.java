@@ -18,9 +18,12 @@
 
 package io.github.bktlib.command;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.command.CommandSender;
 
 import com.google.common.collect.Lists;
@@ -30,6 +33,7 @@ import com.google.common.collect.Lists;
  * {@link org.bukkit.command.Command}
  */
 final class CommandAdapter extends org.bukkit.command.Command {
+  private static final List<String> EMPTY_LIST = ImmutableList.of();
   CommandBase base;
 
   CommandAdapter(final CommandBase base) {
@@ -54,5 +58,17 @@ final class CommandAdapter extends org.bukkit.command.Command {
   public boolean execute(final CommandSender sender, final String s, final String[] rawArgs) {
     base.execute(sender, rawArgs);
     return true;
+  }
+
+  @Override
+  public List<String> tabComplete(CommandSender sender,String alias, String[] args) throws IllegalArgumentException {
+    if (base.tabCompleter == null) {
+      return EMPTY_LIST;
+    }
+    List<String> ret = base.tabCompleter.onTabComplete(CommandSource.from(sender), base, args);
+    if (ret == null) {
+      return EMPTY_LIST;
+    }
+    return ret;
   }
 }

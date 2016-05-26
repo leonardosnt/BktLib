@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
+import io.github.bktlib.command.tabcompleter.TabCompleter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,11 +39,14 @@ import io.github.bktlib.command.annotation.Command;
 import io.github.bktlib.command.args.CommandArgs;
 import io.github.bktlib.common.Strings;
 
+import javax.annotation.Nonnull;
+
 public abstract class CommandBase {
   private static final String NOT_ALLOWED_INGAME = "§cEste comando nao pode ser usado in-game.";
   private static final String ONLY_ALLOWED_INGAME = "§cEste comando so pode ser usado in-game.";
 
   Command commandAnnotation;
+  TabCompleter tabCompleter;
   Map<String, CommandBase> subCommands;
 
   CommandBase(final Command annotation) {
@@ -53,7 +56,7 @@ public abstract class CommandBase {
 
   protected CommandBase() {
     commandAnnotation = Preconditions.checkNotNull(
-            getClass().getAnnotation(Command.class), "Missing 'Command' annotation");
+        getClass().getAnnotation(Command.class), "Missing 'Command' annotation");
     subCommands = Maps.newHashMap();
   }
 
@@ -133,7 +136,7 @@ public abstract class CommandBase {
    * @see CommandSource
    * @see CommandResult
    */
-  public abstract CommandResult onExecute(CommandSource src, CommandArgs args);
+  public abstract CommandResult onExecute(@Nonnull CommandSource src, @Nonnull CommandArgs args);
 
   /**
    * Método usado internamente para fazer verificações, chamar sub comandos
@@ -150,9 +153,7 @@ public abstract class CommandBase {
     } else if (target == NOT_IN_GAME && (sender instanceof Player)) {
       sender.sendMessage(NOT_ALLOWED_INGAME);
     } else {
-      final CommandSource src = sender == Bukkit.getConsoleSender()
-              ? CommandSource.getConsoleSource()
-              : new CommandSource(sender);
+      final CommandSource src = CommandSource.from(sender);
 
       try {
         if (rawArgs.length > 0) {
@@ -165,6 +166,10 @@ public abstract class CommandBase {
         }
 
         final CommandResult result = onExecute(src, CommandArgs.of(rawArgs));
+
+        if (result == null) {
+          throw new RuntimeException("\'" + this + "' returned null result.");
+        }
 
         if (result == CommandResult.success())
           return;

@@ -16,35 +16,14 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package io.github.bktlib.reflect;
+package io.github.bktlib.command.tabcompleter;
 
-import java.lang.reflect.Method;
+import io.github.bktlib.command.CommandBase;
+import io.github.bktlib.command.CommandSource;
 
-import io.github.bktlib.common.Strings;
+import java.util.List;
 
-public class MethodRef {
-  private Object owner;
-  private Method method;
-
-  private MethodRef(Object instance, Method method) {
-    this.owner = instance;
-    this.method = method;
-  }
-
-  public Object getOwner() {
-    return owner;
-  }
-
-  public Method getMethod() {
-    return method;
-  }
-
-  public static MethodRef of(Object instance, Method method) {
-    return new MethodRef(instance, method);
-  }
-
-  @Override
-  public String toString() {
-    return Strings.of(owner.getClass().getName(), "#", method == null ? "null" : method.getName());
-  }
+@FunctionalInterface
+public interface TabCompleter {
+  List<String> onTabComplete(CommandSource source, CommandBase command, String[] args);
 }

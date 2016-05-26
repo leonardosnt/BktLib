@@ -25,6 +25,7 @@ import static java.lang.String.format;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -36,10 +37,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import io.github.bktlib.command.tabcompleter.TabCompleter;
 import io.github.bktlib.misc.BukkitUtil;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
@@ -76,7 +79,8 @@ import io.github.bktlib.reflect.util.ReflectUtil;
  */
 @SuppressWarnings("unchecked")
 class CommandManagerImpl implements CommandManager {
-  private File cachedRegisterAllFile;
+  private static final Pattern TAB_COMPLETER_PATTERN = Pattern.compile("[0-9]:(\\[.*?\\]|\\$[a-zA-Z]+\\$)", Pattern.CASE_INSENSITIVE);
+  private File pluginFile;
   private LoadingCache<String, Optional<CommandBase>> byNameCache;
   private LoadingCache<Class<?>, Optional<CommandBase>> byClassCache;
   private LoadingCache<Class<?>, Object> classToInstanceCache;
@@ -97,10 +101,10 @@ class CommandManagerImpl implements CommandManager {
   public void register(CommandBase command) {
     checkNotNull(command, "command cannot be null");
 
-    commandMap.register(owner.getName(),
-            new CommandAdapter(command));
+    commandMap.register(owner.getName(), new CommandAdapter(command));
 
     command.subCommands = parseSubCommands(command);
+    command.tabCompleter = createTabCompleter(command);
   }
 
   @Override
@@ -153,11 +157,11 @@ class CommandManagerImpl implements CommandManager {
   public void register(Class<? extends CommandBase> commandClass) {
     checkNotNull(commandClass, "commandClass cannot be null ");
 
-    if (!canInstantiate(commandClass))
+    if (!canInstantiate(commandClass)) {
       return;
+    }
 
-    { // new scope
-
+    {
       final Class<?> enclosingClass = commandClass.getEnclosingClass();
 
       if (enclosingClass != null && canInstantiate(enclosingClass) &&
@@ -174,8 +178,7 @@ class CommandManagerImpl implements CommandManager {
           e.printStackTrace();
         }
       }
-
-    } // end of new scope
+    }
 
     try {
       register((CommandBase) classToInstanceCache.get(commandClass));
@@ -187,17 +190,17 @@ class CommandManagerImpl implements CommandManager {
   @Override
   public void registerAll() {
     try {
-      if (cachedRegisterAllFile == null) {
+      if (pluginFile == null) {
         MethodAccessor<File> getFileAccessor = MethodAccessor.access(owner, "getFile");
         Optional<File> jarFile = getFileAccessor.invoke();
 
         if (!jarFile.isPresent())
           logger.log(Level.SEVERE, "Something went wrong, plugin file is null.");
         else
-          cachedRegisterAllFile = jarFile.get();
+          pluginFile = jarFile.get();
       }
 
-      final JarInputStream is = new JarInputStream(new FileInputStream(cachedRegisterAllFile));
+      final JarInputStream is = new JarInputStream(new FileInputStream(pluginFile));
 
       for (JarEntry entry; (entry = is.getNextJarEntry()) != null; ) {
         final String entryName = entry.getName();
@@ -272,10 +275,8 @@ class CommandManagerImpl implements CommandManager {
     if (!hasPublicConstructor(klass)) {
       logger.log(Level.SEVERE, format("Could not register %s command " +
               "because it has no public constructors.", klass));
-
       return false;
     }
-
     return true;
   }
 
@@ -325,8 +326,14 @@ class CommandManagerImpl implements CommandManager {
     final CacheLoader<Class<?>, Object> classToInstanceLoader = new CacheLoader<Class<?>, Object>() {
       @Override
       public Object load(@Nonnull Class<?> aClass) throws Exception {
-        if (aClass == owner.getClass())
+        if (aClass == owner.getClass()) {
           return owner;
+        }
+        if (aClass.getDeclaredConstructors().length != 0) {
+          Constructor<?> constructor = aClass.getDeclaredConstructors()[0];
+          constructor.setAccessible(true);
+          return constructor.newInstance();
+        }
         return aClass.newInstance();
       }
     };
@@ -439,7 +446,8 @@ class CommandManagerImpl implements CommandManager {
                         subCmdAnnotation.usage(),
                         subCmdAnnotation.aliases(),
                         subCmdAnnotation.subCommands(),
-                        subCmdAnnotation.usageTarget()
+                        subCmdAnnotation.usageTarget(),
+                        subCmdAnnotation.tabCompleter()
                 );
 
                 /**
@@ -484,13 +492,37 @@ class CommandManagerImpl implements CommandManager {
             "Invalid subCommand '%s' in '%s' command. " + reason, args));
   }
 
+  private TabCompleter createTabCompleter(CommandBase command) {
+    Class<? extends TabCompleter> tabCompleter = command.commandAnnotation.tabCompleter();
+    if (tabCompleter == null) {
+      return null;
+    }
+    if (!ReflectUtil.isConcreteClass(tabCompleter)) {
+      throw new UnsupportedOperationException("cannot instantiate a non concrete class.");
+    }
+    try {
+      if (tabCompleter.isMemberClass() && !Modifier.isStatic(tabCompleter.getModifiers())) {
+        Class<?> enclosingClass = tabCompleter.getEnclosingClass();
+        Constructor<?> tabConstructor = tabCompleter.getDeclaredConstructor(enclosingClass);
+        tabConstructor.setAccessible(true);
+        return (TabCompleter) tabConstructor.newInstance(classToInstanceCache
+            .getUnchecked(enclosingClass));
+      }
+      return (TabCompleter) classToInstanceCache.getUnchecked(tabCompleter);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   static Command createCommandAnnotation(final String name,
                                          final String permission,
                                          final String description,
                                          final String usage,
                                          final String[] aliases,
                                          final String[] subCommands,
-                                         final UsageTarget usageTarget) {
+                                         final UsageTarget usageTarget,
+                                         final Class<? extends TabCompleter> tabCompleter) {
     return new Command() {
       public Class<? extends Annotation> annotationType() {
         return Command.class;
@@ -523,6 +555,8 @@ class CommandManagerImpl implements CommandManager {
       public UsageTarget usageTarget() {
         return usageTarget;
       }
+
+      public Class<? extends TabCompleter> tabCompleter() { return tabCompleter; };
     };
   }
 }

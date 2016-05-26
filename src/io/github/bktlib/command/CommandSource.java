@@ -28,13 +28,21 @@ import org.bukkit.entity.Player;
 
 import io.github.bktlib.command.annotation.Command;
 
+import javax.annotation.Nonnull;
+
 /**
  * Essa classe é meio que uma wrapper de {@link CommandSender}
  */
 public class CommandSource {
-  private static CommandSource consoleSource;
 
+  private static CommandSource consoleSource;
   private CommandSender wrappedSender;
+
+  public static CommandSource from(@Nonnull CommandSender sender) {
+    return sender == Bukkit.getConsoleSender()
+            ? CommandSource.getConsoleSource()
+            : new CommandSource(sender);
+  }
 
   CommandSource(CommandSender wrappedSender) {
     this.wrappedSender = wrappedSender;
@@ -44,22 +52,21 @@ public class CommandSource {
     if (consoleSource == null) {
       consoleSource = new CommandSource(Bukkit.getConsoleSender());
     }
-
     return consoleSource;
   }
 
   public void sendMessages(String... messages) {
-    if (messages == null)
+    if (messages == null) {
       return;
-
+    }
     Stream.of(messages)
-            .map(msg -> ChatColor.translateAlternateColorCodes('&', msg))
-            .forEach(wrappedSender::sendMessage);
+        .map(msg -> ChatColor.translateAlternateColorCodes('&', msg))
+        .forEach(wrappedSender::sendMessage);
   }
 
   public void sendMessage(String message, Object... args) {
     wrappedSender.sendMessage(
-            String.format(ChatColor.translateAlternateColorCodes('&', message), args));
+        String.format(ChatColor.translateAlternateColorCodes('&', message), args));
   }
 
   public void sendMessage(String message) {
@@ -68,12 +75,11 @@ public class CommandSource {
 
   public void sendMessage(Object rawMessage) {
     String message;
-
-    if (rawMessage instanceof String)
+    if (rawMessage instanceof String) {
       message = (String) rawMessage;
-    else
+    } else {
       message = String.valueOf(rawMessage);
-
+    }
     sendMessage(message);
   }
 
@@ -105,7 +111,7 @@ public class CommandSource {
     Optional<String> commandPermission = command.getPermission();
 
     return commandPermission.isPresent() &&
-            hasPermission(commandPermission.get());
+           hasPermission(commandPermission.get());
   }
 
   public boolean canUse(Command annotation) {
@@ -120,7 +126,6 @@ public class CommandSource {
     if (!isPlayer()) {
       throw new UnsupportedOperationException("Cannot cast console to player!");
     }
-
     return (Player) wrappedSender;
   }
 }

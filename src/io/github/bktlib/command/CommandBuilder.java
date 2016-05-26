@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import io.github.bktlib.command.annotation.Command;
 import io.github.bktlib.command.args.CommandArgs;
+import io.github.bktlib.command.tabcompleter.TabCompleter;
 import io.github.bktlib.common.Builder;
 
 public class CommandBuilder implements Builder<CommandBase> {
@@ -29,6 +30,7 @@ public class CommandBuilder implements Builder<CommandBase> {
   private String[] aliases, subCommands;
   private UsageTarget usageTarget;
   private CommandExecutor executor;
+  private Class<? extends TabCompleter> tabCompleter;
 
   private CommandBuilder(String name) {
     this.name = name;
@@ -89,6 +91,16 @@ public class CommandBuilder implements Builder<CommandBase> {
     return this;
   }
 
+  public CommandBuilder tabCompleter(TabCompleter tabCompleter) {
+    return tabCompleter(tabCompleter.getClass());
+  }
+
+  public CommandBuilder tabCompleter(Class<? extends TabCompleter> tabCompleter) {
+    checkNotNull(tabCompleter, "tabCompleter cannot be null.");
+    this.tabCompleter = tabCompleter;
+    return this;
+  }
+
   public CommandBase buildAndRegister(CommandManager manager) {
     checkNotNull(manager, "manager cannot be null.");
     CommandBase built = build();
@@ -107,7 +119,8 @@ public class CommandBuilder implements Builder<CommandBase> {
         usage,
         aliases,
         subCommands,
-        usageTarget
+        usageTarget,
+        tabCompleter
     );
 
     return new CommandBase(commandAnn) {

@@ -23,6 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import io.github.bktlib.command.tabcompleter.DefaultTabCompleter;
+import io.github.bktlib.command.tabcompleter.TabCompleter;
 import io.github.bktlib.command.UsageTarget;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -37,6 +39,8 @@ public @interface Command {
   String usage() default "";
 
   String[] aliases() default {};
+
+  Class<? extends TabCompleter> tabCompleter() default DefaultTabCompleter.class;
 
   /**
    * <p>
