@@ -18,52 +18,55 @@
 
 package io.github.bktlib.command;
 
-import static com.google.common.base.Preconditions.*;
-import static io.github.bktlib.reflect.util.ReflectUtil.*;
-import static java.lang.String.format;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import io.github.bktlib.command.annotation.Command;
+import io.github.bktlib.command.annotation.SubCommand;
+import io.github.bktlib.command.args.CommandArgs;
+import io.github.bktlib.command.tabcompleter.DefaultTabCompleter;
+import io.github.bktlib.command.tabcompleter.TabCompleter;
+import io.github.bktlib.command.tabcompleter.TabCompleterPlaceholders;
+import io.github.bktlib.common.Strings;
+import io.github.bktlib.misc.BukkitUtil;
+import io.github.bktlib.misc.InitOnlySupplier;
+import io.github.bktlib.reflect.FieldAccessor;
+import io.github.bktlib.reflect.MethodAccessor;
+import io.github.bktlib.reflect.MethodRef;
+import io.github.bktlib.reflect.util.ReflectUtil;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.util.StringUtil;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-
-import io.github.bktlib.command.tabcompleter.DefaultTabCompleter;
-import io.github.bktlib.command.tabcompleter.TabCompleter;
-import io.github.bktlib.misc.BukkitUtil;
-import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Splitter;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Maps;
-
-import io.github.bktlib.command.annotation.Command;
-import io.github.bktlib.command.annotation.SubCommand;
-import io.github.bktlib.command.args.CommandArgs;
-import io.github.bktlib.common.Strings;
-import io.github.bktlib.reflect.FieldAccessor;
-import io.github.bktlib.reflect.MethodAccessor;
-import io.github.bktlib.reflect.MethodRef;
-import io.github.bktlib.reflect.util.ReflectUtil;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.github.bktlib.reflect.util.ReflectUtil.hasPublicConstructor;
+import static java.lang.String.format;
 
 /**
  * <p>
@@ -80,7 +83,8 @@ import io.github.bktlib.reflect.util.ReflectUtil;
  */
 @SuppressWarnings("unchecked")
 class CommandManagerImpl implements CommandManager {
-  private static final Pattern TAB_COMPLETER_PATTERN = Pattern.compile("[0-9]:(\\[.*?\\]|\\$[a-zA-Z]+\\$)", Pattern.CASE_INSENSITIVE);
+  private static final Pattern TAB_COMPLETIONS_PATTERN = Pattern.compile("([0-9]):(\\[.*?\\]|\\$[a-zA-Z]+\\$)", Pattern.CASE_INSENSITIVE);
+  private static final Splitter COMMA_SPLITTER = Splitter.on(Pattern.compile(", ?"));
   private static Map<Plugin, CommandManager> plugin2CmdmanagerCache = Maps.newHashMap();
   private File pluginFile;
   private LoadingCache<String, Optional<CommandBase>> byNameCache;
@@ -358,6 +362,49 @@ class CommandManagerImpl implements CommandManager {
   }
 
   /**
+   * A chave é o index é o valor é um supplier com a lista de strings.
+   */
+  public Map<Integer, Supplier<List<String>>> parseTabCompletions(CommandBase command) {
+    String rawCompletions = command.commandAnnotation.tabCompletions();
+    Map<Integer, Supplier<List<String>>> parsed = new HashMap<>();
+
+    if (Strings.isNullOrEmpty(rawCompletions)) {
+      return parsed;
+    }
+
+    Matcher matcher = TAB_COMPLETIONS_PATTERN.matcher(rawCompletions);
+
+    while (matcher.find()) {
+      String rawIndex = matcher.group(1);
+      String rawValue = matcher.group(2);
+      Supplier<List<String>> parsedValue;
+
+      if (rawValue.startsWith("$")) { // is placeholder
+        parsedValue = TabCompleterPlaceholders.fromName(rawValue);
+
+        if (parsedValue == null) {
+          throw new IllegalArgumentException(String.format("Invalid tabCompletion placeHolder %s",
+              rawValue));
+        }
+      } else if (rawValue.startsWith("[") && rawValue.endsWith("]")) {
+        rawValue = rawValue.substring(1, rawValue.length() - 1);
+        final String finalRawValue = rawValue;
+        parsedValue = new InitOnlySupplier<List<String>>() {
+          @Override
+          protected List<String> init() {
+            return Lists.newArrayList(COMMA_SPLITTER.split(finalRawValue));
+          }
+        };
+      } else {
+        throw new IllegalArgumentException(String.format("Invalid tabCompletion value %s", rawValue));
+      }
+      parsed.put(Integer.valueOf(rawIndex), parsedValue);
+    }
+
+    return parsed;
+  }
+
+  /**
    * Converte a {@link Command#subCommands() lista de sub comandos} em um
    * {@code Map<String, CommandBase>}, tendo como chave o
    * {@link Command#name() nome} do sub comando, e como valor, a instancia do
@@ -501,8 +548,22 @@ class CommandManagerImpl implements CommandManager {
 
   private TabCompleter createTabCompleter(CommandBase command) {
     Class<? extends TabCompleter> tabCompleter = command.commandAnnotation.tabCompleter();
-    if (tabCompleter == null) {
-      return null;
+    if (tabCompleter == null || tabCompleter == DefaultTabCompleter.class &&
+        !Strings.isNullOrEmpty(command.commandAnnotation.tabCompletions())) { // parse tabCompletions
+
+      System.out.println(">>>> " + command.commandAnnotation.tabCompletions());
+      return new TabCompleter() {
+        final Map<Integer, Supplier<List<String>>> completions = parseTabCompletions(command);
+        @Override
+        public List<String> onTabComplete(CommandSource source, CommandBase command, String[] args) {
+          if (completions.containsKey(args.length)) {
+            System.out.println(completions + "  " + args.length);
+            return StringUtil.copyPartialMatches(args[args.length - 1],
+                completions.get(args.length).get(), new ArrayList<>());
+          }
+          return null;
+        }
+      };
     }
     if (!ReflectUtil.isConcreteClass(tabCompleter)) {
       throw new UnsupportedOperationException("cannot instantiate a non concrete class.");
@@ -563,6 +624,8 @@ class CommandManagerImpl implements CommandManager {
       }
 
       public Class<? extends TabCompleter> tabCompleter() { return DefaultTabCompleter.class; };
+
+      public String tabCompletions() { return ""; }
     };
   }
 }

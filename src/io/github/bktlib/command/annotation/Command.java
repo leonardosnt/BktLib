@@ -70,5 +70,26 @@ public @interface Command {
    */
   String[] subCommands() default {};
 
+  /**
+   * <p>Formato:</p>
+   * <p>
+   * {@code
+   *  index:[lista, de, coisas] ou index:$placeholder$
+   * }</p>
+   *
+   * <p>Por exemplo:</p>
+   * <p>
+   *   {@code 1:[sugestao1, sugestao2] 2:$players$ 3:[apenas_uma] 4:$mobs$}
+   * </p>
+   *
+   * <p>PlaceHolders:</p>
+   * <li> $players$ - Lista de jogadores online. </li>
+   * <li> $mobs$ - Lista de mobs. </li>
+   * <li> $items$ - Lista de items. </li>
+   * <li> $enchantments$ - Lista de encantamentos. </li>
+   * </p>
+   */
+  String tabCompletions() default "";
+
   UsageTarget usageTarget() default UsageTarget.BOTH;
 }

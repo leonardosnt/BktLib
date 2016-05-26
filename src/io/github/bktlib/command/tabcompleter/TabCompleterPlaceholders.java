@@ -18,13 +18,16 @@
 
 package io.github.bktlib.command.tabcompleter;
 
+import io.github.bktlib.misc.InitOnlySupplier;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class TabCompleterPlaceholders {
   public static final Supplier<List<String>> PLAYERS = () -> (
@@ -32,11 +35,25 @@ public final class TabCompleterPlaceholders {
         .collect(Collectors.toList())
   );
 
+  public static final Supplier<List<String>> ITEMS = new InitOnlySupplier<List<String>>() {
+    @Override
+    protected List<String> init() {
+      System.out.println("initialized");
+      return Stream.of(Material.values())
+              .map(Material::name)
+              .map(String::toLowerCase)
+              .collect(Collectors.toList());
+    }
+  };
+
   @Nullable
-  public static List<String> fromName(String placeHolder) {
-    switch (placeHolder) {
+  public static Supplier<List<String>> fromName(String placeHolder) {
+    switch (placeHolder.toLowerCase()) {
       case "$players$":
-        return PLAYERS.get();
+        return PLAYERS;
+
+      case "$items$":
+        return ITEMS;
 
       default:
         return null;
