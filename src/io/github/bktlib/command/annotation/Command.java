@@ -30,16 +30,35 @@ import io.github.bktlib.command.UsageTarget;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Command {
+
+  /**
+   * Nome do comando.
+   */
   String name();
 
+  /**
+   * Permissão do comando.
+   */
   String permission() default "";
 
+  /**
+   * Descrição do comando.
+   */
   String description() default "";
 
+  /**
+   * Uso correto do comando.
+   */
   String usage() default "";
 
+  /**
+   * Lista de aliases do comando.
+   */
   String[] aliases() default {};
 
+  /**
+   * TabCompleter do comando.
+   */
   Class<? extends TabCompleter> tabCompleter() default DefaultTabCompleter.class;
 
   /**
@@ -91,5 +110,10 @@ public @interface Command {
    */
   String tabCompletions() default "";
 
+  /**
+   * Destino de uso do comando.
+   *
+   * @see UsageTarget
+   */
   UsageTarget usageTarget() default UsageTarget.BOTH;
 }
