@@ -64,9 +64,4 @@ public @interface SubCommand {
    * @see Command#usageTarget()
    */
   UsageTarget usageTarget() default UsageTarget.BOTH;
-
-  /**
-   * @see Command#tabCompleter()
-   */
-  Class<? extends TabCompleter> tabCompleter() default DefaultTabCompleter.class;
 }

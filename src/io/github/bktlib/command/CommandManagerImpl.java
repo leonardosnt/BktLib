@@ -42,6 +42,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import io.github.bktlib.command.tabcompleter.DefaultTabCompleter;
 import io.github.bktlib.command.tabcompleter.TabCompleter;
 import io.github.bktlib.misc.BukkitUtil;
 import org.bukkit.command.SimpleCommandMap;
@@ -453,8 +454,7 @@ class CommandManagerImpl implements CommandManager {
                         subCmdAnnotation.usage(),
                         subCmdAnnotation.aliases(),
                         subCmdAnnotation.subCommands(),
-                        subCmdAnnotation.usageTarget(),
-                        subCmdAnnotation.tabCompleter()
+                        subCmdAnnotation.usageTarget()
                 );
 
                 /**
@@ -528,8 +528,7 @@ class CommandManagerImpl implements CommandManager {
                                          final String usage,
                                          final String[] aliases,
                                          final String[] subCommands,
-                                         final UsageTarget usageTarget,
-                                         final Class<? extends TabCompleter> tabCompleter) {
+                                         final UsageTarget usageTarget) {
     return new Command() {
       public Class<? extends Annotation> annotationType() {
         return Command.class;
@@ -563,7 +562,7 @@ class CommandManagerImpl implements CommandManager {
         return usageTarget;
       }
 
-      public Class<? extends TabCompleter> tabCompleter() { return tabCompleter; };
+      public Class<? extends TabCompleter> tabCompleter() { return DefaultTabCompleter.class; };
     };
   }
 }

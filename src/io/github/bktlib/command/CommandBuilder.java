@@ -119,8 +119,7 @@ public class CommandBuilder implements Builder<CommandBase> {
         usage,
         aliases,
         subCommands,
-        usageTarget,
-        tabCompleter
+        usageTarget
     );
 
     return new CommandBase(commandAnn) {
