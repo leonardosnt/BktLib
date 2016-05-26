@@ -102,11 +102,12 @@ public @interface Command {
    * </p>
    *
    * <p>PlaceHolders:</p>
-   * <li> $players$ - Lista de jogadores online. </li>
-   * <li> $mobs$ - Lista de mobs. </li>
-   * <li> $items$ - Lista de items. </li>
-   * <li> $enchantments$ - Lista de encantamentos. </li>
-   * </p>
+   * <ul>
+   *  <li> $players$ - Lista de jogadores online. </li>
+   *  <li> $mobs$ - Lista de mobs. </li>
+   *  <li> $items$ - Lista de items. </li>
+   *  <li> $enchantments$ - Lista de encantamentos. </li>
+   * </ul>
    */
   String tabCompletions() default "";
 
