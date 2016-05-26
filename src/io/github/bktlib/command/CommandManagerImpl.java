@@ -595,33 +595,19 @@ class CommandManagerImpl implements CommandManager {
         return Command.class;
       }
 
-      public String name() {
-        return name;
-      }
+      public String name() { return name; }
 
-      public String permission() {
-        return permission;
-      }
+      public String permission() { return permission; }
 
-      public String description() {
-        return description;
-      }
+      public String description() { return description; }
 
-      public String usage() {
-        return usage;
-      }
+      public String usage() { return usage; }
 
-      public String[] aliases() {
-        return aliases;
-      }
+      public String[] aliases() { return aliases; }
 
-      public String[] subCommands() {
-        return subCommands;
-      }
+      public String[] subCommands() { return subCommands; }
 
-      public UsageTarget usageTarget() {
-        return usageTarget;
-      }
+      public UsageTarget usageTarget() { return usageTarget; }
 
       public Class<? extends TabCompleter> tabCompleter() { return DefaultTabCompleter.class; };
 
