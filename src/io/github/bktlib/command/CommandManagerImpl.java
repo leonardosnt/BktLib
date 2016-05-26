@@ -364,7 +364,7 @@ class CommandManagerImpl implements CommandManager {
   /**
    * A chave é o index é o valor é um supplier com a lista de strings.
    */
-  public Map<Integer, Supplier<List<String>>> parseTabCompletions(CommandBase command) {
+  private Map<Integer, Supplier<List<String>>> parseTabCompletions(CommandBase command) {
     String rawCompletions = command.commandAnnotation.tabCompletions();
     Map<Integer, Supplier<List<String>>> parsed = new HashMap<>();
 
