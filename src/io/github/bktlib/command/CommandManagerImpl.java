@@ -169,14 +169,14 @@ class CommandManagerImpl implements CommandManager {
   public void register(Class<? extends CommandBase> commandClass) {
     checkNotNull(commandClass, "commandClass cannot be null ");
 
-    if (!canInstantiate(commandClass)) {
+    if (!checkCanInstantiate(commandClass)) {
       return;
     }
 
     {
       final Class<?> enclosingClass = commandClass.getEnclosingClass();
 
-      if (enclosingClass != null && canInstantiate(enclosingClass) &&
+      if (enclosingClass != null && checkCanInstantiate(enclosingClass) &&
               !Modifier.isStatic(commandClass.getModifiers())) {
         try {
           Object enclosingInst = classToInstanceCache.get(enclosingClass);
@@ -283,7 +283,7 @@ class CommandManagerImpl implements CommandManager {
    * Checa se a classe tem construtores visiveis, caso nao tenha ele informa e
    * retorna falso
    */
-  private boolean canInstantiate(Class<?> klass) {
+  private boolean checkCanInstantiate(Class<?> klass) {
     if (!hasPublicConstructor(klass)) {
       logger.log(Level.SEVERE, format("Could not register %s command " +
               "because it has no public constructors.", klass));
