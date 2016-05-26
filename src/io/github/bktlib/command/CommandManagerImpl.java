@@ -80,6 +80,7 @@ import io.github.bktlib.reflect.util.ReflectUtil;
 @SuppressWarnings("unchecked")
 class CommandManagerImpl implements CommandManager {
   private static final Pattern TAB_COMPLETER_PATTERN = Pattern.compile("[0-9]:(\\[.*?\\]|\\$[a-zA-Z]+\\$)", Pattern.CASE_INSENSITIVE);
+  private static Map<Plugin, CommandManager> plugin2CmdmanagerCache;
   private File pluginFile;
   private LoadingCache<String, Optional<CommandBase>> byNameCache;
   private LoadingCache<Class<?>, Optional<CommandBase>> byClassCache;
@@ -95,6 +96,12 @@ class CommandManagerImpl implements CommandManager {
     commandMap = getCommandMap();
 
     initCaches();
+  }
+
+  static CommandManager of(Plugin plugin) {
+    checkNotNull(plugin, "plugin cannot be null");
+    plugin2CmdmanagerCache.putIfAbsent(plugin, new CommandManagerImpl(plugin));
+    return plugin2CmdmanagerCache.get(plugin);
   }
 
   @Override

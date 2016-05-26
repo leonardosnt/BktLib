@@ -121,6 +121,6 @@ public interface CommandManager {
    * @throws NullPointerException Caso o {@code plugin} seja nulo.
    */
   static CommandManager of(final Plugin plugin) {
-    return new CommandManagerImpl(Preconditions.checkNotNull(plugin, "plugin cannot be null"));
+    return CommandManagerImpl.of(plugin);
   }
 }
