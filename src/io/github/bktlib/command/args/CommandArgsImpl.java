@@ -18,12 +18,11 @@
 
 package io.github.bktlib.command.args;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.avaje.ebeaninternal.server.el.CharMatch;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -35,7 +34,6 @@ class CommandArgsImpl implements CommandArgs {
   private String[] rawArgs;
 
   CommandArgsImpl(String... rawArgs) {
-    // TODO: parser ( parse arg between " this " )
     this.rawArgs = rawArgs;
   }
 
@@ -64,8 +62,7 @@ class CommandArgsImpl implements CommandArgs {
   @Override
   public OptionalInt getAsInt(int argIdx) {
     try {
-      return OptionalInt.of(
-              Integer.parseInt(get(argIdx)));
+      return OptionalInt.of(Integer.parseInt(get(argIdx)));
     } catch (NumberFormatException e) {
       return OptionalInt.empty();
     }
@@ -74,8 +71,7 @@ class CommandArgsImpl implements CommandArgs {
   @Override
   public OptionalDouble getAsDouble(int argIdx) {
     try {
-      return OptionalDouble.of(
-              Double.parseDouble(get(argIdx)));
+      return OptionalDouble.of(Double.parseDouble(get(argIdx)));
     } catch (NumberFormatException e) {
       return OptionalDouble.empty();
     }
@@ -84,8 +80,7 @@ class CommandArgsImpl implements CommandArgs {
   @Override
   public Optional<Boolean> getAsBoolean(int argIdx) {
     try {
-      return Optional.of(
-              Boolean.parseBoolean(get(argIdx)));
+      return Optional.of(Boolean.parseBoolean(get(argIdx)));
     } catch (NumberFormatException e) {
       return Optional.empty();
     }
@@ -95,20 +90,18 @@ class CommandArgsImpl implements CommandArgs {
   public Optional<Player> getAsPlayer(int argIdx) {
     Player player = Bukkit.getPlayer(get(argIdx));
 
-    return player == null
-            ? Optional.empty()
-            : Optional.of(player);
+    return player == null ? Optional.empty() : Optional.of(player);
   }
 
   @Override
   public int tryGetAsInt(int argIdx, Function<String, CommandResult> failCallback) {
     OptionalInt i = getAsInt(argIdx);
 
-    if (i.isPresent())
+    if (i.isPresent()) {
       return i.getAsInt();
+    }
 
     CommandResult result = failCallback.apply(get(argIdx));
-
     throw new io.github.bktlib.command.CommandException(result);
   }
 
@@ -116,11 +109,11 @@ class CommandArgsImpl implements CommandArgs {
   public double tryGetAsDouble(int argIdx, Function<String, CommandResult> failCallback) {
     OptionalInt i = getAsInt(argIdx);
 
-    if (i.isPresent())
+    if (i.isPresent()) {
       return i.getAsInt();
+    }
 
     CommandResult result = failCallback.apply(get(argIdx));
-
     throw new io.github.bktlib.command.CommandException(result);
   }
 
@@ -128,11 +121,11 @@ class CommandArgsImpl implements CommandArgs {
   public boolean tryGetAsBoolean(int argIdx, Function<String, CommandResult> failCallback) {
     Optional<Boolean> i = getAsBoolean(argIdx);
 
-    if (i.isPresent())
+    if (i.isPresent()) {
       return i.get();
+    }
 
     CommandResult result = failCallback.apply(get(argIdx));
-
     throw new io.github.bktlib.command.CommandException(result);
   }
 
@@ -140,11 +133,11 @@ class CommandArgsImpl implements CommandArgs {
   public Player tryGetAsPlayer(int argIdx, Function<String, CommandResult> failCallback) {
     Optional<Player> i = getAsPlayer(argIdx);
 
-    if (i.isPresent())
+    if (i.isPresent()) {
       return i.get();
+    }
 
     CommandResult result = failCallback.apply(get(argIdx));
-
     throw new io.github.bktlib.command.CommandException(result);
   }
 

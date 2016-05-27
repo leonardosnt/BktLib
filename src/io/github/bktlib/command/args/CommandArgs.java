@@ -49,9 +49,9 @@ import java.util.function.Function;
  * {@link NullPointerException} caso o parametro failCallback seja nulo.
  * </p>
  * <p>
- * TODO: documentar
  */
 public interface CommandArgs {
+
   /**
    * @return Numero de argumentos presentes.
    */
@@ -64,96 +64,108 @@ public interface CommandArgs {
   boolean isEmpty();
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return O argumento naquela posição.
    */
   String get(int argIndex);
 
   /**
-   * @return
+   * @return Array de argumentos "crús"
    */
   String[] getRawArgs();
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return Um optional que pode ou não conter o valor convertido.
    */
   OptionalInt getAsInt(int argIndex);
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return Um optional que pode ou não conter o valor convertido.
    */
   OptionalDouble getAsDouble(int argIndex);
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return Um optional que pode ou não conter o valor convertido.
    */
   Optional<Boolean> getAsBoolean(int argIndex);
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return Um optional que pode ou não conter o valor convertido.
    */
   Optional<Player> getAsPlayer(int argIndex);
 
   /**
-   * @param argIndex
-   * @param failCallback
-   * @return
+   * Tenta converter o argumento para {@code int}.
+   * Caso não consiga ele executa o {@code failCallback}
+   * passando como parametro o argumento.
+   *
+   * @param argIndex Index o argumento
+   * @param failCallback Callback que sera executado.
+   * @return O argumento convertido para {@code int}
    */
   int tryGetAsInt(int argIndex, Function<String, CommandResult> failCallback);
 
   /**
-   * @param argIndex
-   * @param failCallback
-   * @return
+   * Tenta converter o argumento para {@code double}.
+   * Caso não consiga ele executa o {@code failCallback}
+   * passando como parametro o argumento.
+   *
+   * @param argIndex Index o argumento
+   * @param failCallback Callback que sera executado.
+   * @return O argumento convertido para {@code double}
    */
   double tryGetAsDouble(int argIndex, Function<String, CommandResult> failCallback);
 
   /**
-   * @param argIndex
-   * @param failCallback
-   * @return
+   * Tenta converter o argumento para {@code boolean}.
+   * Caso não consiga ele executa o {@code failCallback}
+   * passando como parametro o argumento.
+   *
+   * @param argIndex Index o argumento
+   * @param failCallback Callback que sera executado.
+   * @return O argumento convertido para {@code boolean}
    */
   boolean tryGetAsBoolean(int argIndex, Function<String, CommandResult> failCallback);
 
   /**
-   * @param argIndex
-   * @param failCallback
-   * @return
+   * Tentar encontrar o jogador correspondente ao nome informado
+   * no argumento, Caso não encontre ele executa o {@code failCallback}
+   * passando como parametro o argumento.
+   *
+   * @param argIndex Index o argumento
+   * @param failCallback Callback que sera executado.
+   * @return O jogador correspondente ao nome passado no argumento.
    */
   Player tryGetAsPlayer(int argIndex, Function<String, CommandResult> failCallback);
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return O argumento convertido para {@code int}
    */
   int unsafeGetAsInt(int argIndex);
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return O argumento convertido para {@code double}
    */
   double unsafeGetAsDouble(int argIndex);
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return O argumento convertido para {@code boolean}
    */
   boolean unsafeGetAsBoolean(int argIndex);
 
   /**
-   * @param argIndex
-   * @return
+   * @param argIndex Index o argumento
+   * @return O jogador correspondente ao nome passado no argumento.
    */
   Player unsafeGetAsPlayer(int argIndex);
 
-  /**
-   * @param rawArgs
-   * @return
-   */
   static CommandArgs of(String... rawArgs) {
     return new CommandArgsImpl(rawArgs);
   }
