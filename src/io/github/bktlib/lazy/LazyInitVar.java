@@ -18,11 +18,16 @@
 
 package io.github.bktlib.lazy;
 
+import com.google.common.base.Preconditions;
+
+import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public abstract class LazyInitVar<T> extends LazyInitValue<T> {
 
-  public static <T> LazyInitVar<T> of(Supplier<T> supp) {
+  public static <T> LazyInitVar<T> of(@Nonnull Supplier<T> supp) {
+    Preconditions.checkNotNull(supp, "supp");
+
     return new LazyInitVar<T>() {
       @Override
       protected T init() {
