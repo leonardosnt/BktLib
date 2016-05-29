@@ -35,16 +35,12 @@ public final class TabCompleterPlaceholders {
         .collect(Collectors.toList())
   );
 
-  public static final Supplier<List<String>> ITEMS = new InitOnlySupplier<List<String>>() {
-    @Override
-    protected List<String> init() {
-      System.out.println("initialized");
-      return Stream.of(Material.values())
-              .map(Material::name)
-              .map(String::toLowerCase)
-              .collect(Collectors.toList());
-    }
-  };
+  public static final Supplier<List<String>> ITEMS = InitOnlySupplier.of(() -> (
+    Stream.of(Material.values())
+          .map(Material::name)
+          .map(String::toLowerCase)
+          .collect(Collectors.toList())
+  ));
 
   @Nullable
   public static Supplier<List<String>> fromName(String placeHolder) {

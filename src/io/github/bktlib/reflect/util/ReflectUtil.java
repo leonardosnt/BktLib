@@ -115,9 +115,8 @@ public final class ReflectUtil {
     }
   }
 
-  //TODO CACHE
   public static Class<?> getClass(String clazz) {
-    clazz = resolveClassName(clazz);
+    clazz = resolveName(clazz);
     try {
       return Class.forName(clazz);
     } catch (ClassNotFoundException e) {
@@ -126,9 +125,9 @@ public final class ReflectUtil {
     }
   }
 
-  public static String resolveClassName(String clazz) {
+  public static String resolveName(String clazz) {
     final String version = BukkitUtil.getImplVersion();
-    clazz = clazz.replaceAll("\\{cb\\}", "org.bukkit.craftbukkit." + version);
+    clazz = clazz.replaceAll("\\{o?cb\\}", "org.bukkit.craftbukkit." + version);
     clazz = clazz.replaceAll("\\{nms\\}", "net.minecraft.server." + version);
     return clazz;
   }

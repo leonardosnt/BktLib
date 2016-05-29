@@ -198,14 +198,14 @@ public final class Items {
   }
 
   private static final LazyInitMethod nmsItemGetTag = new LazyInitMethod(
-      ReflectUtil.resolveClassName("{nms}.ItemStack"), "getTag", new Class[0]);
+      ReflectUtil.resolveName("{nms}.ItemStack"), "getTag", new Class[0]);
 
   private static final LazyInitMethod nmsItemSetTag = new LazyInitMethod(
-      ReflectUtil.resolveClassName("{nms}.ItemStack"), "setTag",
-      ReflectUtil.resolveClassName("{nms}.NBTTagCompound"));
+      ReflectUtil.resolveName("{nms}.ItemStack"), "setTag",
+      ReflectUtil.resolveName("{nms}.NBTTagCompound"));
 
   private static final LazyInitMethod asCraftCopyMethod = new LazyInitMethod(
-      ReflectUtil.resolveClassName("{cb}.inventory.CraftItemStack"),
+      ReflectUtil.resolveName("{cb}.inventory.CraftItemStack"),
       "asCraftCopy", ItemStack.class);
 
 }

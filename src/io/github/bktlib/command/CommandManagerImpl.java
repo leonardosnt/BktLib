@@ -389,12 +389,7 @@ class CommandManagerImpl implements CommandManager {
       } else if (rawValue.startsWith("[") && rawValue.endsWith("]")) {
         rawValue = rawValue.substring(1, rawValue.length() - 1);
         final String finalRawValue = rawValue;
-        parsedValue = new InitOnlySupplier<List<String>>() {
-          @Override
-          protected List<String> init() {
-            return Lists.newArrayList(COMMA_SPLITTER.split(finalRawValue));
-          }
-        };
+        parsedValue = InitOnlySupplier.of(() -> Lists.newArrayList(COMMA_SPLITTER.split(finalRawValue)));
       } else {
         throw new IllegalArgumentException(String.format("Invalid tabCompletion value %s", rawValue));
       }
@@ -555,7 +550,6 @@ class CommandManagerImpl implements CommandManager {
         @Override
         public List<String> onTabComplete(CommandSource source, CommandBase command, String[] args) {
           if (completions.containsKey(args.length)) {
-            System.out.println(completions + "  " + args.length);
             return StringUtil.copyPartialMatches(args[args.length - 1],
                 completions.get(args.length).get(), new ArrayList<>());
           }

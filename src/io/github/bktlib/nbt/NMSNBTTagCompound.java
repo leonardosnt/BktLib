@@ -2,26 +2,23 @@ package io.github.bktlib.nbt;
 
 import io.github.bktlib.lazy.LazyInitField;
 import io.github.bktlib.lazy.LazyInitMethod;
-import io.github.bktlib.lazy.LazyInitValue;
-import io.github.bktlib.lazy.LazyInitVar;
 import io.github.bktlib.reflect.util.ReflectUtil;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 class NMSNBTTagCompound extends NBTTagCompound {
 
   private Object handle; //nms compound
 
   private static final LazyInitMethod NMS_COMPOUND_WRITE_METHOD = new LazyInitMethod(
-      ReflectUtil.resolveClassName("{nms}.NBTTagCompound"), "write", DataOutput.class
+      ReflectUtil.resolveName("{nms}.NBTTagCompound"), "write", DataOutput.class
   );
   private static final LazyInitMethod NMS_COMPOUND_LOAD_METHOD = new LazyInitMethod(
-      ReflectUtil.resolveClassName("{nms}.NBTTagCompound"), "load", DataInput.class
+      ReflectUtil.resolveName("{nms}.NBTTagCompound"), "load", DataInput.class
   );
   private static final LazyInitField INFINITE_READ_LIMITER = new LazyInitField(
-      ReflectUtil.resolveClassName("{nms}.NBTReadLimiter"), "a"
+      ReflectUtil.resolveName("{nms}.NBTReadLimiter"), "a"
   );
 
   public NMSNBTTagCompound(Object handle) {

@@ -20,19 +20,15 @@ package io.github.bktlib.lazy;
 
 import java.util.function.Supplier;
 
-public class LazyInitVar<T> extends LazyInitValue<T> {
-
-  private Supplier<T> supplier;
+public abstract class LazyInitVar<T> extends LazyInitValue<T> {
 
   public static <T> LazyInitVar<T> of(Supplier<T> supp) {
-    return new LazyInitVar<>(supp);
+    return new LazyInitVar<T>() {
+      @Override
+      protected T init() {
+        return supp.get();
+      }
+    };
   }
 
-  protected LazyInitVar(Supplier<T> supplier) {
-    this.supplier = supplier;
-  }
-
-  protected T init() {
-    return supplier.get();
-  }
 }

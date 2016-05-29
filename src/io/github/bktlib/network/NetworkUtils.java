@@ -32,12 +32,12 @@ import java.lang.reflect.InvocationTargetException;
 public final class NetworkUtils {
 
   private static final LazyInitField playerConnection = new LazyInitField(
-      ReflectUtil.resolveClassName("{nms}.PlayerConnection"),
+      ReflectUtil.resolveName("{nms}.PlayerConnection"),
       "playerConnection"
   );
   private static final LazyInitMethod sendPacket = new LazyInitMethod(
-      ReflectUtil.resolveClassName("{nms}.PlayerConnection"), "sendPacket",
-      ReflectUtil.resolveClassName("{nms}.Packet")
+      ReflectUtil.resolveName("{nms}.PlayerConnection"), "sendPacket",
+      ReflectUtil.resolveName("{nms}.Packet")
   );
 
   /**

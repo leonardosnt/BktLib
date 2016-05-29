@@ -24,6 +24,15 @@ public abstract class InitOnlySupplier<T> implements Supplier<T> {
   private boolean initalized;
   private T value;
 
+  public static <T> InitOnlySupplier<T> of(Supplier<T> supplier) {
+    return new InitOnlySupplier<T>() {
+      @Override
+      protected T init() {
+        return supplier.get();
+      }
+    };
+  }
+
   @Override
   public T get() {
     if (!initalized) {
