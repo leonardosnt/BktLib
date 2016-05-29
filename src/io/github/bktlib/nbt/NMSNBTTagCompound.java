@@ -1,5 +1,8 @@
 package io.github.bktlib.nbt;
 
+import io.github.bktlib.lazy.LazyInitField;
+import io.github.bktlib.lazy.LazyInitMethod;
+import io.github.bktlib.lazy.LazyInitValue;
 import io.github.bktlib.lazy.LazyInitVar;
 import io.github.bktlib.reflect.util.ReflectUtil;
 
@@ -10,57 +13,16 @@ import java.lang.reflect.Method;
 class NMSNBTTagCompound extends NBTTagCompound {
 
   private Object handle; //nms compound
-  private static final LazyInitVar<Method> NMS_COMPOUND_WRITE_METHOD = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      Class<?> nbtCompoundClass = ReflectUtil.getClass("{nms}.NBTTagCompound");
-      if (nbtCompoundClass == null) {
-        throw new RuntimeException("Could not find net.minecraft" +
-                ".server.<version>.NBTTagCompound class.");
-      }
-      try {
-        Method writeMethod = nbtCompoundClass.getDeclaredMethod("write", DataOutput.class);
-        writeMethod.setAccessible(true);
-        return writeMethod;
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
-  private final static LazyInitVar<Method> NMS_COMPOUND_LOAD_METHOD = new LazyInitVar<Method>() {
-    @Override
-    public Method init() {
-      Class<?> nbtCompoundClass = ReflectUtil.getClass("{nms}.NBTTagCompound");
-      if (nbtCompoundClass == null) {
-        throw new RuntimeException("Could not find net.minecraft" +
-                ".server.<version>.NBTTagCompound class.");
-      }
-      try {
-        Method writeMethod = nbtCompoundClass.getDeclaredMethod("load", DataInput.class,
-            int.class, ReflectUtil.getClass("{nms}.NBTReadLimiter"));
-        writeMethod.setAccessible(true);
-        return writeMethod;
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
-  /**
-   * NMS NBTReadLimiter.INFINITE;
-   */
-  private static final LazyInitVar<Object> INFINITE_READ_LIMITER = new LazyInitVar<Object>() {
-    @Override
-    public Object init() {
-      try {
-        return ReflectUtil.getClass("{nms}.NBTReadLimiter").getDeclaredField("a").get(null);
-      } catch (IllegalAccessException | NoSuchFieldException e) {
-        e.printStackTrace();
-      }
-      return null;
-    }
-  };
+
+  private static final LazyInitMethod NMS_COMPOUND_WRITE_METHOD = new LazyInitMethod(
+      ReflectUtil.resolveClassName("{nms}.NBTTagCompound"), "write", DataOutput.class
+  );
+  private static final LazyInitMethod NMS_COMPOUND_LOAD_METHOD = new LazyInitMethod(
+      ReflectUtil.resolveClassName("{nms}.NBTTagCompound"), "load", DataInput.class
+  );
+  private static final LazyInitField INFINITE_READ_LIMITER = new LazyInitField(
+      ReflectUtil.resolveClassName("{nms}.NBTReadLimiter"), "a"
+  );
 
   public NMSNBTTagCompound(Object handle) {
     this.handle = handle;

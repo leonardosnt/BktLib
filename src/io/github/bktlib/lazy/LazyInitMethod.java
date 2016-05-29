@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
-public class LazyInitMethod extends LazyInitVar<Method> {
+public class LazyInitMethod extends LazyInitValue<Method> {
 
   private Class<?>[] methodParamsType;
   private String methodName;

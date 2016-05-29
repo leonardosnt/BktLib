@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 
-public class LazyInitField extends LazyInitVar<Field> {
+public class LazyInitField extends LazyInitValue<Field> {
   private Class<?> clazz;
   private String fieldName;
 

@@ -19,7 +19,6 @@
 package io.github.bktlib.network;
 
 import io.github.bktlib.lazy.LazyInitField;
-import io.github.bktlib.lazy.LazyInitVar;
 import io.github.bktlib.misc.BukkitUtil;
 import io.github.bktlib.reflect.Fields;
 import io.github.bktlib.lazy.LazyInitMethod;
@@ -38,7 +37,8 @@ public final class NetworkUtils {
   );
   private static final LazyInitMethod sendPacket = new LazyInitMethod(
       ReflectUtil.resolveClassName("{nms}.PlayerConnection"), "sendPacket",
-      ReflectUtil.resolveClassName("{nms}.Packet"));
+      ReflectUtil.resolveClassName("{nms}.Packet")
+  );
 
   /**
    * Pega a o {@link Channel canal} da conexão do jogador
