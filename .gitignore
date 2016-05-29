@@ -4,3 +4,4 @@ doc/
 .idea/
 .classpath
 BktLib.iml
+target/
