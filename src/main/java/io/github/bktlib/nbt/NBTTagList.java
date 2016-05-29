@@ -8,12 +8,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class NBTTagList extends NBTBase {
 
-  private static final Logger LOGGER = LogManager.getLogger();
   private List<NBTBase> tagList = Lists.newArrayList();
   private byte tagType = 0;
 
@@ -67,9 +63,6 @@ public class NBTTagList extends NBTBase {
   public void appendTag(NBTBase nbt) {
     if (this.tagType == 0) {
       this.tagType = nbt.getId();
-    } else if (this.tagType != nbt.getId()) {
-      LOGGER.warn("Adding mismatching tag types to tag list");
-      return;
     }
 
     this.tagList.add(nbt);
@@ -79,14 +72,9 @@ public class NBTTagList extends NBTBase {
     if (idx >= 0 && idx < this.tagList.size()) {
       if (this.tagType == 0) {
         this.tagType = nbt.getId();
-      } else if (this.tagType != nbt.getId()) {
-        LOGGER.warn("Adding mismatching tag types to tag list");
-        return;
       }
 
       this.tagList.set(idx, nbt);
-    } else {
-      LOGGER.warn("index out of bounds to set tag in tag list");
     }
   }
 

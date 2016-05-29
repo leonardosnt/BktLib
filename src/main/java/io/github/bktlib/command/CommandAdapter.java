@@ -18,7 +18,6 @@
 
 package io.github.bktlib.command;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
