@@ -30,14 +30,14 @@ public class BookBuilder extends ItemBuilder {
   protected BookMeta bookMeta;
   protected StringBuilder pageBuilder;
 
-  public BookBuilder() {
+  private BookBuilder() {
     item = new ItemStack(Material.WRITTEN_BOOK);
     bookMeta = (BookMeta) item.getItemMeta();
   }
 
   @Override
   public ItemBuilder type(Material material) {
-    throw new UnsupportedOperationException("Cannot change withType of Book");
+    throw new UnsupportedOperationException("Cannot change type of Book");
   }
 
   /**
@@ -79,9 +79,7 @@ public class BookBuilder extends ItemBuilder {
    * @param line Linha a ser adicionada.
    */
   public BookBuilder line(String line) {
-    Preconditions.checkState(pageBuilder != null,
-            "You must create new page before write an line");
-
+    Preconditions.checkState(pageBuilder != null, "You must create new page before write an line");
     pageBuilder.append(TRANSLATE_COLOR_CHARS.apply(line)).append("\n");
     return this;
   }

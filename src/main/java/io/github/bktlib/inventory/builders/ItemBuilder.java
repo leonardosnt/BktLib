@@ -18,15 +18,8 @@
 
 package io.github.bktlib.inventory.builders;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -35,8 +28,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.collect.Lists;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ItemBuilder {
 
@@ -59,11 +54,15 @@ public class ItemBuilder {
   /**
    * Define o dano do item, o contrario do {@link #durability(int)}.
    *
-   * @param damage Material desejado
+   * @param damage Material desejado.
+   * @throws IllegalArgumentException Se {@code damage} > {@link Short#MAX_VALUE} ||
+   *                                  {@code damage} < {@link Short#MIN_VALUE}
    */
   public ItemBuilder damage(int damage) {
-    Preconditions.checkArgument(damage <= Short.MAX_VALUE, "damage must less or " +
-        "equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE);
+    if (damage > Short.MAX_VALUE || damage < Short.MIN_VALUE) {
+      throw new IllegalArgumentException("damage must be between " + Short.MIN_VALUE +
+                                         " and " + Short.MAX_VALUE);
+    }
     item.setDurability((short) damage);
     return this;
   }
@@ -81,7 +80,7 @@ public class ItemBuilder {
       if (i == null) {
         throw new UnsupportedOperationException("Cannot define flags for this item " + item);
       }
-      i.getItemFlags().addAll(Sets.newHashSet(flags));
+      i.addItemFlags(flags);
     });
     return this;
   }
@@ -92,8 +91,10 @@ public class ItemBuilder {
    * @param durability Durabilidade desejada
    */
   public ItemBuilder durability(int durability) {
-    Preconditions.checkArgument(durability <= Short.MAX_VALUE, "durability must less or " +
-        "equals than %s (Short.MAX_VALUE)", Short.MAX_VALUE);
+    if (durability > Short.MAX_VALUE || durability < Short.MIN_VALUE) {
+      throw new IllegalArgumentException("durability must be between " + Short.MIN_VALUE +
+                                         " and " + Short.MAX_VALUE);
+    }
     item.setDurability((short) (item.getType().getMaxDurability() - durability));
     return this;
   }
@@ -129,9 +130,6 @@ public class ItemBuilder {
    * @param displayName Nome desejado
    */
   public ItemBuilder displayName(String displayName) {
-    if (displayName == null) {
-      return this;
-    }
     editMeta(meta ->
       meta.setDisplayName(TRANSLATE_COLOR_CHARS.apply(displayName))
     );
@@ -143,24 +141,15 @@ public class ItemBuilder {
    *
    * @param lines Linhas para adicionar
    */
-  public ItemBuilder lore(String... lines) {
-    if (lines == null || lines.length == 0) {
-      return this;
-    }
+  public ItemBuilder lore(String ... lines) {
     editMeta(meta -> {
-      ArrayList<String> lore = Lists.newArrayList();
-      List<String> currentLore = meta.getLore();
-
-      if (currentLore != null && !currentLore.isEmpty()) {
-        lore.addAll(currentLore);
+      if (lines == null || lines.length == 0) {
+        meta.setLore(null);
+      } else {
+        meta.setLore(Stream.of(lines).map(TRANSLATE_COLOR_CHARS)
+            .collect(Collectors.toList()));
       }
-
-      lore.addAll(Arrays.asList(lines));
-      meta.setLore(lore.stream()
-              .map(TRANSLATE_COLOR_CHARS)
-              .collect(Collectors.toList()));
     });
-
     return this;
   }
 
@@ -183,7 +172,7 @@ public class ItemBuilder {
    */
   @SuppressWarnings("unchecked")
   public <T extends ItemMeta> ItemBuilder meta(Consumer<T> metaConsumer) {
-    Preconditions.checkNotNull(metaConsumer, "metaMapper cannot be null.");
+    Preconditions.checkNotNull(metaConsumer, "metaConsumer cannot be null.");
     final ItemMeta meta = item.getItemMeta();
     metaConsumer.accept((T) meta);
     item.setItemMeta(meta);
