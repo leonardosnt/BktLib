@@ -87,6 +87,5 @@ public final class Locations {
     );
   }
 
-  private Locations() {
-  }
+  private Locations() {}
 }
