@@ -33,6 +33,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -41,19 +42,32 @@ public final class DynamicEvents {
   private Map<String, Listener> registered;
   private Plugin owner;
 
-  public static DynamicEvents of(Plugin plugin) {
+  /**
+   * Cria um uma nova instancia do {@link DynamicEvents} ou
+   * pega a existente no cache.
+   *
+   * @param plugin Plugin
+   * @return uma nova instancia do {@link DynamicEvents} ou
+   * pega a existente no cache.
+   */
+  public static DynamicEvents of(@Nonnull Plugin plugin) {
     Preconditions.checkNotNull(plugin, "plugin");
 
     cache.putIfAbsent(plugin, new DynamicEvents(plugin));
     return cache.get(plugin);
   }
 
-  public static DynamicEvents of(Class<? extends JavaPlugin> pluginClass) {
+  /**
+   * Cria um uma nova instancia do {@link DynamicEvents} ou
+   * pega a existente no cache.
+   *
+   * @param pluginClass Classe do plugin
+   * @return uma nova instancia do {@link DynamicEvents} ou
+   * pega a existente no cache.
+   */
+  public static DynamicEvents of(@Nonnull  Class<? extends JavaPlugin> pluginClass) {
     Preconditions.checkNotNull(pluginClass, "pluginClass");
-
-    Plugin plugin = JavaPlugin.getProvidingPlugin(pluginClass);
-    cache.putIfAbsent(plugin, new DynamicEvents(plugin));
-    return cache.get(plugin);
+    return of(JavaPlugin.getProvidingPlugin(pluginClass));
   }
 
   private DynamicEvents(Plugin plugin) {
@@ -139,7 +153,7 @@ public final class DynamicEvents {
    *
    * @param id Id da 'ação'
    */
-  public void unregister(String id) {
+  public synchronized void unregister(String id) {
     final Listener listener = registered.get(id);
     if (listener == null) {
       return;
@@ -151,7 +165,7 @@ public final class DynamicEvents {
   /**
    * Desregistra todas as 'ações' registradas.
    */
-  public void unregisterAll() {
+  public synchronized void unregisterAll() {
     registered.values().forEach(HandlerList::unregisterAll);
     registered.clear();
   }
