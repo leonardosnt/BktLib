@@ -100,7 +100,11 @@ public final class DynamicEvents {
   @SuppressWarnings("unchecked")
   public <E extends Event> void register(
           String id, Class<E> eventClass,  Consumer<E> action) {
-    register0(eventClass, id, (l, e) -> action.accept((E) e));
+    register0(eventClass, id, (l, e) -> {
+      if (eventClass.isAssignableFrom(e.getClass())) {
+        action.accept((E) e);
+      }
+    });
   }
 
   /**
