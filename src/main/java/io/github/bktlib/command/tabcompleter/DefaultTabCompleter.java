@@ -18,6 +18,7 @@
 
 package io.github.bktlib.command.tabcompleter;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.github.bktlib.command.CommandBase;
 import io.github.bktlib.command.CommandSource;
@@ -25,8 +26,10 @@ import io.github.bktlib.command.CommandSource;
 import java.util.List;
 
 public final class DefaultTabCompleter implements TabCompleter {
+  private static final List<String> EMPTY_LIST = ImmutableList.of();
+
   @Override
   public List<String> onTabComplete(CommandSource source, CommandBase command, String[] args) {
-    return Lists.newArrayList();
+    return EMPTY_LIST;
   }
 }

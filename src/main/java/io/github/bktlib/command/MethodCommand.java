@@ -24,7 +24,6 @@ import com.google.common.base.Throwables;
 
 import io.github.bktlib.command.annotation.Command;
 import io.github.bktlib.command.args.CommandArgs;
-import io.github.bktlib.common.Strings;
 import io.github.bktlib.reflect.MethodRef;
 
 class MethodCommand extends CommandBase {
@@ -67,6 +66,6 @@ class MethodCommand extends CommandBase {
 
   @Override
   public String toString() {
-    return Strings.of(ref);
+    return String.valueOf(ref);
   }
 }

@@ -20,8 +20,6 @@ package io.github.bktlib.reflect;
 
 import java.lang.reflect.Method;
 
-import io.github.bktlib.common.Strings;
-
 public class MethodRef {
   private Object owner;
   private Method method;
@@ -45,6 +43,6 @@ public class MethodRef {
 
   @Override
   public String toString() {
-    return Strings.of(owner.getClass().getName(), "#", method == null ? "null" : method.getName());
+    return owner.getClass().getName() +  "#" + (method == null ? "null" : method.getName());
   }
 }

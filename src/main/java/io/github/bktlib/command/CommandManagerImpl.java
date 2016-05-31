@@ -20,6 +20,7 @@ package io.github.bktlib.command;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -31,7 +32,6 @@ import io.github.bktlib.command.args.CommandArgs;
 import io.github.bktlib.command.tabcompleter.DefaultTabCompleter;
 import io.github.bktlib.command.tabcompleter.TabCompleter;
 import io.github.bktlib.command.tabcompleter.TabCompleterPlaceholders;
-import io.github.bktlib.common.Strings;
 import io.github.bktlib.misc.BukkitUtil;
 import io.github.bktlib.misc.InitOnlySupplier;
 import io.github.bktlib.reflect.FieldAccessor;
@@ -417,7 +417,7 @@ class CommandManagerImpl implements CommandManager {
             })
             .map(raw -> raw.split("::"))
             .forEach(parsed -> {
-              final String rawSubCommand = Strings.of(parsed[0], "::", parsed[1]);
+              final String rawSubCommand = parsed[0] + "::" + parsed[1];
               final String methodName = parsed[1];
               String className = parsed[0];
 
@@ -430,8 +430,7 @@ class CommandManagerImpl implements CommandManager {
                   klass = command.getClass();
               } else {
                 if (!className.contains(".")) {
-                  className = Strings.of(
-                      command.getClass().getPackage().getName(), ".", className);
+                  className = command.getClass().getPackage().getName() + "." + className;
                 }
 
                 try {
@@ -468,8 +467,7 @@ class CommandManagerImpl implements CommandManager {
               final Object finalKlassInstance = klassInstance;
               final Class<?> finalKlass = klass;
 
-              final Consumer<String> registerSubCmd = mdName ->
-              {
+              final Consumer<String> registerSubCmd = mdName -> {
                 Method subCmdMethod = null;
 
                 try {
@@ -601,7 +599,7 @@ class CommandManagerImpl implements CommandManager {
 
       public UsageTarget usageTarget() { return usageTarget; }
 
-      public Class<? extends TabCompleter> tabCompleter() { return DefaultTabCompleter.class; };
+      public Class<? extends TabCompleter> tabCompleter() { return DefaultTabCompleter.class; }
 
       public String tabCompletions() { return ""; }
     };

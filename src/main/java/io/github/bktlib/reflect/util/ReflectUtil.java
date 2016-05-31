@@ -62,7 +62,8 @@ public final class ReflectUtil {
    */
   public static int getModifiers(final Method method) {
     try {
-      final Field modifiers = Method.class.getField("modifiers");
+      final Field modifiers = Method.class.getDeclaredField("modifiers");
+      modifiers.setAccessible(true);
       return (int) modifiers.get(method);
     } catch (Exception e) {
       e.printStackTrace();
@@ -77,7 +78,8 @@ public final class ReflectUtil {
    */
   public static int getModifiers(final Field field) {
     try {
-      final Field modifiers = Field.class.getField("modifiers");
+      final Field modifiers = Field.class.getDeclaredField("modifiers");
+      modifiers.setAccessible(true);
       return (int) modifiers.get(field);
     } catch (Exception e) {
       e.printStackTrace();
@@ -93,7 +95,8 @@ public final class ReflectUtil {
    */
   public static void setModifiers(final Method method, final int mods) {
     try {
-      final Field modifiers = Method.class.getField("modifiers");
+      final Field modifiers = Method.class.getDeclaredField("modifiers");
+      modifiers.setAccessible(true);
       modifiers.set(method, mods);
     } catch (Exception e) {
       e.printStackTrace();
@@ -108,7 +111,8 @@ public final class ReflectUtil {
    */
   public static void setModifiers(final Field field, final int mods) {
     try {
-      final Field modifiers = Field.class.getField("modifiers");
+      final Field modifiers = Field.class.getDeclaredField("modifiers");
+      modifiers.setAccessible(true);
       modifiers.set(field, mods);
     } catch (Exception e) {
       e.printStackTrace();

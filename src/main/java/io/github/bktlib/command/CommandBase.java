@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.base.Strings;
 import io.github.bktlib.command.tabcompleter.TabCompleter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +38,6 @@ import com.google.common.collect.Sets;
 
 import io.github.bktlib.command.annotation.Command;
 import io.github.bktlib.command.args.CommandArgs;
-import io.github.bktlib.common.Strings;
 
 import javax.annotation.Nonnull;
 
@@ -175,11 +175,10 @@ public abstract class CommandBase {
           return;
 
         if (result == CommandResult.showUsage()) {
-          final String msg = Strings.of(
-                  result.getType().getColor(), "Use: /", getName(), " ", getUsage().orElse(""));
+          final String msg = result.getType().getColor() + "Use: /" + getName() + " " +
+              getUsage().orElse("");
 
           sender.sendMessage(msg);
-
           return;
         }
 
