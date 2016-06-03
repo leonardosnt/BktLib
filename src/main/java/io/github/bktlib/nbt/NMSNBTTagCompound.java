@@ -15,7 +15,8 @@ class NMSNBTTagCompound extends NBTTagCompound {
       ReflectUtil.resolveName("{nms}.NBTTagCompound"), "write", DataOutput.class
   );
   private static final LazyInitMethod NMS_COMPOUND_LOAD_METHOD = new LazyInitMethod(
-      ReflectUtil.resolveName("{nms}.NBTTagCompound"), "load", DataInput.class
+      ReflectUtil.resolveName("{nms}.NBTTagCompound"), "load", DataInput.class, int.class,
+      ReflectUtil.getClass("{nms}.NBTReadLimiter")
   );
   private static final LazyInitField INFINITE_READ_LIMITER = new LazyInitField(
       ReflectUtil.resolveName("{nms}.NBTReadLimiter"), "a"
@@ -23,7 +24,6 @@ class NMSNBTTagCompound extends NBTTagCompound {
 
   public NMSNBTTagCompound(Object handle) {
     this.handle = handle;
-
     /*
         Read data from handle
     */
@@ -51,7 +51,7 @@ class NMSNBTTagCompound extends NBTTagCompound {
       this.write(dataOutput);
       ByteArrayInputStream byteArrayInput = new ByteArrayInputStream(baos.toByteArray());
       DataInputStream dataInput = new DataInputStream(byteArrayInput);
-      NMS_COMPOUND_LOAD_METHOD.get().invoke(handle, dataInput, 0, INFINITE_READ_LIMITER.get());
+      NMS_COMPOUND_LOAD_METHOD.get().invoke(handle, dataInput, 0, INFINITE_READ_LIMITER.get().get(null));
     } catch (Exception e) {
       e.printStackTrace();
     }

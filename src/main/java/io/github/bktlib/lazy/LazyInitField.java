@@ -50,7 +50,9 @@ public class LazyInitField extends LazyInitValue<Field> {
       }
     }
     try {
-      return clazz.getDeclaredField(fieldName);
+      Field ret = clazz.getDeclaredField(fieldName);
+      ret.setAccessible(true);/* TODO: Abstrair isso ? Usando decorator ou não... */
+      return ret;
     } catch (NoSuchFieldException e) {
       e.printStackTrace();
     }

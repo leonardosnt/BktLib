@@ -73,7 +73,9 @@ public class LazyInitMethod extends LazyInitValue<Method> {
           }).toArray(Class<?>[]::new);
     }
     try {
-      return clazz.getDeclaredMethod(methodName, methodParamsType);
+      Method ret = clazz.getDeclaredMethod(methodName, methodParamsType);
+      ret.setAccessible(true); /* TODO: Abstrair isso ? Usando decorator ou não... */
+      return ret;
     } catch (NoSuchMethodException e) {
       e.printStackTrace();
     }
