@@ -18,11 +18,11 @@
 
 package io.github.bktlib.network;
 
-import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 
-public abstract class PacketHandler extends ChannelHandlerAdapter {
+public abstract class PacketHandler extends ChannelDuplexHandler {
 
   /**
    * Chamando quando um packet é recebido.

@@ -40,10 +40,10 @@ public final class Locations {
     checkNotNull(world, "world cannot be null");
 
     return new Location(
-            Bukkit.getWorld(world),
-            vec.getX(),
-            vec.getY(),
-            vec.getZ()
+      Bukkit.getWorld(world),
+      vec.getX(),
+      vec.getY(),
+      vec.getZ()
     );
   }
 
@@ -60,10 +60,10 @@ public final class Locations {
     checkNotNull(l2, "l2 cannot be null");
 
     return new Location(
-            l1.getWorld(),
-            Math.max(l1.getX(), l2.getX()),
-            Math.max(l1.getY(), l2.getY()),
-            Math.max(l1.getZ(), l2.getZ())
+      l1.getWorld(),
+      Math.max(l1.getX(), l2.getX()),
+      Math.max(l1.getY(), l2.getY()),
+      Math.max(l1.getZ(), l2.getZ())
     );
   }
 
@@ -80,10 +80,19 @@ public final class Locations {
     checkNotNull(l2, "l2 cannot be null");
 
     return new Location(
-            l1.getWorld(),
-            Math.min(l1.getX(), l2.getX()),
-            Math.min(l1.getY(), l2.getY()),
-            Math.min(l1.getZ(), l2.getZ())
+      l1.getWorld(),
+      Math.min(l1.getX(), l2.getX()),
+      Math.min(l1.getY(), l2.getY()),
+      Math.min(l1.getZ(), l2.getZ())
+    );
+  }
+
+  public static Location floor(Location loc) {
+    return of(
+      loc.getWorld().getName(),
+      Math.floor(loc.getX()),
+      Math.floor(loc.getY()),
+      Math.floor(loc.getZ())
     );
   }
 
