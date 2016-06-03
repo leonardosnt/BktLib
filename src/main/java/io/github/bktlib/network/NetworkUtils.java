@@ -18,9 +18,12 @@
 
 package io.github.bktlib.network;
 
+import com.google.common.base.Preconditions;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import io.github.bktlib.lazy.LazyInitField;
 import io.github.bktlib.misc.BukkitUtil;
-import io.github.bktlib.reflect.Fields;
 import io.github.bktlib.lazy.LazyInitMethod;
 import io.github.bktlib.reflect.util.ReflectUtil;
 import io.netty.channel.Channel;
@@ -28,17 +31,25 @@ import io.netty.channel.ChannelHandler;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.TimeUnit;
 
 public final class NetworkUtils {
 
-  private static final LazyInitField playerConnection = new LazyInitField(
-      ReflectUtil.resolveName("{nms}.PlayerConnection"),
-      "playerConnection"
-  );
-  private static final LazyInitMethod sendPacket = new LazyInitMethod(
-      ReflectUtil.resolveName("{nms}.PlayerConnection"), "sendPacket",
-      ReflectUtil.resolveName("{nms}.Packet")
-  );
+  private static final String PACKET_HANDLER_ID = "packet_handler";
+  private static final String PLAYER_CONNECTION_CLS_NAME = ReflectUtil.resolveName("{nms}.PlayerConnection");
+
+  private static final LazyInitField PLAYER_CONNECTION = new LazyInitField(
+      ReflectUtil.resolveName("{nms}.EntityPlayer"), "playerConnection" );
+
+  private static final LazyInitMethod SEND_PACKET = new LazyInitMethod(
+      PLAYER_CONNECTION_CLS_NAME, "sendPacket", ReflectUtil.resolveName("{nms}.Packet"));
+
+  private static final LoadingCache<Player, Channel> CHANNEL_CACHE =
+      CacheBuilder.newBuilder()
+                  .weakKeys()
+                  .weakValues()
+                  .expireAfterAccess(5, TimeUnit.MINUTES)
+                  .build(new ChannelCacheLoader());
 
   /**
    * Pega a o {@link Channel canal} da conexão do jogador
@@ -47,10 +58,8 @@ public final class NetworkUtils {
    * @return {@link Channel canal} da conexão do jogador
    */
   public static Channel getPlayerConnectionChannel(Player player) {
-    return Fields.from(BukkitUtil.unwrap(player))
-            .find("playerConnection").getAsFields()
-            .find("networkManager").getAsFields()
-            .find("channel").get();
+    Preconditions.checkNotNull(player, "player cannot be null");
+    return CHANNEL_CACHE.getUnchecked(player);
   }
 
   /**
@@ -61,10 +70,11 @@ public final class NetworkUtils {
    * @param id Id do handler
    * @param handler O handler
    */
-  public static void addChannelToPlayerConnection(Player player, String id,
-                                                  ChannelHandler handler) {
-    getPlayerConnectionChannel(player).pipeline()
-        .addBefore("packet_handler", id, handler);
+  public static void addChannelToPlayerConnection(Player player, String id, ChannelHandler handler) {
+    Preconditions.checkNotNull(player, "player cannot be null");
+    Preconditions.checkNotNull(handler, "handler cannot be null");
+
+    getPlayerConnectionChannel(player).pipeline().addBefore(PACKET_HANDLER_ID, id, handler);
   }
 
   /**
@@ -75,6 +85,9 @@ public final class NetworkUtils {
    * @param id Id do handler
    */
   public static void removeChannelFromPlayerConnection(Player player, String id) {
+    Preconditions.checkNotNull(player, "player cannot be null");
+    Preconditions.checkNotNull(id, "id cannot be null");
+
     getPlayerConnectionChannel(player).pipeline().remove(id);
   }
 
@@ -85,8 +98,10 @@ public final class NetworkUtils {
    * @param player Jogador
    * @param handler Instancia do handler
    */
-  public static void removeChannelFromPlayerConnection(Player player,
-                                                       ChannelHandler handler) {
+  public static void removeChannelFromPlayerConnection(Player player, ChannelHandler handler) {
+    Preconditions.checkNotNull(player, "player cannot be null");
+    Preconditions.checkNotNull(handler, "handler cannot be null");
+
     getPlayerConnectionChannel(player).pipeline().remove(handler);
   }
 
@@ -97,11 +112,33 @@ public final class NetworkUtils {
    * @param packet Pacote
    */
   public static void sendPacket(Player player, Object packet) {
+    Preconditions.checkNotNull(player, "player cannot be null");
+    Preconditions.checkNotNull(packet, "packet cannot be null");
+
     try {
-      Object playerCon = playerConnection.get().get(BukkitUtil.unwrap(player));
-      sendPacket.get().invoke(playerCon, packet);
+      Object playerCon = PLAYER_CONNECTION.get().get(BukkitUtil.unwrap(player));
+      SEND_PACKET.get().invoke(playerCon, packet);
     } catch (IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
+    }
+  }
+
+  private static class ChannelCacheLoader extends CacheLoader<Player, Channel> {
+
+    private static final LazyInitField NETWOK_MANAGER = new LazyInitField(
+        PLAYER_CONNECTION_CLS_NAME, "networkManager");
+
+    private static final LazyInitField CHANNEL = new LazyInitField(
+        ReflectUtil.resolveName("{nms}.NetworkManager"), "channel");
+
+    @Override
+    public Channel load(Player player) throws Exception {
+      Object unwrapped = BukkitUtil.unwrap(player);
+      Object playerCon = PLAYER_CONNECTION.get().get(unwrapped);
+      Object netManager = NETWOK_MANAGER.get().get(playerCon);
+      Object channel = CHANNEL.get().get(netManager);
+
+      return (Channel) channel;
     }
   }
 }
