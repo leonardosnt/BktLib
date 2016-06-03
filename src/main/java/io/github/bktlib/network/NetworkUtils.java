@@ -39,7 +39,7 @@ public final class NetworkUtils {
   private static final String PLAYER_CONNECTION_CLS_NAME = ReflectUtil.resolveName("{nms}.PlayerConnection");
 
   private static final LazyInitField PLAYER_CONNECTION = new LazyInitField(
-      ReflectUtil.resolveName("{nms}.EntityPlayer"), "playerConnection" );
+      ReflectUtil.resolveName("{nms}.EntityPlayer"), "playerConnection");
 
   private static final LazyInitMethod SEND_PACKET = new LazyInitMethod(
       PLAYER_CONNECTION_CLS_NAME, "sendPacket", ReflectUtil.resolveName("{nms}.Packet"));
@@ -137,7 +137,6 @@ public final class NetworkUtils {
       Object playerCon = PLAYER_CONNECTION.get().get(unwrapped);
       Object netManager = NETWOK_MANAGER.get().get(playerCon);
       Object channel = CHANNEL.get().get(netManager);
-
       return (Channel) channel;
     }
   }
