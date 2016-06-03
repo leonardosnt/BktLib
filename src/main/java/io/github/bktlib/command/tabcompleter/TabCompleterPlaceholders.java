@@ -18,6 +18,7 @@
 
 package io.github.bktlib.command.tabcompleter;
 
+import io.github.bktlib.collect.CustomCollectors;
 import io.github.bktlib.misc.InitOnlySupplier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,15 +33,15 @@ import java.util.stream.Stream;
 public final class TabCompleterPlaceholders {
   public static final Supplier<List<String>> PLAYERS = () -> (
     Bukkit.getOnlinePlayers().stream().map(Player::getName)
-        .collect(Collectors.toList())
+          .collect(Collectors.toList())
   );
 
   public static final Supplier<List<String>> ITEMS = InitOnlySupplier.of(() -> (
     Stream.of(Material.values())
           .map(Material::name)
           .map(String::toLowerCase)
-          .collect(Collectors.toList())
-  ));
+          .collect(CustomCollectors.toImmutableList()))
+  );
 
   @Nullable
   public static Supplier<List<String>> fromName(String placeHolder) {
