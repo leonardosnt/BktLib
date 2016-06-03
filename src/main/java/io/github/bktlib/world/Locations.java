@@ -96,5 +96,21 @@ public final class Locations {
     );
   }
 
+  /**
+   * Pega o numero de blocos entre as 2 localizações.
+   *
+   * @param l1 Localização 1
+   * @param l2 Localização 2
+   * @return o numero de blocos entre as 2 localizações.
+   */
+  public static int blocksBetween(Location l1, Location l2) {
+    final Location max = max(l1, l2);
+    final Location min = min(l1, l2);
+
+    return (max.getBlockX() - min.getBlockX() + 1) *
+           (max.getBlockY() - min.getBlockY() + 1) *
+           (max.getBlockZ() - min.getBlockZ() + 1) ;
+  }
+
   private Locations() {}
 }
