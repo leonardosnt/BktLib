@@ -34,11 +34,14 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nonnull;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public final class DynamicEvents {
-  private static Map<Plugin, DynamicEvents> cache = Maps.newHashMap();
+  private static final Map<Plugin, DynamicEvents> CACHE = Maps.newHashMap();
+  private static final Supplier<String> ID_GENERATOR = () -> RandomStringUtils.randomAscii(15);
   private Map<String, Listener> registered;
   private Plugin owner;
 
@@ -53,8 +56,8 @@ public final class DynamicEvents {
   public static DynamicEvents of(@Nonnull Plugin plugin) {
     Preconditions.checkNotNull(plugin, "plugin");
 
-    cache.putIfAbsent(plugin, new DynamicEvents(plugin));
-    return cache.get(plugin);
+    CACHE.putIfAbsent(plugin, new DynamicEvents(plugin));
+    return CACHE.get(plugin);
   }
 
   /**
@@ -80,12 +83,11 @@ public final class DynamicEvents {
    * determinado evento({@code eventClass}) for executado.
    *
    * @param eventClass Classe do evento
-   * @param action Ação que será executada.
+   * @param callback Ação que será executada.
    * @param <E> Tipo do evento
    */
-  public <E extends Event> void register(Class<E> eventClass, Consumer<E> action) {
-    final String randomId = RandomStringUtils.random(5);
-    register(randomId, eventClass, action);
+  public <E extends Event> void register(Class<E> eventClass, Consumer<E> callback) {
+    register(ID_GENERATOR.get(), eventClass, callback);
   }
 
   /**
@@ -94,15 +96,15 @@ public final class DynamicEvents {
    *
    * @param id Um id unico, que pode ou não ser usado no {@link #unregister(String)}
    * @param eventClass Classe do evento
-   * @param action Ação que será executada.
+   * @param callback Ação que será executada.
    * @param <E> Tipo do evento
    */
   @SuppressWarnings("unchecked")
-  public <E extends Event> void register(
-          String id, Class<E> eventClass,  Consumer<E> action) {
+  public <E extends Event> void register(String id, Class<E> eventClass,
+                                         Consumer<E> callback) {
     register0(eventClass, id, (l, e) -> {
       if (eventClass.isAssignableFrom(e.getClass())) {
-        action.accept((E) e);
+        callback.accept((E) e);
       }
     });
   }
@@ -114,19 +116,26 @@ public final class DynamicEvents {
    * @param player Jogador desejado.
    * @param id Um id unico, que pode ou não ser usado no {@link #unregister(String)}
    * @param eventClass Classe do evento
-   * @param action Ação que será executada.
+   * @param callback Ação que será executada.
    * @param <E> Tipo do evento
    */
   @SuppressWarnings("unchecked")
-  public <E extends Event> void registerForPlayer(
-      Player player, String id, Class<E> eventClass, Consumer<E> action) {
-    Preconditions.checkArgument(isPlayerEvent(eventClass), eventClass + " is not a player event.");
+  public <E extends Event> void registerFor(Player player, String id,
+                                            Class<E> eventClass,
+                                            Consumer<E> callback) {
+    Preconditions.checkNotNull(player, "player cannot be null");
+    Preconditions.checkNotNull(callback, "callback cannot be null");
+    Preconditions.checkArgument(isPlayerEvent(eventClass), eventClass +
+        " is not a player event.");
 
-    register0(eventClass, id, (l, e) -> {
-      if (getPlayerFromEvent(e) == player) {
-        action.accept((E) e);
-      }
-    });
+    register0(eventClass, id, new PlayerEventExecutor(player, id,
+        (Consumer<Event>) callback));
+  }
+
+  public <E extends Event> void registerFor(Player player,
+                                            Class<E> eventClass,
+                                            Consumer<E> callback) {
+    registerFor(player, ID_GENERATOR.get(), eventClass, callback);
   }
 
   /**
@@ -136,21 +145,26 @@ public final class DynamicEvents {
    * @param entity Jogador desejado.
    * @param id Um id unico, que pode ou não ser usado no {@link #unregister(String)}
    * @param eventClass Classe do evento
-   * @param action Ação que será executada.
+   * @param callback Ação que será executada.
    * @param <E> Tipo do evento
    */
   @SuppressWarnings("unchecked")
-  public <E extends Event> void registerForEntity(
-      Entity entity, String id, Class<E> eventClass, Consumer<E> action) {
-    Preconditions.checkArgument(isEntityEvent(eventClass), eventClass + " is not a entity event.");
+  public <E extends Event> void registerFor(Entity entity, String id,
+                                            Class<E> eventClass,
+                                            Consumer<E> callback) {
+    Preconditions.checkArgument(isEntityEvent(eventClass), eventClass +
+        " is not a entity event.");
 
-    register0(eventClass, id, (l, e) -> {
-      if (getEntityFromEvent(e) == entity) {
-        action.accept((E) e);
-      }
-    });
+    register0(eventClass, id, new EntityEventExecutor(entity, id,
+        (Consumer<Event>) callback));
   }
 
+
+  public <E extends Event> void registerFor(Entity entity,
+                                            Class<E> eventClass,
+                                            Consumer<E> callback) {
+    registerFor(entity, ID_GENERATOR.get(), eventClass, callback);
+  }
   /**
    * Desregistra uma determinada 'ação' registrada por
    * {@link #register(String, Class, Consumer)}
@@ -175,10 +189,11 @@ public final class DynamicEvents {
   }
 
 
-  private <E extends Event> void register0(
-      Class<E> eventClass, String id, EventExecutor executor) {
+  private <E extends Event> void register0(Class<E> eventClass, String id,
+                                           EventExecutor executor) {
     if (registered.containsKey(id)) {
-      throw new IllegalArgumentException(String.format("The id '%s' is already in use.", id));
+      throw new IllegalArgumentException(String.format(
+          "The id '%s' is already in use.", id));
     }
 
     final Listener listener = new Listener() {};
@@ -219,7 +234,7 @@ public final class DynamicEvents {
   }
 
   private boolean isPlayerEvent(Class<?> clazz) {
-    return PlayerEvent.class.isAssignableFrom(clazz)
+    return clazz != null && PlayerEvent.class.isAssignableFrom(clazz)
             || clazz == PlayerLeashEntityEvent.class
             || clazz == PlayerUnleashEntityEvent.class
             || clazz == PlayerDeathEvent.class
@@ -230,5 +245,58 @@ public final class DynamicEvents {
 
   private boolean isEntityEvent(Class<?> clazz) {
     return EntityEvent.class.isAssignableFrom(clazz);
+  }
+
+
+  private abstract class WeakEventExecutor<T> implements EventExecutor {
+    protected WeakReference<T> ownerRef;
+    protected Consumer<Event> callback;
+    protected String id;
+
+    private WeakEventExecutor(T ownerRef, String id, Consumer<Event> callback) {
+      this.ownerRef = new WeakReference<>(ownerRef);
+      this.id = id;
+      this.callback = callback;
+    }
+
+    @Override
+    public void execute(Listener listener, Event event) throws EventException {
+      final T owner = ownerRef.get();
+      if (owner == null) {
+        unregister(id);
+      } else {
+        execute(event);
+      }
+    }
+
+    public abstract void execute(Event event) throws EventException;
+  }
+
+  private class EntityEventExecutor extends WeakEventExecutor<Entity> {
+
+    private EntityEventExecutor(Entity ownerRef, String id, Consumer<Event> callback) {
+      super(ownerRef, id, callback);
+    }
+
+    @Override
+    public void execute(Event event) throws EventException {
+      if (getEntityFromEvent(event) == ownerRef.get()) {
+        callback.accept(event);
+      }
+    }
+  }
+
+  private class PlayerEventExecutor extends WeakEventExecutor<Player> {
+
+    private PlayerEventExecutor(Player ownerRef, String id, Consumer<Event> callback) {
+      super(ownerRef, id, callback);
+    }
+
+    @Override
+    public void execute(Event event) throws EventException {
+      if (getPlayerFromEvent(event) == ownerRef.get()) {
+        callback.accept(event);
+      }
+    }
   }
 }

@@ -14,7 +14,7 @@ public class DynamicEventsTest {
     final String id = "test";
     final Entity ent = w.spawnEntity(loc, EntityType.VILLAGER);
 
-    de.registerForEntity(ent, id, EntityDamageByEntityEvent.class, e -> {
+    de.registerFor(ent, id, EntityDamageByEntityEvent.class, e -> {
       System.out.println(e.getEntity() + " : " + e.getDamager());
       de.unregister(id);
     });
@@ -22,7 +22,7 @@ public class DynamicEventsTest {
 
   public static void testPlayer(Player p, DynamicEvents de) {
     final String id = "test";
-    de.registerForPlayer(p, id, AsyncPlayerChatEvent.class, e -> {
+    de.registerFor(p, id, AsyncPlayerChatEvent.class, e -> {
       e.getPlayer().sendMessage("Você digitou " + e.getMessage());
       e.setCancelled(true);
       de.unregister(id);
