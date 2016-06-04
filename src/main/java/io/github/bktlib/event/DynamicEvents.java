@@ -133,7 +133,7 @@ public final class DynamicEvents {
   }
 
   /**
-   * @see #registerFor(Player, String, Class, Consumer) 
+   * @see #registerFor(Player, String, Class, Consumer)
    * @param player Jogador desejado.
    * @param eventClass Classe do evento
    * @param callback Ação que será executada.
