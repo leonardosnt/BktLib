@@ -132,6 +132,13 @@ public final class DynamicEvents {
         (Consumer<Event>) callback));
   }
 
+  /**
+   * @see #registerFor(Player, String, Class, Consumer) 
+   * @param player Jogador desejado.
+   * @param eventClass Classe do evento
+   * @param callback Ação que será executada.
+   * @param <E> Tipo do evento
+   */
   public <E extends Event> void registerFor(Player player,
                                             Class<E> eventClass,
                                             Consumer<E> callback) {
@@ -159,12 +166,19 @@ public final class DynamicEvents {
         (Consumer<Event>) callback));
   }
 
-
+  /**
+   * @see #registerFor(Entity, String, Class, Consumer)
+   * @param entity Jogador desejado.
+   * @param eventClass Classe do evento
+   * @param callback Ação que será executada.
+   * @param <E> Tipo do evento
+   */
   public <E extends Event> void registerFor(Entity entity,
                                             Class<E> eventClass,
                                             Consumer<E> callback) {
     registerFor(entity, ID_GENERATOR.get(), eventClass, callback);
   }
+
   /**
    * Desregistra uma determinada 'ação' registrada por
    * {@link #register(String, Class, Consumer)}
