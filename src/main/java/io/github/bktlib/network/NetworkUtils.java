@@ -23,7 +23,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import io.github.bktlib.lazy.LazyInitField;
-import io.github.bktlib.misc.BukkitUtil;
+import io.github.bktlib.misc.BukkitUnwrapper;
 import io.github.bktlib.lazy.LazyInitMethod;
 import io.github.bktlib.reflect.util.ReflectUtil;
 import io.netty.channel.Channel;
@@ -116,7 +116,7 @@ public final class NetworkUtils {
     Preconditions.checkNotNull(packet, "packet cannot be null");
 
     try {
-      Object playerCon = PLAYER_CONNECTION.get().get(BukkitUtil.unwrap(player));
+      Object playerCon = PLAYER_CONNECTION.get().get(BukkitUnwrapper.unwrap(player));
       SEND_PACKET.get().invoke(playerCon, packet);
     } catch (IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
@@ -133,7 +133,7 @@ public final class NetworkUtils {
 
     @Override
     public Channel load(Player player) throws Exception {
-      Object unwrapped = BukkitUtil.unwrap(player);
+      Object unwrapped = BukkitUnwrapper.unwrap(player);
       Object playerCon = PLAYER_CONNECTION.get().get(unwrapped);
       Object netManager = NETWOK_MANAGER.get().get(playerCon);
       Object channel = CHANNEL.get().get(netManager);

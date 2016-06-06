@@ -18,9 +18,9 @@
 
 package io.github.bktlib.inventory;
 
-import io.github.bktlib.misc.BukkitUtil;
-import io.github.bktlib.nbt.NBTTagCompound;
 import io.github.bktlib.lazy.LazyInitMethod;
+import io.github.bktlib.misc.BukkitUnwrapper;
+import io.github.bktlib.nbt.NBTTagCompound;
 import io.github.bktlib.reflect.util.ReflectUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -119,7 +119,7 @@ public final class Items {
               "the item must be converted as CraftItemStack, use Items.asCraftCopy(item) to do this.");
     }
     try {
-      Object nmsTag = nmsItemGetTag.get().invoke(BukkitUtil.unwrap(item));
+      Object nmsTag = nmsItemGetTag.get().invoke(BukkitUnwrapper.unwrap(item));
       if (nmsTag == null) {
         return new NBTTagCompound();
       }
@@ -147,7 +147,7 @@ public final class Items {
         throw new UnsupportedOperationException("Cannot use setTag on ItemStack, " +
                 "the item must be converted as CraftItemStack, use Items.asCraftCopy(item) to do this.");
       }
-      nmsItemSetTag.get().invoke(BukkitUtil.unwrap(item), compound.asNMSCompound());
+      nmsItemSetTag.get().invoke(BukkitUnwrapper.unwrap(item), compound.asNMSCompound());
     } catch (IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
     }

@@ -38,29 +38,4 @@ public final class BukkitUtil {
     CB_VERSION = craftServerPkg.substring(craftServerPkg.lastIndexOf('.') + 1);
   }
 
-  /**
-   * Pega o 'nms handle' do objeto.
-
-   * @param obj Objeto
-   * @return 'nms handle' do objeto.
-   */
-  public static Object unwrap(Object obj) {
-    if (obj instanceof ItemStack) {
-      try {
-        Field handle = obj.getClass().getDeclaredField("handle");
-        handle.setAccessible(true);
-        return handle.get(obj);
-      } catch (NoSuchFieldException | IllegalAccessException e) {
-        e.printStackTrace();
-      }
-    }
-    try {
-      Method getHandle = obj.getClass().getMethod("getHandle");
-      return getHandle.invoke(obj);
-    } catch (NoSuchMethodException | InvocationTargetException |
-            IllegalAccessException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
 }
