@@ -70,16 +70,10 @@ import static java.lang.String.format;
 
 /**
  * <p>
- * <p>
  * ATENÇÃO: Caso você esteja usando uma versão mais antiga do craftbukkit/bukkit
- * você terá que fazer algumas alterações.
- * <p>
- * 1º Mudar os caches, de LoadingCache para Cache.
- * 2º Cabou!
- * <p>
+ * você terá que mudar os caches de LoadingCache para Cache.
  * </p>
- * <p>
- * Implementacao default do {@link CommandManager}
+ * Implementacao padrão do {@link CommandManager}
  */
 @SuppressWarnings("unchecked")
 class CommandManagerImpl implements CommandManager {
