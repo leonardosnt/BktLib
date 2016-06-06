@@ -130,7 +130,7 @@ public final class ReflectUtil {
   }
 
   public static String resolveName(String clazz) {
-    final String version = BukkitUtil.getImplVersion();
+    final String version = BukkitUtil.CB_VERSION;
     clazz = clazz.replaceAll("\\{o?cb\\}", "org.bukkit.craftbukkit." + version);
     clazz = clazz.replaceAll("\\{nms\\}", "net.minecraft.server." + version);
     return clazz;

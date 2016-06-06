@@ -304,7 +304,7 @@ class CommandManagerImpl implements CommandManager {
       return optCmdMap.get();
 
     final String message = String.format("Cound not get commandMap, CraftBukkit Version: %s, PluginManager: %s",
-            BukkitUtil.getImplVersion(),
+            BukkitUtil.CB_VERSION,
             pluginManager);
 
     throw new IllegalStateException(message);

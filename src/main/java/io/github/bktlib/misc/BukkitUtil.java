@@ -24,23 +24,18 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
-public class BukkitUtil {
-
-  private static String cachedImplVersion;
+public final class BukkitUtil {
 
   /**
-   * Pega a versao da implementação do bukkit.
-   * Exemplo: {@code v1_8_R3}
-   *
-   * @return versão do craftbukkit
+   * Return CraftBukkit version like (v1_8_R3).
    */
-  public static String getImplVersion() {
-    if (cachedImplVersion == null) {
-      final String craftServerPkg = Bukkit.getServer().getClass().getPackage().getName();
-      cachedImplVersion = craftServerPkg.substring(craftServerPkg.lastIndexOf('.') + 1);
-    }
-    return cachedImplVersion;
+  public static final String CB_VERSION;
+
+  static {
+    final String craftServerPkg = Bukkit.getServer().getClass().getPackage().getName();
+    CB_VERSION = craftServerPkg.substring(craftServerPkg.lastIndexOf('.') + 1);
   }
 
   /**
