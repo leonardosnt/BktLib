@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 public final class BukkitUtil {
 
   /**
-   * Return CraftBukkit version like (v1_8_R3).
+   * Versão do CraftBukkit. Tipo (v1_8_R3)
    */
   public static final String CB_VERSION;
 
