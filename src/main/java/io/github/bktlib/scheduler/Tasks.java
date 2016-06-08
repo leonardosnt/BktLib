@@ -46,7 +46,7 @@ public class Tasks {
       this.callback = callback;
     }
 
-    Task async() {
+    public Task async() {
       async = true;
       return this;
     }
