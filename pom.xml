@@ -43,6 +43,7 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- http://mvnrepository.com/artifact/io.netty/netty-all -->
@@ -50,6 +51,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>5.0.0.Alpha2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
