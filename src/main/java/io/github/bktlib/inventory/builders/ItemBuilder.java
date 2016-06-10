@@ -52,6 +52,14 @@ public class ItemBuilder {
   }
 
   /**
+   * Deixa o item com efeito de encantamento.
+   */
+  public ItemBuilder glowing() {
+    return enchantment(Enchantment.DURABILITY, 1).
+           flags(ItemFlag.HIDE_ENCHANTS);
+  }
+
+  /**
    * Define o dano do item, o contrario do {@link #durability(int)}.
    *
    * @param damage Material desejado.
@@ -193,9 +201,9 @@ public class ItemBuilder {
    *
    * @return O ItemStack "construido"
    */
-  public ItemStack buildAndGive(Player player) {
+  public ItemStack giveTo(Player player) {
     Preconditions.checkNotNull(player, "player cannot be null");
-    return buildAndAdd(player.getInventory());
+    return addTo(player.getInventory());
   }
 
   /**
@@ -203,10 +211,10 @@ public class ItemBuilder {
    *
    * @return O ItemStack "construido"
    */
-  public ItemStack buildAndAdd(Inventory inv) {
-    Preconditions.checkNotNull(inv, "inv cannot be null");
+  public ItemStack addTo(Inventory inventory) {
+    Preconditions.checkNotNull(inventory, "inventory cannot be null");
     final ItemStack item = build();
-    inv.addItem(item);
+    inventory.addItem(item);
     return item;
   }
 
