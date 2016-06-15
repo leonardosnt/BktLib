@@ -88,7 +88,10 @@ public final class NetworkUtils {
     Preconditions.checkNotNull(player, "player cannot be null");
     Preconditions.checkNotNull(id, "id cannot be null");
 
-    getPlayerConnectionChannel(player).pipeline().remove(id);
+    Channel channel = getPlayerConnectionChannel(player);
+    if (channel.pipeline().get(id) != null) {
+      channel.pipeline().remove(id);
+    }
   }
 
   /**
