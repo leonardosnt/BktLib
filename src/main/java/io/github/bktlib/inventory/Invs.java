@@ -30,10 +30,6 @@ import org.bukkit.inventory.ItemStack;
 
 import static com.google.common.base.Preconditions.*;
 
-/**
- * Classe utilitaria com metodos frequentemente usados para manipulacao de
- * inventarios
- */
 public class Invs {
 
   /**
@@ -175,8 +171,7 @@ public class Invs {
    * @return Se o inventario está completamente cheio
    */
   public static boolean isCompletelyFull(final Inventory inv) {
-    return isFull(inv) && stream(inv)
-            .allMatch(item -> item.getAmount() == item.getMaxStackSize());
+    return stream(inv).allMatch(item -> item.getAmount() == item.getMaxStackSize());
   }
 
   /**
