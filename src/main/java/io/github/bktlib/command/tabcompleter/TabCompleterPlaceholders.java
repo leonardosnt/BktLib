@@ -19,7 +19,7 @@
 package io.github.bktlib.command.tabcompleter;
 
 import io.github.bktlib.collect.CustomCollectors;
-import io.github.bktlib.misc.InitOnlySupplier;
+import io.github.bktlib.misc.MemoizedSupplier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,7 +36,7 @@ public final class TabCompleterPlaceholders {
           .collect(Collectors.toList())
   );
 
-  public static final Supplier<List<String>> ITEMS = InitOnlySupplier.of(() -> (
+  public static final Supplier<List<String>> ITEMS = MemoizedSupplier.of(() -> (
     Stream.of(Material.values())
           .map(Material::name)
           .map(String::toLowerCase)

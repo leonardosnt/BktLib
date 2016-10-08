@@ -33,7 +33,7 @@ import io.github.bktlib.command.tabcompleter.DefaultTabCompleter;
 import io.github.bktlib.command.tabcompleter.TabCompleter;
 import io.github.bktlib.command.tabcompleter.TabCompleterPlaceholders;
 import io.github.bktlib.misc.BukkitUtil;
-import io.github.bktlib.misc.InitOnlySupplier;
+import io.github.bktlib.misc.MemoizedSupplier;
 import io.github.bktlib.reflect.FieldAccessor;
 import io.github.bktlib.reflect.MethodAccessor;
 import io.github.bktlib.reflect.MethodRef;
@@ -383,7 +383,7 @@ class CommandManagerImpl implements CommandManager {
       } else if (rawValue.startsWith("[") && rawValue.endsWith("]")) {
         rawValue = rawValue.substring(1, rawValue.length() - 1);
         final String finalRawValue = rawValue;
-        parsedValue = InitOnlySupplier.of(() -> Lists.newArrayList(COMMA_SPLITTER.split(finalRawValue)));
+        parsedValue = MemoizedSupplier.of(() -> Lists.newArrayList(COMMA_SPLITTER.split(finalRawValue)));
       } else {
         throw new IllegalArgumentException(String.format("Invalid tabCompletion value %s", rawValue));
       }
